@@ -1,4 +1,6 @@
-﻿namespace Collections;
+﻿using System.Net.Http.Headers;
+
+namespace Collections;
 
 public class BinarySearchTree<TData> where TData : IComparable<TData> {
 
@@ -14,5 +16,24 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
 			this.Parent = parent;
 		}
 	}
-
+	
+	
+	private IComparer<TData> _comparer;
+	private Node? _root;
+	
+	public BinarySearchTree() {
+		// TODO: What about just calling other constructor?
+		this._comparer = Comparer<TData>.Default;
+	}
+	
+	public BinarySearchTree(IComparer<TData> comparer) {
+		
+		this._comparer = comparer;
+	}
+	
+	protected virtual Node CreateNode(TData data, Node? parent) {
+		
+		return new Node(data, parent);
+	}
+	
 }
