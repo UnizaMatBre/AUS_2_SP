@@ -35,5 +35,43 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
 		
 		return new Node(data, parent);
 	}
-	
+
+
+	public virtual bool Add(TData data) {
+		// no root node? Make it
+		if (this._root is null) {
+			this._root = this.CreateNode(data, null);
+			
+			return true;
+		}
+		
+		
+		// initialize variables
+		Node current = this._root;
+
+
+		// traverse tree
+		while (true) {
+			int cmpResult = this._comparer.Compare(data, current.Data);
+
+			// handle duplicate
+			if (cmpResult == 0) {
+				return false;
+			}
+            
+			// pick proper branch
+			ref Node? branch = ref (cmpResult < 0 ? ref current.Left : ref current.Right);
+
+			// branch doesn't exist, we will insert into it
+			if (branch is null) {
+				Node newNode = this.CreateNode(data, current);
+				branch = newNode;
+                
+				return true;
+			}
+            
+			// move to next level
+			current = branch;
+		}
+	}
 }
