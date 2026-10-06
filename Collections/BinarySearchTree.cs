@@ -178,4 +178,26 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
         
 		return true;
 	}
+	
+	
+	public virtual bool TryGetValue(TData data, out TData? output) {
+        
+		Node? current = this._root;
+
+		while (current != null) {
+            
+			int cmpCurrent = this._comparer.Compare(data, current.Data);
+
+			if (cmpCurrent == 0) {
+				output = current.Data;
+				return true;
+			}
+
+
+			current = (cmpCurrent < 0) ? current.Left : current.Right;
+		}
+        
+		output = default;
+		return false;
+	}
 }
