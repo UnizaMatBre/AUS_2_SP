@@ -15,6 +15,28 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
 			this.Data = data;
 			this.Parent = parent;
 		}
+		
+		public void ReplaceChildren(Node oldChild, Node? newChild) {
+			void AssignInto(ref Node? childBranch) {
+				childBranch = newChild;
+
+				if (newChild is not null) {
+					newChild.Parent = this;
+				}
+			}
+
+			if (this.Left == oldChild) {
+				AssignInto(ref this.Left);
+				return;
+			}
+
+			if (this.Right == oldChild) {
+				AssignInto(ref this.Right);
+				return;
+			}
+            
+			throw new InvalidOperationException($"Node doesn't have child {oldChild}");
+		}
 	}
 	
 	
