@@ -127,4 +127,55 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
 			current = branch;
 		}
 	}
+	
+	
+	public virtual bool Remove(TData data) {
+		Node? current = this._root;
+
+		// traverse tree
+		while (current != null) {
+			int cmpResult = this._comparer.Compare(data, current.Data);
+
+			// we found data for removal
+			if (cmpResult == 0) {
+				break;
+			}
+            
+			current = (cmpResult < 0) ? ref current.Left : ref current.Right;
+		}
+        
+		// branch doesn't exist => data we want to remove doesn't exist
+		if (current == null) {
+			return false;
+		}
+
+		// handle 2 children
+		if (current.Left != null && current.Right != null) {
+			// get inorder successor
+			Node successor = current.InOrderNext()!;
+            
+            
+			// "swap" successor with node for removal
+			successor.Parent!.ReplaceChildren(successor, successor.Right);
+			current.Data = successor.Data;
+			
+                        
+			return true;
+		}
+        
+		// handle 1 or 0 children
+		Node? child = current.Left ?? current.Right;
+
+		if (current.Parent == null) {
+			this._root = child;
+			if (child != null) {
+				child.Parent = null;
+			}
+		}
+		else {
+			current.Parent.ReplaceChildren(current, child);
+		}
+        
+		return true;
+	}
 }
