@@ -200,4 +200,40 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
 		output = default;
 		return false;
 	}
+	
+	
+	/// Takes bounds of range and returns enumeration of all items in said range
+	public IEnumerable<TData> EnumerateRange(TData lower, TData upper) {
+		if (this._root == null) {
+			yield break;
+		}
+        
+		Node? current = this._root;
+		Node? minimum = null;
+        
+		// first step - find minimum using bts rules
+		while (current != null) {
+			int cmpResult = this._comparer.Compare(lower, current.Data);
+
+            
+			if (cmpResult <= 0) {
+				// current is more than lower bound?
+				// remember current and go left
+				minimum = current;
+				current = current.Left;
+			}
+			else {
+				// current is less than lower bound?
+				// we went too far - go right
+				current = current.Right;
+			}
+		}
+        
+		// from minimum, do inorder traversal until we pass upper bound
+		current = minimum;
+		while (current != null && this._comparer.Compare(current.Data, upper) <= 0) {
+			yield return current.Data;
+			current = current.InOrderNext();
+		}
+	}
 }
