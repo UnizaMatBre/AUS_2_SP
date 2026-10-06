@@ -37,6 +37,37 @@ public class BinarySearchTree<TData> where TData : IComparable<TData> {
             
 			throw new InvalidOperationException($"Node doesn't have child {oldChild}");
 		}
+		
+		
+		public Node? InOrderNext() {
+			Node? current = null;
+            
+			// has right subtree?
+			// - Successor is leftmost node in it
+			if (this.Right != null) {
+				current = this.Right;
+        
+				// get leftmost node
+				while (current.Left != null) {
+					current = current.Left;
+				}
+
+				return current;
+			}
+    
+			// doesn't have right subtree?
+			// - Successor is first ancestor where this is in left subtree
+			current = this;
+			Node? parent = current.Parent;
+            
+			// travel through ancestors until we find one that has us as left child
+			while (parent != null && current != parent.Left) {
+				current = parent;
+				parent = parent.Parent;
+			}
+
+			return parent;
+		}
 	}
 	
 	
