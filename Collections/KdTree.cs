@@ -1,9 +1,13 @@
 ﻿namespace Collections;
 
-public class KdTree {
+public interface IDimensionalComparable<in T> {
+
+	public int DimensionalCompareTo(uint dimension, T other);
+}
+
+public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 
 	private class KdTreeNode {
-		
 		
 	}
 }
