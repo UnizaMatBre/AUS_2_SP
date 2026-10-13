@@ -65,6 +65,27 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 			current = branch;
 			layer++;
 		}
+	}
 
+	public bool TryGetValue(TValue searchedValue, out TValue? output) {
+		uint layer = 0;
+		KdTreeNode? current = this._root;
+
+		while (current != null) {
+
+			int cmpCurrent = current.Value.DimensionalCompareTo(layer, searchedValue);
+
+			if (cmpCurrent == 0) {
+				output = current.Value;
+				return true;
+			}
+
+
+			current = (cmpCurrent < 0) ? current.Left : current.Right;
+			layer++;
+		}
+        
+		output = default;
+		return false;
 	}
 }
