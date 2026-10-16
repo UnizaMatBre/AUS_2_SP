@@ -1,7 +1,8 @@
 ﻿namespace Collections;
 
 public interface IDimensionalComparable<in T> {
-
+	
+	public uint GetDimensionCount();
 	public int DimensionalCompareTo(uint dimension, T other);
 }
 
