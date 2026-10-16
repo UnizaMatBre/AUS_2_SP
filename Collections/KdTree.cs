@@ -29,6 +29,18 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 	}
 
 	
+	private bool _AreAllDimensionsEqual(TValue a, TValue b) {
+		uint dimensionCount = a.GetDimensionCount();
+		
+		for (uint i = 0; i < dimensionCount; i++) {
+			if (a.DimensionalCompareTo(i, b) != 0) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public bool Insert(TValue newValue) {
 		uint dimensionCount = newValue.GetDimensionCount();
 		
@@ -50,13 +62,14 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 			int cmpResult = current.Value.DimensionalCompareTo(layer % dimensionCount, newValue);
 			
 			// handle duplicate
-			// TODO: This is a bug, it shoul be comparing all dimensions in this cause
 			if (cmpResult == 0) {
-				return false;
+				if (this._AreAllDimensionsEqual(current.Value, newValue)) {
+					return false;
+				}
 			}
             
 			// pick proper branch
-			ref KdTreeNode? branch = ref (cmpResult < 0 ? ref current.Left : ref current.Right);
+			ref KdTreeNode? branch = ref (cmpResult <= 0 ? ref current.Left : ref current.Right);
 
 			// branch doesn't exist, we will insert into it
 			if (branch is null) {
@@ -83,12 +96,14 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 			int cmpCurrent = current.Value.DimensionalCompareTo(layer % dimensionCount, searchedValue);
 
 			if (cmpCurrent == 0) {
-				output = current.Value;
-				return true;
+				if(this._AreAllDimensionsEqual(current.Value, searchedValue)) {
+					output = current.Value;
+					return true;
+				}
 			}
 
 
-			current = (cmpCurrent < 0) ? current.Left : current.Right;
+			current = (cmpCurrent <= 0) ? current.Left : current.Right;
 			layer++;
 		}
         
