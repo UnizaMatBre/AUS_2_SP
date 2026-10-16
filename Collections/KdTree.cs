@@ -6,7 +6,8 @@ public interface IDimensionalComparable<in T> {
 	public int DimensionalCompareTo(uint dimension, T other);
 }
 
-public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
+public class KdTree<TValue> : IBinarySearchTree<TValue> 
+	where TValue : IDimensionalComparable<TValue> {
 
 	private class KdTreeNode {
 		public TValue Value;
