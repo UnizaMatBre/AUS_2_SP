@@ -30,6 +30,9 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 
 	
 	public bool Insert(TValue newValue) {
+		uint dimensionCount = newValue.GetDimensionCount();
+		
+		
 		// is tree empty? Create node as root
 		if (this._root is null) {
 			this._root = new KdTreeNode(newValue, null);
@@ -44,9 +47,10 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 
 		// traverse tree
 		while (true) {
-			int cmpResult = current.Value.DimensionalCompareTo(layer, newValue);
+			int cmpResult = current.Value.DimensionalCompareTo(layer % dimensionCount, newValue);
 			
 			// handle duplicate
+			// TODO: This is a bug, it shoul be comparing all dimensions in this cause
 			if (cmpResult == 0) {
 				return false;
 			}
@@ -69,12 +73,14 @@ public class KdTree<TValue> where TValue : IDimensionalComparable<TValue> {
 	}
 
 	public bool TryGetValue(TValue searchedValue, out TValue? output) {
+		uint dimensionCount = searchedValue.GetDimensionCount();
+		
 		uint layer = 0;
 		KdTreeNode? current = this._root;
 
 		while (current != null) {
 
-			int cmpCurrent = current.Value.DimensionalCompareTo(layer, searchedValue);
+			int cmpCurrent = current.Value.DimensionalCompareTo(layer % dimensionCount, searchedValue);
 
 			if (cmpCurrent == 0) {
 				output = current.Value;
