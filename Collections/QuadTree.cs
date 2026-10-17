@@ -1,8 +1,23 @@
 ﻿namespace Collections;
 
-public interface ISpatial {
+public readonly struct Position {
+	private readonly double _x;
+	private readonly double _y;
 
-	(int x, int y) GetPosition();
+	public Position(double x, double y)
+	{
+		this._x = x;
+		this._y = y;
+	}
+	
+	public double GetX() => this._x;
+	public double GetY() => this._y;
+}
+
+
+
+public interface ISpatial {
+	Position GetPosition();
 }
 
 
