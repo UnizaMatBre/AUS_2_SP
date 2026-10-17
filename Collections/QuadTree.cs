@@ -24,10 +24,31 @@ public interface ISpatial {
 
 public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatial {
 	private class QuadTreeNode {
+		public readonly Position UpperLeftCorner;
+		public readonly Position LowerRightCorner;
+
+		public QuadTreeNode? UpperLeftChild;
+		public QuadTreeNode? UpperRightChild;
+		public QuadTreeNode? LowerLeftChild;
+		public QuadTreeNode? LowerRightChild;
+		
+		public TValue? Value;
+
+		public QuadTreeNode(TValue value, Position upperLeft, Position lowerRight) {
+			this.Value = value;
+			this.UpperLeftCorner = upperLeft;
+			this.LowerRightCorner = lowerRight;
+		}
+	}
+
+	private QuadTreeNode? _root;
+
+
+	public QuadTree(Position upperLeft, Position lowerRight) {
+		
 		
 		
 	}
-
 
 	public bool Insert(TValue valueToInsert) {
 		
