@@ -111,4 +111,11 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		output = default;
 		return false;
 	}
+	
+	
+	public IEnumerable<TValue> EnumerateRange(TValue lowerBound, TValue upperBound) {
+
+		
+		throw new NotImplementedException();
+	}
 }
