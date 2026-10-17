@@ -45,9 +45,7 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 
 
 	public QuadTree(Position upperLeft, Position lowerRight) {
-		
-		
-		
+		this._root = new QuadTreeNode(default!, upperLeft, lowerRight);
 	}
 
 	public bool Insert(TValue valueToInsert) {
