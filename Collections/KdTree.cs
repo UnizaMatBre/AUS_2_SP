@@ -42,13 +42,13 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		return true;
 	}
 	
-	public bool Insert(TValue newValue) {
-		uint dimensionCount = newValue.GetDimensionCount();
+	public bool Insert(TValue valueToInsert) {
+		uint dimensionCount = valueToInsert.GetDimensionCount();
 		
 		
 		// is tree empty? Create node as root
 		if (this._root is null) {
-			this._root = new KdTreeNode(newValue, null);
+			this._root = new KdTreeNode(valueToInsert, null);
 			
 			return true;
 		}
@@ -60,11 +60,11 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 
 		// traverse tree
 		while (true) {
-			int cmpResult = current.Value.DimensionalCompareTo(layer % dimensionCount, newValue);
+			int cmpResult = current.Value.DimensionalCompareTo(layer % dimensionCount, valueToInsert);
 			
 			// handle duplicate
 			if (cmpResult == 0) {
-				if (this._AreAllDimensionsEqual(current.Value, newValue)) {
+				if (this._AreAllDimensionsEqual(current.Value, valueToInsert)) {
 					return false;
 				}
 			}
@@ -74,7 +74,7 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 
 			// branch doesn't exist, we will insert into it
 			if (branch is null) {
-				KdTreeNode newNode = new KdTreeNode(newValue, current);
+				KdTreeNode newNode = new KdTreeNode(valueToInsert, current);
 				branch = newNode;
                 
 				return true;
@@ -86,18 +86,18 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		}
 	}
 
-	public bool TryGetValue(TValue searchedValue, out TValue? output) {
-		uint dimensionCount = searchedValue.GetDimensionCount();
+	public bool TryGetValue(TValue valueToFind, out TValue? output) {
+		uint dimensionCount = valueToFind.GetDimensionCount();
 		
 		uint layer = 0;
 		KdTreeNode? current = this._root;
 
 		while (current != null) {
 
-			int cmpCurrent = current.Value.DimensionalCompareTo(layer % dimensionCount, searchedValue);
+			int cmpCurrent = current.Value.DimensionalCompareTo(layer % dimensionCount, valueToFind);
 
 			if (cmpCurrent == 0) {
-				if(this._AreAllDimensionsEqual(current.Value, searchedValue)) {
+				if(this._AreAllDimensionsEqual(current.Value, valueToFind)) {
 					output = current.Value;
 					return true;
 				}
