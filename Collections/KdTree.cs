@@ -96,13 +96,11 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	}
 
 
-	private readonly uint _allowedDimensionCount;
+	private uint _allowedDimensionCount = 0;
 	
 	private KdTreeNode? _root;
 
 	public KdTree() {
-		this._allowedDimensionCount = default(TValue).GetDimensionCount();
-		
 		this._root = null;
 	}
 
@@ -119,13 +117,25 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	}
 	
 	public bool Insert(TValue valueToInsert) {
+		ArgumentNullException.ThrowIfNull(valueToInsert);
+		
 		// is tree empty? Create node as root
 		if (this._root is null) {
+			this._allowedDimensionCount = valueToInsert.GetDimensionCount();
+			if (this._allowedDimensionCount == 0) {
+
+				throw new InvalidOperationException("0 dimensional K-D tree is not allowed");
+			}
+			
 			this._root = new KdTreeNode(valueToInsert, null);
 			
 			return true;
 		}
 
+		if (valueToInsert.GetDimensionCount() != this._allowedDimensionCount) {
+			throw new ArgumentException($"Inserted value has ${valueToInsert.GetDimensionCount()}, which differs from allowed ${this._allowedDimensionCount} dimensions");
+		}
+		
 		// initialize variables
 		uint layer = 0;
 		KdTreeNode current = this._root;
