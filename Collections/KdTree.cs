@@ -6,7 +6,7 @@ public interface IDimensionalComparable<in T> where T : IDimensionalComparable<T
 	/// Returns number of dimensions type T has
 	/// </summary>
 	/// <returns>Number of dimensions</returns>
-	public static abstract uint GetDimensionCount();
+	public uint GetDimensionCount();
 	
 	// NOTE: This docstring is mostly modified from IComparable<T> interface
 	/// <summary>
@@ -33,7 +33,7 @@ public interface IDimensionalComparable<in T> where T : IDimensionalComparable<T
 
 
 	public bool AllDimensionsEqual(T other) {
-		for (uint dimension = 0; dimension < T.GetDimensionCount(); ++dimension) {
+		for (uint dimension = 0; dimension < this.GetDimensionCount(); ++dimension) {
 			if (this.DimensionalCompareTo(dimension, other) != 0) {
 				return false;
 			}
@@ -94,11 +94,15 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			return parent;
 		}
 	}
-	
 
+
+	private readonly uint _allowedDimensionCount;
+	
 	private KdTreeNode? _root;
 
 	public KdTree() {
+		this._allowedDimensionCount = default(TValue).GetDimensionCount();
+		
 		this._root = null;
 	}
 
@@ -106,7 +110,7 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	/// This method acts as replacement for calling comparator
 	private int _Compare(uint layer, TValue a, TValue b) {
 		
-		return a.DimensionalCompareTo(layer % TValue.GetDimensionCount(), b);
+		return a.DimensionalCompareTo(layer % this._allowedDimensionCount, b);
 	}
 
 	private bool _AreAllDimensionsEqual(TValue a, TValue b) {
@@ -212,7 +216,7 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 				return true;
 			}
 			
-			uint dimension = layer % TValue.GetDimensionCount();
+			uint dimension = layer % this._allowedDimensionCount;
 
 			// in left subtree, the node must be smaller or equal as maximum [ comp(node, max) = -1 or 0 ]
 			// in right subtree, the node must be larger than minimum [ comp(node, min) = +1 ] 
@@ -243,10 +247,10 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			return leftOk && rightOk;
 		}
 
-		KdTreeNode?[] maxNodes = new KdTreeNode?[TValue.GetDimensionCount()];
-		KdTreeNode?[] minNodes = new KdTreeNode?[TValue.GetDimensionCount()];
+		KdTreeNode?[] maxNodes = new KdTreeNode?[this._allowedDimensionCount];
+		KdTreeNode?[] minNodes = new KdTreeNode?[this._allowedDimensionCount];
 		
-		for(int index = 0; index < TValue.GetDimensionCount(); index++) {
+		for(int index = 0; index < this._allowedDimensionCount; index++) {
 			maxNodes[index] = null;
 			minNodes[index] = null;
 		}
