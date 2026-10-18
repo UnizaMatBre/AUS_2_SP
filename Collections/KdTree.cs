@@ -1,6 +1,6 @@
 ﻿namespace Collections;
 
-public interface IDimensionalComparable<in T> {
+public interface IDimensionalComparable<in T> where T : IDimensionalComparable<T> {
 	
 	/// <summary>
 	/// Returns number of dimensions type T has
@@ -30,6 +30,17 @@ public interface IDimensionalComparable<in T> {
 	///		</list>
 	/// </returns>
 	public int DimensionalCompareTo(uint dimension, T other);
+
+
+	public bool AllDimensionsEqual(T other) {
+		for (uint dimension = 0; dimension < T.GetDimensionCount(); ++dimension) {
+			if (this.DimensionalCompareTo(dimension, other) != 0) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
 
 
@@ -99,13 +110,8 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	}
 
 	private bool _AreAllDimensionsEqual(TValue a, TValue b) {
-		for (uint dimension = 0; dimension < TValue.GetDimensionCount(); dimension++) {
-			if (this._Compare(dimension, a, b) != 0) {
-				return false;
-			}
-		}
 		
-		return true;
+		return a.AllDimensionsEqual(b);
 	}
 	
 	public bool Insert(TValue valueToInsert) {
