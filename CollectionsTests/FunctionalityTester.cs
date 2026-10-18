@@ -26,6 +26,11 @@ public class TestPoint : IDimensionalComparable<TestPoint> {
             _ => throw new ArgumentOutOfRangeException(nameof(dimension))
         };
     }
+
+    public override String ToString() {
+
+        return $"({this._x} : {this._y})";
+    }
 }
 
 
@@ -45,17 +50,36 @@ public interface ITestable2DCollection {
 
 public class FunctionalityTester {
     
+    public const int GRID_WIDTH = 20;
+    
+    
     private readonly int _iterationCount;
  
     private Random? _chanceRandom;
     private Random? _valueRandom;
+
+    private ITestable2DCollection _testedCollection;
     
     private Dictionary<string, int> _counters;
-    private readonly List<int> _dataStorage;
+    private readonly List<TestPoint> _dataStorage;
+    private int _dataCountMax;
     
     private void _CheckInsert() {
         this._counters["Insert"]++;
+
+        // generate new unique point
+        TestPoint newTestPoint = new(
+            this._dataCountMax % GRID_WIDTH,
+            this._dataCountMax / GRID_WIDTH
+        );
+        ++this._dataCountMax;
         
+        this._dataStorage.Add(newTestPoint);
+
+        if (this._testedCollection.Insert(newTestPoint) == false) {
+            
+            throw new InvalidDataException($"Tree Insert Failed => Data {newTestPoint} is already in the tree");
+        }
     }
 
     private void _CheckRemove() {
@@ -103,6 +127,7 @@ public class FunctionalityTester {
         };
         
         this._dataStorage.Clear();
+        this._dataCountMax = 0;
         
         // initialize opereration picker
         var insertsChanceCml = insertsChance;
@@ -132,8 +157,8 @@ public class FunctionalityTester {
         }
     }
 
-    public FunctionalityTester(int iterationCount) {
-        
+    public FunctionalityTester(ITestable2DCollection collection  ,int iterationCount) {
+        this._testedCollection = collection;
         this._iterationCount = iterationCount;
         this._dataStorage = new();
         this._counters = null;
