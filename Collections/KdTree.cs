@@ -208,12 +208,13 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			
 			uint dimension = layer % TValue.GetDimensionCount();
 
-			// verify if this node is larger than allowed minimum
+			// in left subtree, the node must be smaller or equal as maximum [ comp(node, max) = -1 or 0 ]
+			// in right subtree, the node must be larger than minimum [ comp(node, min) = +1 ] 
+			
 			if (minNodes[dimension] is not null && this._Compare(dimension, node.Value, minNodes[dimension]!.Value) > 0) {
 				return false;
 			}
 
-			// verify if this node is smaller than allowed maximum
 			if(maxNodes[dimension] is not null && this._Compare(dimension, node.Value, maxNodes[dimension]!.Value) <= 0) {
 				return false;
 			}
@@ -227,7 +228,6 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			
 			// check right subtree (with this node as minimum for this dimension)
 			var previousMinNode = minNodes[dimension];
-			
 			minNodes[dimension] = node;
 			var rightOk = CheckNode(node.Right, layer + 1, minNodes, maxNodes);
 			minNodes[dimension] = previousMinNode;
