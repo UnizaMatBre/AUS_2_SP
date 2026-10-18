@@ -2,7 +2,7 @@
 
 public interface IDimensionalComparable<in T> {
 	
-	public uint GetDimensionCount();
+	public static abstract uint GetDimensionCount();
 	public int DimensionalCompareTo(uint dimension, T other);
 }
 
@@ -65,16 +65,14 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 
 
 	/// This method acts as replacement for calling comparator
-	private int _Compare(uint dimension, TValue a, TValue b) {
-
-		return a.DimensionalCompareTo(dimension % a.GetDimensionCount(), b);
+	private int _Compare(uint layer, TValue a, TValue b) {
+		
+		return a.DimensionalCompareTo(layer % TValue.GetDimensionCount(), b);
 	}
 
 	private bool _AreAllDimensionsEqual(TValue a, TValue b) {
-		uint dimensionCount = a.GetDimensionCount();
-		
-		for (uint i = 0; i < dimensionCount; i++) {
-			if (this._Compare(i, a, b) != 0) {
+		for (uint dimension = 0; dimension < TValue.GetDimensionCount(); dimension++) {
+			if (this._Compare(dimension, a, b) != 0) {
 				return false;
 			}
 		}
@@ -83,9 +81,6 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	}
 	
 	public bool Insert(TValue valueToInsert) {
-		uint dimensionCount = valueToInsert.GetDimensionCount();
-		
-		
 		// is tree empty? Create node as root
 		if (this._root is null) {
 			this._root = new KdTreeNode(valueToInsert, null);
@@ -128,7 +123,6 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	}
 
 	public bool TryGetValue(TValue valueToFind, out TValue? output) {
-		uint dimensionCount = valueToFind.GetDimensionCount();
 		
 		uint layer = 0;
 		KdTreeNode? current = this._root;
