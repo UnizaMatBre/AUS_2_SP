@@ -3,7 +3,7 @@
 namespace CollectionsTests;
 
 public class TestPoint : IDimensionalComparable<TestPoint> {
-    public static uint GetDimensionCount() {
+    public uint GetDimensionCount() {
         return 2;
     }
 
