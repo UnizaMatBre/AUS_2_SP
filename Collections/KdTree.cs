@@ -160,4 +160,38 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		
 		throw new NotImplementedException();
 	}
+
+	/// <summary>
+	/// Tests if this tree still follows rules of KdTree - for debugging purposes only
+	/// TODO: Currently the method if flawed - fix it
+	/// </summary>
+	/// <returns>True if the tree is a valid KdTree, false otherwise</returns>
+	public bool Debug_IsKdTree() {
+		bool CheckNode(KdTreeNode? node, uint layer) {
+			// no node, returns instantly with true
+			if (node is null) {
+				return true;
+			}
+		
+			// left subtree must be smaller or equal than node
+			if(node.Left is not null && this._Compare(layer, node.Left.Value, node.Value) > 0) {
+				return false;
+			}
+
+			// right subtree must be larger than node
+			if (node.Right is not null && this._Compare(layer, node.Right.Value, node.Value) <= 0) {
+				return false;
+			}
+			
+			// perform same check on children
+			var leftOk = CheckNode(node.Left, layer + 1);
+			var rightOk = CheckNode(node.Right, layer + 1);
+			
+			return leftOk && rightOk;
+		}
+
+
+		return CheckNode(this._root, 0);
+	}
+
 }
