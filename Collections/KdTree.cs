@@ -84,12 +84,13 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 
 
 		// traverse tree
-		while (true)
-		{
+		while (true) {
+			uint dimension = layer % this._comparer.GetDimensionCount();
+			
 			// -1 => new value is larger than current node - goes to right subtree
 			// +1 => new value is smaller than current node - goes to left subtree
 			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._comparer.DimensionalCompare(layer, current.Value, valueToInsert);
+			int cmpResult = this._comparer.DimensionalCompare(dimension, current.Value, valueToInsert);
 			
 			// check for duplicate
 			if (cmpResult == 0) {
@@ -123,10 +124,12 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 		KdTreeNode? current = this._root;
 
 		while (current != null) {
+			uint dimension = layer % this._comparer.GetDimensionCount();
+			
 			// -1 => new value is larger than current node - goes to right subtree
 			// +1 => new value is smaller than current node - goes to left subtree
 			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._comparer.DimensionalCompare(layer, current.Value, valueToFind);
+			int cmpResult = this._comparer.DimensionalCompare(dimension, current.Value, valueToFind);
 			
 			// check for duplicate
 			if (cmpResult == 0) {
