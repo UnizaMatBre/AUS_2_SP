@@ -160,6 +160,16 @@ public class FunctionalityTester {
         for (var counter = 0; counter < this._iterationCount; ++counter) {
             var chance = this._chanceRandom.NextDouble();
 
+            // each 10 iterations check tree validity
+            if (this._testedCollection.CheckValidity() == false) {
+                
+                throw new InvalidDataException("Tree is invalid.");
+            }
+            
+            if (counter % (this._iterationCount / 100) == 0) {
+                Console.WriteLine($"Iteration: {counter}");
+            }
+
             foreach (var (limit, action) in checks) {
                 if (chance < limit) {
                     action();
@@ -168,6 +178,15 @@ public class FunctionalityTester {
                 
             }
 
+        }
+        Console.WriteLine($"Iteration: {this._iterationCount}");
+
+        
+        Console.WriteLine();
+        Console.WriteLine("== TEST DONE ==");
+        Console.WriteLine("===============");
+        foreach (var keyValue in this._counters) {
+            Console.WriteLine($"{keyValue.Key}: {keyValue.Value}");
         }
     }
 
