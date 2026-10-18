@@ -18,14 +18,14 @@ public interface IDimensionalComparable<in T> {
 	///		<list type="table">
 	///			<item>
 	///				<term>-1</term>
-	///				<description> This instance is smaller than <paramref name="other" /> in the <paramref name="dimension"/>.</description>
+	///				<description> This instance is smaller than <paramref name="other" /> in specified <paramref name="dimension"/>.</description>
 	///			</item>
 	///			<item>
 	///				<term>0</term>
-	///				<description> This instance is equal to <paramref name="other" /> in the <paramref name="dimension"/>.</description></item>
+	///				<description> This instance is equal to <paramref name="other" /> in specified <paramref name="dimension"/>.</description></item>
 	///			<item>
 	///				<term>+1</term>
-	///				<description> This instance is larger than <paramref name="other" /> in the <paramref name="dimension"/>.</description>
+	///				<description> This instance is larger than <paramref name="other" /> in specified <paramref name="dimension"/>.</description>
 	///			</item>
 	///		</list>
 	/// </returns>
@@ -124,9 +124,12 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		// traverse tree
 		while (true)
 		{
+			// -1 => new value is larger than current node - goes to right subtree
+			// +1 => new value is smaller than current node - goes to left subtree
+			//  0 => new value is possibly equal to current node - if not, goes to left subtree
 			int cmpResult = this._Compare(layer, current.Value, valueToInsert);
 			
-			// handle duplicate
+			// check for duplicate
 			if (cmpResult == 0) {
 				if (this._AreAllDimensionsEqual(valueToInsert, current.Value)) {
 					return false;
@@ -134,7 +137,9 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			}
             
 			// pick proper branch
-			ref KdTreeNode? branch = ref (cmpResult <= 0 ? ref current.Left : ref current.Right);
+			// +1 or 0 => left (larger) subtree
+			// -1 => right (larger) subtree
+			ref KdTreeNode? branch = ref (cmpResult > 0 ? ref current.Left : ref current.Right);
 
 			// branch doesn't exist, we will insert into it
 			if (branch is null) {
@@ -156,10 +161,12 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		KdTreeNode? current = this._root;
 
 		while (current != null) {
-
+			// -1 => new value is larger than current node - goes to right subtree
+			// +1 => new value is smaller than current node - goes to left subtree
+			//  0 => new value is possibly equal to current node - if not, goes to left subtree
 			int cmpResult = this._Compare(layer, current.Value, valueToFind);
 			
-
+			// check for duplicate
 			if (cmpResult == 0) {
 				if (this._AreAllDimensionsEqual(valueToFind, current.Value)) {
 					output = current.Value;
@@ -168,7 +175,10 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			}
 
 
-			current = (cmpResult <= 0) ? current.Left : current.Right;
+			// pick proper branch
+			// +1 or 0 => left (larger) subtree
+			// -1 => right (larger) subtree
+			current = (cmpResult > 0) ? current.Left : current.Right;
 			layer++;
 		}
         
