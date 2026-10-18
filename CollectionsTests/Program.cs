@@ -1,5 +1,4 @@
-﻿using System.Data.SqlTypes;
-using Collections;
+﻿using Collections;
 
 namespace CollectionsTests;
 
