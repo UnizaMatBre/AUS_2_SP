@@ -161,31 +161,54 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 	/// </summary>
 	/// <returns>True if the tree is a valid KdTree, false otherwise</returns>
 	public bool Debug_IsKdTree() {
-		bool CheckNode(KdTreeNode? node, uint layer) {
+		
+		bool CheckNode(KdTreeNode? node, uint layer, KdTreeNode?[] minNodes, KdTreeNode?[] maxNodes) {
 			// no node, returns instantly with true
 			if (node is null) {
 				return true;
 			}
-		
-			// left subtree must be smaller or equal than node
-			if(node.Left is not null && this._Compare(layer, node.Left.Value, node.Value) > 0) {
+			
+			uint dimension = layer % TValue.GetDimensionCount();
+
+			// verify if this node is larger than allowed minimum
+			if (minNodes[dimension] is not null && this._Compare(dimension, node.Value, minNodes[dimension]!.Value) > 0) {
 				return false;
 			}
 
-			// right subtree must be larger than node
-			if (node.Right is not null && this._Compare(layer, node.Right.Value, node.Value) <= 0) {
+			// verify if this node is smaller than allowed maximum
+			if(maxNodes[dimension] is not null && this._Compare(dimension, node.Value, maxNodes[dimension]!.Value) <= 0) {
 				return false;
 			}
+
+			// check left subtree (with this node as maximum for this dimension)
+			var previousMaxNode = maxNodes[dimension];
+			maxNodes[dimension] = node;
+			var leftOk = CheckNode(node.Left, layer + 1, minNodes, maxNodes);
+			maxNodes[dimension] = previousMaxNode;
 			
-			// perform same check on children
-			var leftOk = CheckNode(node.Left, layer + 1);
-			var rightOk = CheckNode(node.Right, layer + 1);
+			
+			// check right subtree (with this node as minimum for this dimension)
+			var previousMinNode = minNodes[dimension];
+			
+			minNodes[dimension] = node;
+			var rightOk = CheckNode(node.Right, layer + 1, minNodes, maxNodes);
+			minNodes[dimension] = previousMinNode;
+			
+
 			
 			return leftOk && rightOk;
 		}
 
+		KdTreeNode?[] maxNodes = new KdTreeNode?[TValue.GetDimensionCount()];
+		KdTreeNode?[] minNodes = new KdTreeNode?[TValue.GetDimensionCount()];
+		
+		for(int index = 0; index < TValue.GetDimensionCount(); index++) {
+			maxNodes[index] = null;
+			minNodes[index] = null;
+		}
+		
 
-		return CheckNode(this._root, 0);
+		return CheckNode(this._root, 0, minNodes, maxNodes);
 	}
 
 }
