@@ -20,6 +20,40 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			this.Value = value;
 			this.Parent = parent;
 		}
+
+		/// <summary>
+		/// Returns the next node in an in-order traversal of the tree.
+		/// </summary>
+		/// <returns>The next node in the traversal, or null if there is no such node.</returns>
+		public KdTreeNode? InOrderNext() {
+			KdTreeNode? current = null;
+
+			// has right subtree?
+			// - Successor is leftmost node in it
+			if (this.Right != null) {
+				current = this.Right;
+        
+				// get leftmost node
+				while (current.Left != null) {
+					current = current.Left;
+				}
+
+				return current;
+			}
+    
+			// doesn't have right subtree?
+			// - Successor is first ancestor where this is in left subtree
+			current = this;
+			KdTreeNode? parent = current.Parent;
+            
+			// travel through ancestors until we find one that has us as left child
+			while (parent != null && current != parent.Left) {
+				current = parent;
+				parent = parent.Parent;
+			}
+
+			return parent;
+		}
 	}
 	
 
