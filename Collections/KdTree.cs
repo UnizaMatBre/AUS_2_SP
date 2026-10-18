@@ -231,11 +231,11 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			// in left subtree, the node must be smaller or equal as maximum [ comp(node, max) = -1 or 0 ]
 			// in right subtree, the node must be larger than minimum [ comp(node, min) = +1 ] 
 			
-			if (minNodes[dimension] is not null && this._Compare(dimension, node.Value, minNodes[dimension]!.Value) > 0) {
+			if (minNodes[dimension] is not null && this._Compare(dimension, node.Value, minNodes[dimension]!.Value) < 0) {
 				return false;
 			}
 
-			if(maxNodes[dimension] is not null && this._Compare(dimension, node.Value, maxNodes[dimension]!.Value) <= 0) {
+			if(maxNodes[dimension] is not null && this._Compare(dimension, node.Value, maxNodes[dimension]!.Value) >= 0) {
 				return false;
 			}
 
