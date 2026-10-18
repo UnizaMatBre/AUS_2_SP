@@ -2,9 +2,37 @@
 
 public interface IDimensionalComparable<in T> {
 	
+	/// <summary>
+	/// Returns number of dimensions type T has
+	/// </summary>
+	/// <returns>Number of dimensions</returns>
 	public static abstract uint GetDimensionCount();
+	
+	// NOTE: This docstring is mostly modified from IComparable<T> interface
+	/// <summary>
+	/// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance is larger, smaller or same in the specified dimension.
+	/// </summary>
+	/// <param name="dimension">The dimension to compare between objects, in from 0 to <see cref="GetDimensionCount"/> - 1</param>
+	/// <param name="other">An object to compare with this instance</param>
+	/// <returns>
+	///		<list type="table">
+	///			<item>
+	///				<term>-1</term>
+	///				<description> This instance is smaller than <paramref name="other" /> in the <paramref name="dimension"/>.</description>
+	///			</item>
+	///			<item>
+	///				<term>0</term>
+	///				<description> This instance is equal to <paramref name="other" /> in the <paramref name="dimension"/>.</description></item>
+	///			<item>
+	///				<term>+1</term>
+	///				<description> This instance is larger than <paramref name="other" /> in the <paramref name="dimension"/>.</description>
+	///			</item>
+	///		</list>
+	/// </returns>
 	public int DimensionalCompareTo(uint dimension, T other);
 }
+
+
 
 public class KdTree<TValue> : IBinarySearchTree<TValue> 
 	where TValue : IDimensionalComparable<TValue> {
@@ -96,7 +124,7 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		// traverse tree
 		while (true)
 		{
-			int cmpResult = this._Compare(layer, current.Value, valueToInsert); //current.Value.DimensionalCompareTo(layer % dimensionCount, valueToInsert);
+			int cmpResult = this._Compare(layer, current.Value, valueToInsert);
 			
 			// handle duplicate
 			if (cmpResult == 0) {
