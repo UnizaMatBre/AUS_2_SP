@@ -1,52 +1,9 @@
 ﻿namespace Collections;
 
-public interface IDimensionalComparable<in T> where T : IDimensionalComparable<T> {
-	
-	/// <summary>
-	/// Returns number of dimensions type T has
-	/// </summary>
-	/// <returns>Number of dimensions</returns>
-	public uint GetDimensionCount();
-	
-	// NOTE: This docstring is mostly modified from IComparable<T> interface
-	/// <summary>
-	/// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance is larger, smaller or same in the specified dimension.
-	/// </summary>
-	/// <param name="dimension">The dimension to compare between objects, in from 0 to <see cref="GetDimensionCount"/> - 1</param>
-	/// <param name="other">An object to compare with this instance</param>
-	/// <returns>
-	///		<list type="table">
-	///			<item>
-	///				<term>-1</term>
-	///				<description> This instance is smaller than <paramref name="other" /> in specified <paramref name="dimension"/>.</description>
-	///			</item>
-	///			<item>
-	///				<term>0</term>
-	///				<description> This instance is equal to <paramref name="other" /> in specified <paramref name="dimension"/>.</description></item>
-	///			<item>
-	///				<term>+1</term>
-	///				<description> This instance is larger than <paramref name="other" /> in specified <paramref name="dimension"/>.</description>
-	///			</item>
-	///		</list>
-	/// </returns>
-	public int DimensionalCompareTo(uint dimension, T other);
-
-
-	public bool AllDimensionsEqual(T other) {
-		for (uint dimension = 0; dimension < this.GetDimensionCount(); ++dimension) {
-			if (this.DimensionalCompareTo(dimension, other) != 0) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-}
 
 
 
-public class KdTree<TValue> : IBinarySearchTree<TValue> 
-	where TValue : IDimensionalComparable<TValue> {
+public class KdTree<TValue> : IBinarySearchTree<TValue> {
 
 	private class KdTreeNode {
 		public TValue Value;
@@ -95,45 +52,30 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		}
 	}
 
-
-	private uint _allowedDimensionCount = 0;
-	
+	private readonly IDimensionalComparer<TValue> _comparer;
 	private KdTreeNode? _root;
-
-	public KdTree() {
+	
+	
+	public KdTree(IDimensionalComparer<TValue> comparer) {
+		if (comparer.GetDimensionCount() == 0) {
+			
+			throw new ArgumentException("Comparer with 0 dimensions is not allowed");
+		}
+		
+		this._comparer = comparer;
 		this._root = null;
 	}
 
-
-	/// This method acts as replacement for calling comparator
-	private int _Compare(uint layer, TValue a, TValue b) {
-		
-		return a.DimensionalCompareTo(layer % this._allowedDimensionCount, b);
-	}
-
-	private bool _AreAllDimensionsEqual(TValue a, TValue b) {
-		
-		return a.AllDimensionsEqual(b);
-	}
+	
 	
 	public bool Insert(TValue valueToInsert) {
 		ArgumentNullException.ThrowIfNull(valueToInsert);
 		
 		// is tree empty? Create node as root
 		if (this._root is null) {
-			this._allowedDimensionCount = valueToInsert.GetDimensionCount();
-			if (this._allowedDimensionCount == 0) {
-
-				throw new InvalidOperationException("0 dimensional K-D tree is not allowed");
-			}
-			
 			this._root = new KdTreeNode(valueToInsert, null);
 			
 			return true;
-		}
-
-		if (valueToInsert.GetDimensionCount() != this._allowedDimensionCount) {
-			throw new ArgumentException($"Inserted value has ${valueToInsert.GetDimensionCount()}, which differs from allowed ${this._allowedDimensionCount} dimensions");
 		}
 		
 		// initialize variables
@@ -147,11 +89,11 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			// -1 => new value is larger than current node - goes to right subtree
 			// +1 => new value is smaller than current node - goes to left subtree
 			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._Compare(layer, current.Value, valueToInsert);
+			int cmpResult = this._comparer.DimensionalCompare(layer, current.Value, valueToInsert);
 			
 			// check for duplicate
 			if (cmpResult == 0) {
-				if (this._AreAllDimensionsEqual(valueToInsert, current.Value)) {
+				if (this._comparer.AllDimensionsEquals(valueToInsert, current.Value)) {
 					return false;
 				}
 			}
@@ -184,11 +126,11 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			// -1 => new value is larger than current node - goes to right subtree
 			// +1 => new value is smaller than current node - goes to left subtree
 			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._Compare(layer, current.Value, valueToFind);
+			int cmpResult = this._comparer.DimensionalCompare(layer, current.Value, valueToFind);
 			
 			// check for duplicate
 			if (cmpResult == 0) {
-				if (this._AreAllDimensionsEqual(valueToFind, current.Value)) {
+				if (this._comparer.AllDimensionsEquals(valueToFind, current.Value)) {
 					output = current.Value;
 					return true;
 				}
@@ -226,16 +168,16 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 				return true;
 			}
 			
-			uint dimension = layer % this._allowedDimensionCount;
+			uint dimension = layer % this._comparer.GetDimensionCount();
 
 			// in left subtree, the node must be smaller or equal as maximum [ comp(node, max) = -1 or 0 ]
 			// in right subtree, the node must be larger than minimum [ comp(node, min) = +1 ] 
 			
-			if (minNodes[dimension] is not null && this._Compare(dimension, node.Value, minNodes[dimension]!.Value) < 0) {
+			if (minNodes[dimension] is not null && this._comparer.DimensionalCompare(dimension, node.Value, minNodes[dimension]!.Value) < 0) {
 				return false;
 			}
 
-			if(maxNodes[dimension] is not null && this._Compare(dimension, node.Value, maxNodes[dimension]!.Value) >= 0) {
+			if(maxNodes[dimension] is not null && this._comparer.DimensionalCompare(dimension, node.Value, maxNodes[dimension]!.Value) >= 0) {
 				return false;
 			}
 
@@ -257,10 +199,10 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 			return leftOk && rightOk;
 		}
 
-		KdTreeNode?[] maxNodes = new KdTreeNode?[this._allowedDimensionCount];
-		KdTreeNode?[] minNodes = new KdTreeNode?[this._allowedDimensionCount];
+		KdTreeNode?[] maxNodes = new KdTreeNode?[this._comparer.GetDimensionCount()];
+		KdTreeNode?[] minNodes = new KdTreeNode?[this._comparer.GetDimensionCount()];
 		
-		for(int index = 0; index < this._allowedDimensionCount; index++) {
+		for(int index = 0; index < this._comparer.GetDimensionCount(); index++) {
 			maxNodes[index] = null;
 			minNodes[index] = null;
 		}
