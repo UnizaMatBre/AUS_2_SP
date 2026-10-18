@@ -2,10 +2,8 @@
 
 namespace CollectionsTests;
 
-public class TestPoint : IDimensionalComparable<TestPoint> {
-    public uint GetDimensionCount() {
-        return 2;
-    }
+public class TestPoint {
+
 
     private readonly int _x;
     private readonly int _y;
@@ -30,6 +28,19 @@ public class TestPoint : IDimensionalComparable<TestPoint> {
             1 => this._y.CompareTo(other._y),
             _ => throw new ArgumentOutOfRangeException(nameof(dimension))
         };
+    }
+
+
+    public class DimensionalComparer : IDimensionalComparer<TestPoint> {
+        public uint GetDimensionCount() => 2;
+
+        public int DimensionalCompare(uint dimension, TestPoint a, TestPoint b) {
+            return dimension switch {
+                0 => a._x.CompareTo(b._x),
+                1 => a._y.CompareTo(b._y),
+                _ => throw new ArgumentOutOfRangeException(nameof(dimension))
+            };
+        }
     }
 
     public override String ToString() {
