@@ -99,6 +99,20 @@ public class FunctionalityTester {
         }
         
         this._counters["Find"]++;
+        
+        int index = this._valueRandom.Next(this._dataStorage.Count);
+        var dataForSearch = this._dataStorage[index];
+        
+        bool success = this._testedCollection.TryGetValue(dataForSearch, out TestPoint? dataActuallyFound);
+
+        if (!success) {
+            
+            throw new InvalidDataException($"Tree Find Failed => Data {dataForSearch} not found");
+        }
+        
+        if (dataForSearch != dataActuallyFound) {
+            throw new InvalidDataException($"Tree Find Failed => Found data {dataActuallyFound} is not same as expected data {dataForSearch}");
+        }
     }
 
     private void _CheckFindInterval() {
