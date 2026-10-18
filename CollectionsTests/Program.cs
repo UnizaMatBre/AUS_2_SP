@@ -3,7 +3,7 @@
 namespace CollectionsTests;
 
 class KdTreeTestingWrapper : ITestable2DCollection {
-    private KdTree<TestPoint> _tree = new();
+    private KdTree<TestPoint> _tree = new(new TestPoint.DimensionalComparer());
 
 
     public bool Insert(TestPoint point) => this._tree.Insert(point);
