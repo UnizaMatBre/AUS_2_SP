@@ -1,7 +1,50 @@
-﻿namespace CollectionsTests;
+﻿using Collections;
 
-public class FunctionalityTester
-{
+namespace CollectionsTests;
+
+public class TestPoint : IDimensionalComparable<TestPoint> {
+    public static uint GetDimensionCount() {
+        return 2;
+    }
+
+    private readonly int _x;
+    private readonly int _y;
+    
+    public TestPoint(int x, int y) {
+        this._x = x;
+        this._y = y;
+    }
+
+    public int GetX() => this._x;
+    public int GetY() => this._y;
+
+
+    public int DimensionalCompareTo(uint dimension, TestPoint other) {
+        return dimension switch {
+            0 => this._x.CompareTo(other._x),
+            1 => this._y.CompareTo(other._y),
+            _ => throw new ArgumentOutOfRangeException(nameof(dimension))
+        };
+    }
+}
+
+
+public interface ITestable2DCollection {
+    public bool Insert(TestPoint point);
+    public bool TryGetValue(TestPoint point, out TestPoint? output);
+    
+    public IEnumerable<TestPoint> EnumerateRange(TestPoint lower, TestPoint upper);
+
+    public bool CheckValidity();
+
+    // public bool Remove(TestPoint point);
+}
+
+
+
+
+public class FunctionalityTester {
+    
     private readonly int _iterationCount;
  
     private Random? _chanceRandom;
