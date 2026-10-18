@@ -9,7 +9,12 @@ public class TestPoint : IDimensionalComparable<TestPoint> {
 
     private readonly int _x;
     private readonly int _y;
-    
+
+    public TestPoint() {
+        this._x = 0;
+        this._y = 0;
+    }
+
     public TestPoint(int x, int y) {
         this._x = x;
         this._y = y;
