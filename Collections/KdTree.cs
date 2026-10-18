@@ -63,12 +63,18 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 		this._root = null;
 	}
 
-	
+
+	/// This method acts as replacement for calling comparator
+	private int _Compare(uint dimension, TValue a, TValue b) {
+
+		return a.DimensionalCompareTo(dimension % a.GetDimensionCount(), b);
+	}
+
 	private bool _AreAllDimensionsEqual(TValue a, TValue b) {
 		uint dimensionCount = a.GetDimensionCount();
 		
 		for (uint i = 0; i < dimensionCount; i++) {
-			if (a.DimensionalCompareTo(i, b) != 0) {
+			if (this._Compare(i, a, b) != 0) {
 				return false;
 			}
 		}
@@ -93,12 +99,13 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 
 
 		// traverse tree
-		while (true) {
-			int cmpResult = current.Value.DimensionalCompareTo(layer % dimensionCount, valueToInsert);
+		while (true)
+		{
+			int cmpResult = this._Compare(layer, current.Value, valueToInsert); //current.Value.DimensionalCompareTo(layer % dimensionCount, valueToInsert);
 			
 			// handle duplicate
 			if (cmpResult == 0) {
-				if (this._AreAllDimensionsEqual(current.Value, valueToInsert)) {
+				if (this._AreAllDimensionsEqual(valueToInsert, current.Value)) {
 					return false;
 				}
 			}
@@ -128,17 +135,18 @@ public class KdTree<TValue> : IBinarySearchTree<TValue>
 
 		while (current != null) {
 
-			int cmpCurrent = current.Value.DimensionalCompareTo(layer % dimensionCount, valueToFind);
+			int cmpResult = this._Compare(layer, current.Value, valueToFind);
+			
 
-			if (cmpCurrent == 0) {
-				if(this._AreAllDimensionsEqual(current.Value, valueToFind)) {
+			if (cmpResult == 0) {
+				if (this._AreAllDimensionsEqual(valueToFind, current.Value)) {
 					output = current.Value;
 					return true;
 				}
 			}
 
 
-			current = (cmpCurrent <= 0) ? current.Left : current.Right;
+			current = (cmpResult <= 0) ? current.Left : current.Right;
 			layer++;
 		}
         
