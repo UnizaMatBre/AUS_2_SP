@@ -38,7 +38,7 @@ class Program
     }
 
 
-    public const TestType SELECTED_TESTS = TestType.EXAMPLE_TEST;
+    public const TestType SELECTED_TESTS = TestType.FUNCTITONALITY_TEST;
     
 
     static void Main(string[] args)

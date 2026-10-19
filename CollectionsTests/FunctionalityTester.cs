@@ -5,7 +5,7 @@ namespace CollectionsTests;
 
 public class FunctionalityTester {
     
-    public const int GRID_WIDTH = 20;
+    public const int GRID_WIDTH = 100;
     
     
     private readonly int _iterationCount;
@@ -44,7 +44,7 @@ public class FunctionalityTester {
 
         }
         
-        this._counters["Remove"]++;
+        //this._counters["Remove"]++;
     }
 
     private void _CheckFind() {
@@ -75,8 +75,43 @@ public class FunctionalityTester {
             this._CheckInsert();
             return;
         }
-        
         this._counters["Interval"]++;
+        
+        int xMax = this._dataCountMax < GRID_WIDTH ? this._dataCountMax : GRID_WIDTH;
+        int yMax = this._dataCountMax / GRID_WIDTH;
+
+        (int, int) GenerateRange(int maximum) {
+            int halfPoint = maximum / 2;
+            
+            int a = this._valueRandom.Next(halfPoint);
+            int b = a + this._valueRandom.Next(halfPoint);
+
+            return (a, b);
+        }
+
+
+        var xRange = GenerateRange(xMax);
+        var yRange = GenerateRange(yMax);
+
+        var lowerBoundary = new TestPoint(xRange.Item1, yRange.Item1);
+        var upperBoundary = new TestPoint(xRange.Item2, yRange.Item2);
+
+
+        IDimensionalComparer<TestPoint> comparer = new TestPoint.DimensionalComparer();
+
+        var expectedValues = this._dataStorage.Where((item) =>
+        {
+            return comparer.InclusiveBetween(item, lowerBoundary, upperBoundary);
+        }).ToList();
+        
+        var foundValues = this._testedCollection.EnumerateRange(lowerBoundary, upperBoundary).ToList();
+        
+        foreach (var oneFoundValue in foundValues) {
+            if (expectedValues.Contains(oneFoundValue) == false) {
+                throw new InvalidDataException($"Tree Find Interval failed => Data {oneFoundValue} is not in result interval {lowerBoundary}-{upperBoundary}");
+            }
+        }
+        
     }
 
 
