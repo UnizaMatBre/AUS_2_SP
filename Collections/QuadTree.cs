@@ -57,4 +57,9 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		
 		throw new NotImplementedException();
 	}
+
+	public IEnumerable<TValue> EnumerateRange(TValue upperLeft, TValue lowerRight) {
+		
+		throw new NotImplementedException();
+	}
 }
