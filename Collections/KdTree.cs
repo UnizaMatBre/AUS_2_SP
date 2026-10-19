@@ -174,7 +174,7 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 		uint layer = 0;
 		
 		while (current is not null) {
-			uint dimension = layer = this._comparer.GetDimensionCount();
+			uint dimension = layer % this._comparer.GetDimensionCount();
 
 			int cmpResult = this._comparer.DimensionalCompare(dimension, lowerBound, current.Value);
 
