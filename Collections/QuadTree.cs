@@ -12,6 +12,19 @@ public readonly struct Position {
 	
 	public double GetX() => this._x;
 	public double GetY() => this._y;
+	
+	
+	public class DimensionalComparer : IDimensionalComparer<Position> {
+		public uint GetDimensionCount() => 2;
+
+		public int DimensionalCompare(uint dimension, Position a, Position b) {
+			return dimension switch {
+				0 => a._x.CompareTo(b._x),
+				1 => a._y.CompareTo(b._y),
+				_ => throw new ArgumentOutOfRangeException(nameof(dimension))
+			};
+		}
+	}
 }
 
 
@@ -41,6 +54,7 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		}
 	}
 
+	private readonly IDimensionalComparer<Position> _comparer = new Position.DimensionalComparer();
 	private QuadTreeNode? _root;
 
 
