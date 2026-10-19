@@ -196,7 +196,6 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 
 	/// <summary>
 	/// Tests if this tree still follows rules of KdTree - for debugging purposes only
-	/// TODO: Currently the method if flawed - fix it
 	/// </summary>
 	/// <returns>True if the tree is a valid KdTree, false otherwise</returns>
 	public bool Debug_IsKdTree() {
