@@ -18,8 +18,8 @@ public readonly struct Position {
 
 	public Position GetMiddle(ref Position other) {
 		return new Position(
-			this.GetX() + this.GetY() / 2,
-			this.GetX() + this.GetY() / 2
+			(this.GetX() + other.GetX()) / 2,
+			(this.GetY() + other.GetY()) / 2
 		);
 	}
 
@@ -74,8 +74,8 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		public ref QuadTreeNode? GetChildRef(int x, int y) {
 			switch ((x, y)) {
 				case (0, 0): return ref this.UpperLeftChild;
-				case (0, 1): return ref this.UpperRightChild;
-				case (1, 0): return ref this.LowerLeftChild;
+				case (1, 0): return ref this.UpperRightChild;
+				case (0, 1): return ref this.LowerLeftChild;
 				case (1, 1): return ref this.LowerRightChild;
 				default: throw new ArgumentOutOfRangeException(nameof(x));
 			};
@@ -107,13 +107,9 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		
 		var current = this._root;
 
-		while (true)
-		{
+		while (true) {
 
-			
 		}
-		
-		throw new NotImplementedException();
 	}
 
 	public bool TryGetValue(TValue valueToFind, out TValue? output) {
