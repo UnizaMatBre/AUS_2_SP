@@ -57,9 +57,15 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 	private readonly IDimensionalComparer<Position> _comparer = new Position.DimensionalComparer();
 	private QuadTreeNode? _root;
 
+	private readonly Position _rootUpperLeftCorner;
+	private readonly Position _rootLowerRightCorner;
+	
 
-	public QuadTree(Position upperLeft, Position lowerRight) {
-		this._root = new QuadTreeNode(default!, upperLeft, lowerRight);
+	public QuadTree(Position upperLeft, Position lowerRight)
+	{
+		this._root = null;
+		this._rootUpperLeftCorner   = upperLeft;
+		this._rootLowerRightCorner  = lowerRight;
 	}
 
 	public bool Insert(TValue valueToInsert) {
