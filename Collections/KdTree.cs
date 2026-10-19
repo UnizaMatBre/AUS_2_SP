@@ -153,9 +153,45 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 	
 	
 	public IEnumerable<TValue> EnumerateRange(TValue lowerBound, TValue upperBound) {
-
+		if (this._root is null) {
+			
+			yield break;
+		}
 		
-		throw new NotImplementedException();
+		KdTreeNode? current = this._root;
+		KdTreeNode? minimum = null;
+		uint layer = 0;
+		
+		while (current is not null) {
+			uint dimension = layer = this._comparer.GetDimensionCount();
+
+			int cmpResult = this._comparer.DimensionalCompare(dimension, lowerBound, current.Value);
+
+			if (cmpResult <= 0) {
+				// current is more than lower bound?
+				// remember current and go left
+				minimum = current;
+				current = current.Left;
+			}
+			else {
+				// current is less than lower bound?
+				// we went too far - go right
+				current = current.Right;
+			}
+
+			++layer;
+		}
+		
+		
+		// from minimum, do inorder traveral until we pass upper bound
+		current = minimum;
+		while (current is not null) {
+			if (this._comparer.InclusiveBetween(current.Value, lowerBound, upperBound)) {
+				yield return current.Value;
+			}
+
+			current = current.InOrderNext();
+		}
 	}
 
 	/// <summary>
