@@ -157,7 +157,12 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 		return false;
 	}
 	
-	
+	/// <summary>
+	/// Returns values that fit into inclusive range between lower bound and upper bound. Items will have inorder ordering. 
+	/// </summary>
+	/// <param name="lowerBound">lower bound of range</param>
+	/// <param name="upperBound">upper bound of range</param>
+	/// <returns>IEnumerable containing selected values</returns>
 	public IEnumerable<TValue> EnumerateRange(TValue lowerBound, TValue upperBound) {
 		if (this._root is null) {
 			
