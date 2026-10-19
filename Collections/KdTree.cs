@@ -118,6 +118,12 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 		}
 	}
 
+	public bool Remove(TValue valueToRemove) {
+
+		throw new NotImplementedException();
+	}
+	
+
 	public bool TryGetValue(TValue valueToFind, out TValue? output) {
 		
 		uint layer = 0;
