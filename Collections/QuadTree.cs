@@ -22,6 +22,13 @@ public readonly struct Position {
 			this.GetX() + this.GetY() / 2
 		);
 	}
+
+	public (int x, int y) GetDirectionTo(Position target) {
+		return (
+			x: target.GetX().CompareTo(this.GetX()) < 1 ? 0 : 1,
+			y: target.GetY().CompareTo(this.GetY()) < 1 ? 0 : 1
+		);
+	}
 	
 	public class DimensionalComparer : IDimensionalComparer<Position> {
 		public uint GetDimensionCount() => 2;
