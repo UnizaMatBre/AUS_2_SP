@@ -15,7 +15,11 @@ class KdTreeTestingWrapper : ITestable2DCollection {
     public bool CheckValidity() => this._tree.Debug_IsKdTree();
 }
 
-
+public enum TestType {
+    EXAMPLE_TEST,
+    FUNCTITONALITY_TEST,
+    PERFORMANCE_TEST
+}
 
 
 class Program
@@ -33,20 +37,29 @@ class Program
     static void RunKdTreeExample() {
     }
 
-    public const bool IS_INTEGRITY_TESTING = true;
+
+    public const TestType SELECTED_TESTS = TestType.EXAMPLE_TEST;
     
 
     static void Main(string[] args)
     {
+        switch (SELECTED_TESTS)
+        {
+            case TestType.EXAMPLE_TEST: {
+                var testobj = new KdExampleTest();
+                break;
 
-        var testobj = new KdExampleTest();
+            }
 
-        return;
-        if (IS_INTEGRITY_TESTING) {
-            RunFunctionalityTests();
-            
-            
-            return;
+            case TestType.FUNCTITONALITY_TEST: {
+                RunFunctionalityTests();
+                break;
+            }
+
+            case TestType.PERFORMANCE_TEST: {
+
+                throw new NotImplementedException();
+            }
         }
         
     }
