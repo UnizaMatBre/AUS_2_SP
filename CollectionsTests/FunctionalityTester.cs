@@ -184,7 +184,7 @@ public class FunctionalityTester {
         this._testedCollection = collection;
         this._iterationCount = iterationCount;
         this._dataStorage = new();
-        this._counters = null;
+        this._counters = new Dictionary<string, int>();
     }
     
 }
