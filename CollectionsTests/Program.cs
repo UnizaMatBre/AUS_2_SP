@@ -30,10 +30,18 @@ class Program
     }
 
 
+    static void RunKdTreeExample() {
+    }
+
     public const bool IS_INTEGRITY_TESTING = true;
     
 
-    static void Main(string[] args) {
+    static void Main(string[] args)
+    {
+
+        var testobj = new KdExampleTest();
+
+        return;
         if (IS_INTEGRITY_TESTING) {
             RunFunctionalityTests();
             
