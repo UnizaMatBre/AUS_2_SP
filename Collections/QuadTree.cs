@@ -61,11 +61,12 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		public QuadTreeNode? UpperRightChild;
 		public QuadTreeNode? LowerLeftChild;
 		public QuadTreeNode? LowerRightChild;
-		
+
+		public Boolean HasValue;
 		public TValue? Value;
 
-		public QuadTreeNode(TValue value, Position upperLeft, Position lowerRight) {
-			this.Value = value;
+		public QuadTreeNode(Position upperLeft, Position lowerRight) {
+			this.HasValue = false;
 			this.UpperLeftCorner = upperLeft;
 			this.LowerRightCorner = lowerRight;
 
@@ -83,32 +84,29 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 	}
 
 	private readonly IDimensionalComparer<Position> _comparer = new Position.DimensionalComparer();
-	private QuadTreeNode? _root;
-
-	private readonly Position _rootUpperLeftCorner;
-	private readonly Position _rootLowerRightCorner;
+	private QuadTreeNode _root;
+	
 	
 
-	public QuadTree(Position upperLeft, Position lowerRight)
-	{
-		this._root = null;
-		this._rootUpperLeftCorner   = upperLeft;
-		this._rootLowerRightCorner  = lowerRight;
+	public QuadTree(Position upperLeft, Position lowerRight) {
+		this._root = new QuadTreeNode(upperLeft, lowerRight);
 	}
 
 	public bool Insert(TValue valueToInsert) {
 		ArgumentNullException.ThrowIfNull(valueToInsert);
 
-		if (this._root is null) {
-			this._root = new QuadTreeNode(valueToInsert, this._rootUpperLeftCorner, this._rootLowerRightCorner);
+		if (this._root.HasValue == false) {
+			this._root.Value = valueToInsert;
+			this._root.HasValue = true;
 
 			return true;
+
 		}
 		
 		var current = this._root;
 
 		while (true) {
-			if (current.Value is not null) {
+			if (current.HasValue) {
 				// if value is same to the one we want to insert, it is duplicate
 				if (this._comparer.AllDimensionsEquals(valueToInsert.GetPosition(), current.Value!.GetPosition())) {
 					return false;
@@ -126,9 +124,9 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 					directionToCurrentVal.y == 0 ? current.Middle.GetY() : current.LowerRightCorner.GetY()
 				);
 
-				newHomeForCurrent = new QuadTreeNode(current.Value, upperLeft, lowerRight);
+				newHomeForCurrent = new QuadTreeNode(upperLeft, lowerRight);
 
-				current.Value = default(TValue);
+				current.HasValue = false;
 			}
 			
 			
@@ -148,7 +146,9 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 					direction.y == 0 ? current.Middle.GetY() : current.LowerRightCorner.GetY()
 				);
 
-				child = new QuadTreeNode(valueToInsert, upperLeft, lowerRight);
+				child = new QuadTreeNode(upperLeft, lowerRight);
+				child.Value = valueToInsert;
+				child.HasValue = false;
 				return true;
 			}
 
