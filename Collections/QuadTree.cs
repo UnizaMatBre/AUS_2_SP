@@ -14,7 +14,14 @@ public readonly struct Position {
 	
 	public double GetX() => this._x;
 	public double GetY() => this._y;
-	
+
+
+	public Position GetMiddle(ref Position other) {
+		return new Position(
+			this.GetX() + this.GetY() / 2,
+			this.GetX() + this.GetY() / 2
+		);
+	}
 	
 	public class DimensionalComparer : IDimensionalComparer<Position> {
 		public uint GetDimensionCount() => 2;
@@ -55,10 +62,7 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 			this.UpperLeftCorner = upperLeft;
 			this.LowerRightCorner = lowerRight;
 
-			this.Middle = new Position(
-				this.LowerRightCorner.GetX() - this.UpperLeftCorner.GetX() / 2,
-				this.LowerRightCorner.GetY() - this.UpperLeftCorner.GetY() / 2
-			);
+			this.Middle = this.UpperLeftCorner.GetMiddle(ref this.LowerRightCorner);
 		}
 	}
 
