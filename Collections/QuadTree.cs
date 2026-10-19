@@ -64,6 +64,15 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 
 			this.Middle = this.UpperLeftCorner.GetMiddle(ref this.LowerRightCorner);
 		}
+		public ref QuadTreeNode? GetChildRef(int x, int y) {
+			switch ((x, y)) {
+				case (0, 0): return ref this.UpperLeftChild;
+				case (0, 1): return ref this.UpperRightChild;
+				case (1, 0): return ref this.LowerLeftChild;
+				case (1, 1): return ref this.LowerRightChild;
+				default: throw new ArgumentOutOfRangeException(nameof(x));
+			};
+		}
 	}
 
 	private readonly IDimensionalComparer<Position> _comparer = new Position.DimensionalComparer();
