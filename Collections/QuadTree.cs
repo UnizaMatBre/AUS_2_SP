@@ -25,8 +25,8 @@ public readonly struct Position {
 
 	public (int x, int y) GetDirectionTo(Position target) {
 		return (
-			x: target.GetX().CompareTo(this.GetX()) < 1 ? 0 : 1,
-			y: target.GetY().CompareTo(this.GetY()) < 1 ? 0 : 1
+			x: target.GetX() <= this.GetX() ? 0 : 1,
+			y: target.GetY() <= this.GetY() ? 0 : 1
 		);
 	}
 	
