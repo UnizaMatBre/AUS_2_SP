@@ -54,4 +54,29 @@ public interface IDimensionalComparer<in T> {
 
         return true;
     }
+
+
+    /// <summary>
+    /// Checks if value is between two boundaries inclusive in all dimensions.
+    /// </summary>
+    /// <param name="value">Value whose inclusion in range are we checking</param>
+    /// <param name="lower">Lower boundary of range</param>
+    /// <param name="upper">Upper boundary of range</param>
+    /// <returns>True if value falls into the range in all dimensions, false otherwise</returns>
+    public bool InclusiveBetween(T value, T lower, T upper) {
+        for (uint dimension = 0; dimension < this.GetDimensionCount(); ++dimension) {
+            var lowerBad = this.DimensionalCompare(dimension, value, lower) < 0;
+            var upperBad = this.DimensionalCompare(dimension, value, upper) > 0;
+
+            if (lowerBad || upperBad) {
+                return false;
+            }
+            
+            
+        }
+
+        return true;
+        
+        
+    }
 }
