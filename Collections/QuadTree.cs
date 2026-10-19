@@ -1,4 +1,6 @@
-﻿namespace Collections;
+﻿using System.Runtime.Intrinsics.X86;
+
+namespace Collections;
 
 public readonly struct Position {
 	private readonly double _x;
@@ -39,6 +41,7 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 	private class QuadTreeNode {
 		public readonly Position UpperLeftCorner;
 		public readonly Position LowerRightCorner;
+		public readonly Position Middle;
 
 		public QuadTreeNode? UpperLeftChild;
 		public QuadTreeNode? UpperRightChild;
@@ -51,6 +54,11 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 			this.Value = value;
 			this.UpperLeftCorner = upperLeft;
 			this.LowerRightCorner = lowerRight;
+
+			this.Middle = new Position(
+				this.LowerRightCorner.GetX() - this.UpperLeftCorner.GetX() / 2,
+				this.LowerRightCorner.GetY() - this.UpperLeftCorner.GetY() / 2
+			);
 		}
 	}
 
@@ -69,6 +77,21 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 	}
 
 	public bool Insert(TValue valueToInsert) {
+		ArgumentNullException.ThrowIfNull(valueToInsert);
+
+		if (this._root is null) {
+			this._root = new QuadTreeNode(valueToInsert, this._rootUpperLeftCorner, this._rootLowerRightCorner);
+
+			return true;
+		}
+		
+		var current = this._root;
+
+		while (true)
+		{
+
+			
+		}
 		
 		throw new NotImplementedException();
 	}
