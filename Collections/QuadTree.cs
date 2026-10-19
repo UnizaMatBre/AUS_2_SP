@@ -108,7 +108,52 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		var current = this._root;
 
 		while (true) {
+			if (current.Value is not null) {
+				// if value is same to the one we want to insert, it is duplicate
+				if (this._comparer.AllDimensionsEquals(valueToInsert.GetPosition(), current.Value!.GetPosition())) {
+					return false;
+				}
+				
+				var directionToCurrentVal = current.Middle.GetDirectionTo(current.Value.GetPosition());
+				ref var newHomeForCurrent = ref current.GetChildRef(directionToCurrentVal.x, directionToCurrentVal.y);
+				
+				var upperLeft = new Position(
+					directionToCurrentVal.x == 0 ? current.UpperLeftCorner.GetX() : current.Middle.GetX(),
+					directionToCurrentVal.y == 0 ? current.UpperLeftCorner.GetY() : current.Middle.GetY()
+				);
+				var lowerRight = new Position(
+					directionToCurrentVal.x == 0 ? current.Middle.GetX() : current.LowerRightCorner.GetX(),
+					directionToCurrentVal.y == 0 ? current.Middle.GetY() : current.LowerRightCorner.GetY()
+				);
 
+				newHomeForCurrent = new QuadTreeNode(current.Value, upperLeft, lowerRight);
+
+				current.Value = default(TValue);
+			}
+			
+			
+			
+			
+			
+			var direction = current.Middle.GetDirectionTo(valueToInsert.GetPosition());
+			ref QuadTreeNode? child = ref current.GetChildRef(direction.x, direction.y);
+
+			if (child is null) {
+				var upperLeft = new Position(
+					direction.x == 0 ? current.UpperLeftCorner.GetX() : current.Middle.GetX(),
+					direction.y == 0 ? current.UpperLeftCorner.GetY() : current.Middle.GetY()
+				);
+				var lowerRight = new Position(
+					direction.x == 0 ? current.Middle.GetX() : current.LowerRightCorner.GetX(),
+					direction.y == 0 ? current.Middle.GetY() : current.LowerRightCorner.GetY()
+				);
+
+				child = new QuadTreeNode(valueToInsert, upperLeft, lowerRight);
+				return true;
+			}
+
+			current = child;
+			
 		}
 	}
 
