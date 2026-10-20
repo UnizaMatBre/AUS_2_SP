@@ -88,6 +88,8 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 	
 	
 
+	
+	/// FEATURE: Tree must EXPLICITLY allow universal key. So no conversion to "Position" type, we need to explicitly allow value type
 	public QuadTree(Position upperLeft, Position lowerRight) {
 		this._root = new QuadTreeNode(upperLeft, lowerRight);
 	}

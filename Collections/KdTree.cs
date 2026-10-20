@@ -123,7 +123,7 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 		throw new NotImplementedException();
 	}
 	
-
+	/// FEATURE: All keys are supposed to be non-unique. In that case, this method doesn't make sense and needs to be removed
 	public bool TryGetValue(TValue valueToFind, out TValue? output) {
 		
 		uint layer = 0;
