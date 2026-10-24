@@ -3,7 +3,7 @@
 
 
 
-public class KdTree<TValue> : IBinarySearchTree<TValue> {
+public class KdTree<TValue> {
 
 	private class KdTreeNode {
 		public TValue Value;
@@ -92,13 +92,6 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 			//  0 => new value is possibly equal to current node - if not, goes to left subtree
 			int cmpResult = this._comparer.DimensionalCompare(dimension, current.Value, valueToInsert);
 			
-			// check for duplicate
-			if (cmpResult == 0) {
-				if (this._comparer.AllDimensionsEquals(valueToInsert, current.Value)) {
-					return false;
-				}
-			}
-            
 			// pick proper branch
 			// +1 or 0 => left (larger) subtree
 			// -1 => right (larger) subtree
@@ -121,40 +114,6 @@ public class KdTree<TValue> : IBinarySearchTree<TValue> {
 	public bool Remove(TValue valueToRemove) {
 
 		throw new NotImplementedException();
-	}
-	
-	/// FEATURE: All keys are supposed to be non-unique. In that case, this method doesn't make sense and needs to be removed
-	public bool TryGetValue(TValue valueToFind, out TValue? output) {
-		
-		uint layer = 0;
-		KdTreeNode? current = this._root;
-
-		while (current != null) {
-			uint dimension = layer % this._comparer.GetDimensionCount();
-			
-			// -1 => new value is larger than current node - goes to right subtree
-			// +1 => new value is smaller than current node - goes to left subtree
-			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._comparer.DimensionalCompare(dimension, current.Value, valueToFind);
-			
-			// check for duplicate
-			if (cmpResult == 0) {
-				if (this._comparer.AllDimensionsEquals(valueToFind, current.Value)) {
-					output = current.Value;
-					return true;
-				}
-			}
-
-
-			// pick proper branch
-			// +1 or 0 => left (larger) subtree
-			// -1 => right (larger) subtree
-			current = (cmpResult > 0) ? current.Left : current.Right;
-			layer++;
-		}
-        
-		output = default;
-		return false;
 	}
 	
 	/// <summary>

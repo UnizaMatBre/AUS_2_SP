@@ -34,16 +34,6 @@ public class PerformanceTester {
             }
         }) / data.Count;
         
-        results["Find"] = this._Measure(() => {
-            for (int index = 0; index < findCount; ++index) {
-
-                if (index % 250_000 == 0) {
-                    Console.WriteLine($"Find {index}");
-                }
-                this._testedCollection.TryGetValue(data[index], out TestPoint result);
-            }
-        }) / findCount;
-        
         foreach (var kvp in results)
         {
             Console.WriteLine($"{kvp.Key}: {kvp.Value}");

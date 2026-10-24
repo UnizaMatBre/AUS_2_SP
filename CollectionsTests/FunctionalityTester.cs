@@ -46,30 +46,7 @@ public class FunctionalityTester {
         
         //this._counters["Remove"]++;
     }
-
-    private void _CheckFind() {
-        if (this._dataStorage.Count < 1) {
-            this._CheckInsert();
-            return;
-        }
-        
-        this._counters["Find"]++;
-        
-        int index = this._valueRandom.Next(this._dataStorage.Count);
-        var dataForSearch = this._dataStorage[index];
-        
-        bool success = this._testedCollection.TryGetValue(dataForSearch, out TestPoint? dataActuallyFound);
-
-        if (!success) {
-            
-            throw new InvalidDataException($"Tree Find Failed => Data {dataForSearch} not found");
-        }
-        
-        if (dataForSearch != dataActuallyFound) {
-            throw new InvalidDataException($"Tree Find Failed => Found data {dataActuallyFound} is not same as expected data {dataForSearch}");
-        }
-    }
-
+    
     private void _CheckFindInterval() {
         if(this._dataStorage.Count < 2) {
             this._CheckInsert();
@@ -116,7 +93,7 @@ public class FunctionalityTester {
 
 
 
-    public void Run(double insertsChance, double removesChance, double findsChance, double intervalsChance) {
+    public void Run(double insertsChance, double removesChance, double intervalsChance) {
         // initialize random generators
         // TODO: Should i refactor this into one main generator?
         this._chanceRandom = new();
@@ -126,7 +103,6 @@ public class FunctionalityTester {
         this._counters = new() {
             ["Insert"] = 0,
             ["Remove"] = 0,
-            ["Find"] = 0,
             ["Interval"] = 0
         };
         
@@ -136,13 +112,11 @@ public class FunctionalityTester {
         // initialize opereration picker
         var insertsChanceCml = insertsChance;
         var removesChanceCml = insertsChanceCml + removesChance;
-        var findsChanceCml = removesChanceCml + findsChance;
-        var intervalsChanceCml = findsChanceCml + intervalsChance;
+        var intervalsChanceCml = removesChanceCml + intervalsChance;
         
         var checks = new (double cumulativeChance, Action checkAction)[] {
             (insertsChanceCml, this._CheckInsert),
             (removesChanceCml, this._CheckRemove),
-            (findsChanceCml, this._CheckFind),
             (intervalsChanceCml, this._CheckFindInterval)
         };
 

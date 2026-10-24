@@ -36,26 +36,7 @@ public interface IDimensionalComparer<in T> {
     /// </returns>
     public int DimensionalCompare(uint dimension, T a, T b);
 
-
-    /// <summary>
-    /// Determines whether the specified objects are equal in all dimensions.
-    /// </summary>
-    /// <param name="a">The first object to compare</param>
-    /// <param name="b">The second object to compare.</param>
-    /// <returns>True if specified objects are equal in all dimensions, false otherwise</returns>
-    public bool AllDimensionsEquals(T a, T b) {
-        for (uint dimension = 0; dimension < this.GetDimensionCount(); ++dimension) {
-            
-            if (this.DimensionalCompare(dimension, a, b) != 0) {
-                
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
+    
     /// <summary>
     /// Checks if value is between two boundaries inclusive in all dimensions.
     /// </summary>

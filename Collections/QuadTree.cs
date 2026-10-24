@@ -51,7 +51,7 @@ public interface ISpatial {
 
 
 
-public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatial {
+public class QuadTree<TValue> where TValue : ISpatial {
 	private class QuadTreeNode {
 		public readonly Position UpperLeftCorner;
 		public readonly Position LowerRightCorner;
@@ -110,9 +110,6 @@ public class QuadTree<TValue> : IBinarySearchTree<TValue> where TValue : ISpatia
 		while (true) {
 			if (current.HasValue) {
 				// if value is same to the one we want to insert, it is duplicate
-				if (this._comparer.AllDimensionsEquals(valueToInsert.GetPosition(), current.Value!.GetPosition())) {
-					return false;
-				}
 				
 				var directionToCurrentVal = current.Middle.GetDirectionTo(current.Value.GetPosition());
 				ref var newHomeForCurrent = ref current.GetChildRef(directionToCurrentVal.x, directionToCurrentVal.y);
