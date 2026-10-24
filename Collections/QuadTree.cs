@@ -1,4 +1,5 @@
-﻿using System.Runtime.Intrinsics.X86;
+﻿using System.Drawing;
+using System.Runtime.Intrinsics.X86;
 
 namespace Collections;
 
@@ -20,9 +21,16 @@ enum Quadrant {
 
 
 
-public class QuadTree<TValue> {
-	
+public class QuadTree<TValue> where TValue : IComparable<TValue> {
 
+
+	private readonly RectangularBoundary<TValue, TValue> _outerBoundary;
+	
+	public QuadTree(RectangularBoundary<TValue, TValue> outerBoundary) {
+		this._outerBoundary = outerBoundary;
+	}
+	
+	
 	public bool Insert(TValue valueToInsert) {
 		
 		throw new NotImplementedException();
