@@ -53,6 +53,16 @@ public class QuadTree<TValue> where TValue : IComparable<TValue> {
 	
 	
 	public bool Insert(TValue valueToInsert) {
+		ArgumentNullException.ThrowIfNull(valueToInsert, nameof(valueToInsert));
+		
+		if(this._outerBoundary.Contains(valueToInsert, valueToInsert) == false){
+			return false;
+		}
+
+		if (this._root == null) {
+			this._root = new QuadTreeNode(this._outerBoundary);
+			return true;
+		}
 		
 		throw new NotImplementedException();
 	}
