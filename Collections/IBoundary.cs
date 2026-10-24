@@ -1,6 +1,6 @@
 ﻿namespace Collections;
 
-public interface IBoundary<TValue> where TValue : IComparable<TValue> {
+public interface IBoundary<TValue> {
 
     /// <summary>
     /// Determines on which side of boundary is value located
@@ -34,7 +34,7 @@ public interface IBoundary<TValue> where TValue : IComparable<TValue> {
 
 
 
-public class RectangularBoundary<TX, TY> where TX : IComparable<TX> where TY : IComparable<TY> {
+public class RectangularBoundary<TX, TY> {
     
     private readonly IBoundary<TY> _north;
     private readonly IBoundary<TY> _south;
