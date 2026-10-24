@@ -23,11 +23,32 @@ enum Quadrant {
 
 public class QuadTree<TValue> where TValue : IComparable<TValue> {
 
+	private class QuadTreeNode {
+		private readonly RectangularBoundary<TValue, TValue> _myBoundary;
+
+		public QuadTreeNode? NorthWest;
+		public QuadTreeNode? NorthEast;
+		public QuadTreeNode? SouthEast;
+		public QuadTreeNode? SouthWest;
+		
+		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary) {
+			
+			this._myBoundary = myBoundary;
+		}
+		
+	}
+	
+	
 
 	private readonly RectangularBoundary<TValue, TValue> _outerBoundary;
+
+
+	private QuadTreeNode? _root;
 	
 	public QuadTree(RectangularBoundary<TValue, TValue> outerBoundary) {
+		
 		this._outerBoundary = outerBoundary;
+		this._root = null;
 	}
 	
 	
