@@ -1,9 +1,6 @@
 ﻿namespace Collections;
 
-public interface IBoundary<TImplementer, in TValue>
-    where TImplementer : IBoundary<TImplementer, TValue>
-    where TValue : IComparable<TValue>
-{
+public interface IBoundary<TValue> where TValue : IComparable<TValue> {
 
     /// <summary>
     /// Determines on which side of boundary is value located
@@ -32,5 +29,33 @@ public interface IBoundary<TImplementer, in TValue>
     /// </summary>
     /// <param name="other">Other boundary to calculate midpoint from</param>
     /// <returns>New boundary which is right in the middle between original boundaries.</returns>
-    public TImplementer Midpoint(TImplementer other);
+    public IBoundary<TValue> Midpoint(IBoundary<TValue> other);
 }
+
+
+
+public class RectangularBoundary<TX, TY> where TX : IComparable<TX> where TY : IComparable<TY> {
+    
+    private readonly IBoundary<TY> _north;
+    private readonly IBoundary<TY> _south;
+    
+    private readonly IBoundary<TX> _east;
+    private readonly IBoundary<TX> _west;
+    
+    
+    public RectangularBoundary(IBoundary<TY> north, IBoundary<TY> south, IBoundary<TX> east, IBoundary<TX> west) {
+        ArgumentNullException.ThrowIfNull(north);
+        ArgumentNullException.ThrowIfNull(south);
+        ArgumentNullException.ThrowIfNull(east);
+        ArgumentNullException.ThrowIfNull(west);
+        
+        this._north = north;
+        this._south = south;
+
+        this._east = east;
+        this._west = west;
+    }
+
+    
+}
+     
