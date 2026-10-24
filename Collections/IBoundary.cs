@@ -56,6 +56,16 @@ public class RectangularBoundary<TX, TY> {
         this._west = west;
     }
 
+    public bool Contains(TX x, TY y) {
+        var northIn = this._north.RelativePosition(y) > 0;
+        var southIn = this._south.RelativePosition(y) <= 0;
+
+        var eastIn = this._east.RelativePosition(x) > 0;
+        var westin = this._west.RelativePosition(x) <= 0;
+        
+        return northIn && southIn && eastIn && westin;
+    }
+
     
 }
      
