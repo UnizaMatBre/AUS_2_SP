@@ -42,7 +42,54 @@ public class TestPoint {
             };
         }
     }
+    
+    public class XBoundary : IBoundary<TestPoint> {
+        private readonly int _delimiter;
+        
+        public XBoundary(int delimiter) {
+            this._delimiter = delimiter;
+        }
 
+        public int RelativePosition(TestPoint value) {
+
+            return this._delimiter.CompareTo(value._x);
+        }
+
+        public IBoundary<TestPoint> Midpoint(IBoundary<TestPoint> other) {
+            if (other is not XBoundary xBoundaryOther) {
+                throw new ArgumentException(nameof(other) + " has incompatible type");
+            }
+            
+            var realMidDelimiter = (this._delimiter + xBoundaryOther._delimiter) / 2.0;
+            
+            return new XBoundary((int)realMidDelimiter);
+        }
+    }
+    
+    
+    public class YBoundary : IBoundary<TestPoint> {
+        private readonly int _delimiter;
+        
+        public YBoundary(int delimiter) {
+            this._delimiter = delimiter;
+        }
+
+        public int RelativePosition(TestPoint value) {
+
+            return this._delimiter.CompareTo(value._x);
+        }
+
+        public IBoundary<TestPoint> Midpoint(IBoundary<TestPoint> other) {
+            if (other is not YBoundary yBoundaryOther) {
+                throw new ArgumentException(nameof(other) + " has incompatible type");
+            }
+            
+            var realMidDelimiter = (this._delimiter + yBoundaryOther._delimiter) / 2.0;
+            
+            return new YBoundary((int)realMidDelimiter);
+        }
+    }
+    
     public override String ToString() {
 
         return $"({this._x} : {this._y})";
