@@ -31,11 +31,34 @@ public class QuadTree<TValue> where TValue : IComparable<TValue> {
 		public QuadTreeNode? SouthEast;
 		public QuadTreeNode? SouthWest;
 		
+		private List<TValue> _items;
+		
 		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary) {
 			
 			this._myBoundary = myBoundary;
+			this._items = new List<TValue>();
 		}
-		
+
+		public bool IsLeaf() {
+			return 
+				this.SouthWest == null && 
+				this.SouthEast == null && 
+				this.NorthEast == null && 
+				this.NorthWest == null;
+		}
+
+		public bool Insert(TValue value) {
+			if (this.IsLeaf() == false) {
+				return false;
+			}
+
+			if (this._items.Any()) {
+				return false;
+			}
+			
+			this._items.Add(value);
+			return true;
+		}
 	}
 	
 	
