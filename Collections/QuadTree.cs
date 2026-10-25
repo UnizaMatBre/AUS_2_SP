@@ -168,7 +168,7 @@ public class QuadTree<TValue> {
 			var currentNode = pendingNodes.Pop();
 
 			// skip nodes that don't intersect in any way
-			if (currentNode.Boundary.Intersect(searchBoundary)) {
+			if (currentNode.Boundary.Intersect(searchBoundary) == false) {
 				continue;
 			}
 
