@@ -136,7 +136,6 @@ public class QuadTree<TValue> {
 
 		if (this._root == null) {
 			this._root = new QuadTreeNode(this._outerBoundary, 0);
-			return true;
 		}
 		
 		QuadTreeNode? currentNode = this._root;
