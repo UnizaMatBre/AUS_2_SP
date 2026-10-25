@@ -65,6 +65,24 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 			
 			throw new NotImplementedException();
 		}
+
+		public QuadTreeNode? GetChildAt(Quadrant quadrant)
+		{
+			return quadrant switch {
+				Quadrant.NORTH_WEST => this.NorthWest,
+				Quadrant.NORTH_EAST => this.NorthEast,
+				Quadrant.SOUTH_EAST => this.SouthEast,
+				Quadrant.SOUTH_WEST => this.SouthWest,
+				_ => throw new ArgumentOutOfRangeException(nameof(quadrant), quadrant, null)
+			};
+
+		}
+
+		public QuadTreeNode? GetChildFor(TValue value) {
+			return this.GetChildAt(
+				this._myBoundary.LocateQuadrantPosition(value, value)
+			);
+		}
 	}
 	
 	
