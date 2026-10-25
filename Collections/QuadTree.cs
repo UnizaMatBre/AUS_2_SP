@@ -9,8 +9,7 @@ namespace Collections;
 
 
 
-public class QuadTree<TValue> where TValue : IComparable<TValue>
-{
+public class QuadTree<TValue> {
 
 	private static readonly Quadrant[] TRAVERSAL_ORDER = [
 		Quadrant.NORTH_WEST,
