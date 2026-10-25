@@ -2,6 +2,44 @@
 
 namespace CollectionsTests;
 
+struct DataSource {
+    private int _sourceWidth;
+    private TestPoint[] _sourceDataset;
+    private uint _sourceCurrentIndex;
+
+    public DataSource(int dataCount, int seed) {
+        var rng = new Random(seed);
+        var sourceWidth = (int)Math.Sqrt(dataCount);
+
+        this._sourceCurrentIndex = 0;
+        this._sourceWidth = sourceWidth;
+        this._sourceDataset = Enumerable
+            .Range(0, dataCount)
+            .Select((index) => {
+                return new TestPoint(
+                    (index % sourceWidth), (index / sourceWidth) 
+                );
+            })
+            .ToArray();
+        
+        
+        // Fisher–Yates shuffle
+        for (int counter = this._sourceDataset.Length - 1; counter > 0; --counter) {
+                
+            int j = rng.Next(counter + 1);
+                
+            (this._sourceDataset[counter], this._sourceDataset[j]) = (this._sourceDataset[j], this._sourceDataset[counter]);
+        }
+    }
+
+
+    public TestPoint NextPoint() {
+        return this._sourceDataset[this._sourceCurrentIndex++];
+    }
+
+    public int GetDataWidth() => this._sourceWidth;
+}
+
 
 public class FunctionalityTester {
     
@@ -15,9 +53,7 @@ public class FunctionalityTester {
 
     private ITestable2DCollection _testedCollection;
 
-    private TestPoint[] _sourceDataset;
-
-    private int _maxWidth;
+    private DataSource _dataSource;
     
     
     private Dictionary<string, int> _counters;
@@ -28,11 +64,9 @@ public class FunctionalityTester {
         this._counters["Insert"]++;
 
         // generate new unique point
-        var newTestPoint = this._sourceDataset[this._dataCountMax];
-        ++this._dataCountMax;
+        var newTestPoint = this._dataSource.NextPoint();
         
         this._dataStorage.Add(newTestPoint);
-
         if (this._testedCollection.Insert(newTestPoint) == false) {
             
             throw new InvalidDataException($"Tree Insert Failed => Data {newTestPoint} is already in the tree");
@@ -56,8 +90,8 @@ public class FunctionalityTester {
         }
         this._counters["Interval"]++;
         
-        int xMax = this._dataCountMax < this._maxWidth ? this._dataCountMax : this._maxWidth;
-        int yMax = this._dataCountMax / this._maxWidth;
+        int xMax = this._dataCountMax < this._dataSource.GetDataWidth() ? this._dataCountMax : this._dataSource.GetDataWidth();
+        int yMax = this._dataCountMax / this._dataSource.GetDataWidth();
 
         (int, int) GenerateRange(int maximum) {
             int halfPoint = maximum / 2;
@@ -111,25 +145,7 @@ public class FunctionalityTester {
         
         // generate source data 
         {
-            this._maxWidth = (int)Math.Sqrt(iterationCount);
-            
-            this._sourceDataset = Enumerable
-                .Range(0, iterationCount)
-                .Select((index) => {
-                    return new TestPoint(
-                        (index % this._maxWidth), (index / this._maxWidth) 
-                    );
-                })
-                .ToArray();
-
-            // Fisher–Yates shuffle
-            for (int counter = this._sourceDataset.Length - 1; counter > 0; --counter) {
-                
-                int j = this._valueRandom.Next(counter + 1);
-                
-                (this._sourceDataset[counter], this._sourceDataset[j]) = (this._sourceDataset[j], this._sourceDataset[counter]);
-            }
-            
+            this._dataSource = new(iterationCount, this._masterRandom.Next());   
             Console.WriteLine("Source Data generated.");
         }
         
@@ -188,7 +204,6 @@ public class FunctionalityTester {
         this._testedCollection = collection;
         this._dataStorage = new();
         this._counters = new Dictionary<string, int>();
-        this._sourceDataset = [];
     }
     
 }
