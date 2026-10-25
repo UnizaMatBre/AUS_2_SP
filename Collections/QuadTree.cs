@@ -188,4 +188,11 @@ public class QuadTree<TValue> {
 			}
 		}
 	}
+
+
+
+	public bool Debug_IsQuadTree() {
+
+		throw new NotImplementedException();
+	}
 }
