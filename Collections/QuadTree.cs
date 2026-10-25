@@ -21,7 +21,8 @@ public class QuadTree<TValue> {
 	
 	
 	private class QuadTreeNode {
-
+		private static readonly IList<TValue> EMPTY_LIST = [];
+		
 		private readonly uint _depth;
 		
 		
@@ -31,7 +32,7 @@ public class QuadTree<TValue> {
 		public QuadTreeNode? SouthEast;
 		public QuadTreeNode? SouthWest;
 		
-		private List<TValue>? _items;
+		private IList<TValue> _items;
 		
 		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
 			
@@ -86,7 +87,7 @@ public class QuadTree<TValue> {
 			this.SouthWest = childrenMap[Quadrant.SOUTH_WEST];
 
 			// is this really the best approach?
-			this._items = null;
+			this._items = EMPTY_LIST.AsReadOnly();
 		}
 
 		public QuadTreeNode? GetChildAt(Quadrant quadrant)
@@ -107,7 +108,7 @@ public class QuadTree<TValue> {
 			);
 		}
 
-		public List<TValue>? GetItems() {
+		public IList<TValue> GetItems() {
 
 			return this._items;
 		}
