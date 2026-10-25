@@ -23,6 +23,8 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 	private class QuadTreeNode {
 		private readonly RectangularBoundary<TValue, TValue> _myBoundary;
 
+		private readonly uint _depth;
+		
 		public QuadTreeNode? NorthWest;
 		public QuadTreeNode? NorthEast;
 		public QuadTreeNode? SouthEast;
@@ -30,9 +32,10 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 		
 		private List<TValue> _items;
 		
-		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary) {
+		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
 			
 			this._myBoundary = myBoundary;
+			this._depth = depth;
 			this._items = new List<TValue>();
 		}
 
@@ -86,7 +89,7 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 		}
 
 		if (this._root == null) {
-			this._root = new QuadTreeNode(this._outerBoundary);
+			this._root = new QuadTreeNode(this._outerBoundary, 0);
 			return true;
 		}
 		
