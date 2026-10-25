@@ -64,6 +64,14 @@ public class TestPoint {
             
             return new XBoundary((int)realMidDelimiter);
         }
+
+        public int CompareTo(IBoundary<TestPoint> other) {
+            if (other is not XBoundary xBoundaryOther) {
+                throw new ArgumentException(nameof(other) + " has incompatible type");
+            }
+            
+            return this._delimiter.CompareTo(xBoundaryOther._delimiter);
+        }
     }
     
     
@@ -87,6 +95,14 @@ public class TestPoint {
             var realMidDelimiter = (this._delimiter + yBoundaryOther._delimiter) / 2.0;
             
             return new YBoundary((int)realMidDelimiter);
+        }
+
+        public int CompareTo(IBoundary<TestPoint> other) {
+            if (other is not YBoundary yBoundaryOther) {
+                throw new ArgumentException(nameof(other) + " has incompatible type");
+            }
+
+            return this._delimiter.CompareTo(yBoundaryOther._delimiter);
         }
     }
     

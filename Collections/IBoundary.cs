@@ -32,6 +32,9 @@ public interface IBoundary<TValue> {
     /// <param name="other">Other boundary to calculate midpoint from</param>
     /// <returns>New boundary which is right in the middle between original boundaries.</returns>
     public IBoundary<TValue> Midpoint(IBoundary<TValue> other);
+
+
+    public int CompareTo(IBoundary<TValue> other);
 }
 
 
@@ -97,6 +100,5 @@ public class RectangularBoundary<TX, TY> {
         };
 
     }
-
 }
      
