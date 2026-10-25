@@ -9,7 +9,8 @@ public class FunctionalityTester {
     
     
     private int _iterationCount;
- 
+
+    private readonly Random _masterRandom;
     private Random? _chanceRandom;
     private Random? _valueRandom;
 
@@ -97,9 +98,8 @@ public class FunctionalityTester {
         this._iterationCount = iterationCount;
         
         // initialize random generators
-        // TODO: Should i refactor this into one main generator?
-        this._chanceRandom = new();
-        this._valueRandom = new();
+        this._chanceRandom = new Random(this._masterRandom.Next());
+        this._valueRandom = new Random(this._masterRandom.Next());
         
         // initialize counters
         this._counters = new() {
@@ -156,7 +156,8 @@ public class FunctionalityTester {
         }
     }
 
-    public FunctionalityTester(ITestable2DCollection collection) {
+    public FunctionalityTester(ITestable2DCollection collection, Random masterRandom) {
+        this._masterRandom = masterRandom;
         this._testedCollection = collection;
         this._dataStorage = new();
         this._counters = new Dictionary<string, int>();
