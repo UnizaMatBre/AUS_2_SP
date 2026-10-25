@@ -8,7 +8,7 @@ public class FunctionalityTester {
     public const int GRID_WIDTH = 100;
     
     
-    private readonly int _iterationCount;
+    private int _iterationCount;
  
     private Random? _chanceRandom;
     private Random? _valueRandom;
@@ -93,7 +93,9 @@ public class FunctionalityTester {
 
 
 
-    public void Run(double insertsChance, double removesChance, double intervalsChance) {
+    public void Run(int iterationCount, double insertsChance, double removesChance, double intervalsChance) {
+        this._iterationCount = iterationCount;
+        
         // initialize random generators
         // TODO: Should i refactor this into one main generator?
         this._chanceRandom = new();
@@ -154,9 +156,8 @@ public class FunctionalityTester {
         }
     }
 
-    public FunctionalityTester(ITestable2DCollection collection  ,int iterationCount) {
+    public FunctionalityTester(ITestable2DCollection collection) {
         this._testedCollection = collection;
-        this._iterationCount = iterationCount;
         this._dataStorage = new();
         this._counters = new Dictionary<string, int>();
     }

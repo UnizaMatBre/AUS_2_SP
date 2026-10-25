@@ -48,10 +48,8 @@ public enum TestType {
 class Program
 {
     static void RunFunctionalityTests() {
-        var kdFunctionalityTester = new FunctionalityTester(
-            new KdTreeTestingWrapper(), 100_000
-        );
-        kdFunctionalityTester.Run(0.5, 0.2, 0.3);
+        var kdFunctionalityTester = new FunctionalityTester(new KdTreeTestingWrapper());
+        kdFunctionalityTester.Run(100_000, 0.5, 0.2, 0.3);
 
 
     }
