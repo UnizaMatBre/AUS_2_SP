@@ -1,4 +1,6 @@
-﻿namespace Collections;
+﻿using System.Text;
+
+namespace Collections;
 
 public interface IBoundary<TValue> {
 
@@ -84,7 +86,20 @@ public class RectangularBoundary<TX, TY> {
         
         return northIn && southIn && eastIn && westin;
     }
-    
-    
+
+
+    public Quadrant LocateQuadrantPosition(TX x, TY y) {
+        bool inNorth = this._midY.RelativePosition(y) <= 0;
+        bool inEast = this._midX.RelativePosition(x) <= 0;
+
+        return (inNorth, inEast) switch {
+            (true, true) => Quadrant.NORTH_EAST,
+            (true, false) => Quadrant.NORTH_WEST,
+            (false, true) => Quadrant.SOUTH_EAST,
+            (false, false) => Quadrant.SOUTH_WEST
+        };
+
+    }
+
 }
      
