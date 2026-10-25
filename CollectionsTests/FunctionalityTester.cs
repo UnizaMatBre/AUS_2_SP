@@ -15,6 +15,9 @@ public class FunctionalityTester {
     private Random? _valueRandom;
 
     private ITestable2DCollection _testedCollection;
+
+    private TestPoint[] _sourceDataset;
+    
     
     private Dictionary<string, int> _counters;
     private readonly List<TestPoint> _dataStorage;
@@ -108,6 +111,32 @@ public class FunctionalityTester {
             ["Interval"] = 0
         };
         
+        // generate source data 
+        {
+            var maxWidth = (int)Math.Sqrt(iterationCount);
+            
+            this._sourceDataset = Enumerable
+                .Range(0, iterationCount)
+                .Select((index) => {
+                    return new TestPoint(
+                        index % maxWidth, index / maxWidth 
+                    );
+                })
+                .ToArray();
+
+            // Fisher–Yates shuffle
+            for (int counter = this._sourceDataset.Length - 1; counter > 0; --counter) {
+                
+                int j = this._valueRandom.Next(counter + 1);
+                
+                (this._sourceDataset[counter], this._sourceDataset[j]) = (this._sourceDataset[j], this._sourceDataset[counter]);
+            }
+            
+            Console.WriteLine("Source Data generated.");
+        }
+        
+        
+        
         this._dataStorage.Clear();
         this._dataCountMax = 0;
         
@@ -161,6 +190,7 @@ public class FunctionalityTester {
         this._testedCollection = collection;
         this._dataStorage = new();
         this._counters = new Dictionary<string, int>();
+        this._sourceDataset = [];
     }
     
 }
