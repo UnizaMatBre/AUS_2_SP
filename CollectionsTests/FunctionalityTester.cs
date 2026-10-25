@@ -44,9 +44,6 @@ struct DataSource {
 public class FunctionalityTester {
     private readonly Random _masterRandom;
     private readonly List<TestPoint> _insertedPoints;
-    
-    private int _iterationCount;
-
 
     private Random? _valueRandom;
 
@@ -126,10 +123,7 @@ public class FunctionalityTester {
 
 
     public void Run(int iterationCount, double insertsChance, double removesChance, double intervalsChance) {
-        this._iterationCount = iterationCount;
-        
         // initialize random generators
-
         this._valueRandom = new Random(this._masterRandom.Next());
         
         // initialize counters
@@ -163,7 +157,7 @@ public class FunctionalityTester {
         
         var actionRandom = new Random(this._masterRandom.Next());
 
-        for (var counter = 0; counter < this._iterationCount; ++counter) {
+        for (var counter = 0; counter < iterationCount; ++counter) {
             var chance = actionRandom.NextDouble();
 
             // each 10 iterations check tree validity
@@ -172,7 +166,7 @@ public class FunctionalityTester {
                 throw new InvalidDataException("Tree is invalid.");
             }
             
-            if (counter % (this._iterationCount / 100) == 0) {
+            if (counter % (iterationCount / 100) == 0) {
                 Console.WriteLine($"Iteration: {counter}");
             }
 
@@ -185,7 +179,7 @@ public class FunctionalityTester {
             }
 
         }
-        Console.WriteLine($"Iteration: {this._iterationCount}");
+        Console.WriteLine($"Iteration: {iterationCount}");
 
         
         Console.WriteLine();
