@@ -55,6 +55,20 @@ public class RectangularBoundary<TX, TY> {
         this._east = east;
         this._west = west;
     }
+    
+    
+    public RectangularBoundary<TX, TY> SubBoundary(Quadrant quadrant) {
+        var midX = this._east.Midpoint(this._west);
+        var midY = this._north.Midpoint(this._south);
+
+        return quadrant switch {
+            Quadrant.NORTH_WEST => new RectangularBoundary<TX, TY>(this._north, midY, midX, this._west),
+            Quadrant.NORTH_EAST => new RectangularBoundary<TX, TY>(this._north, midY, this._east, midX),
+            Quadrant.SOUTH_EAST => new RectangularBoundary<TX, TY>(midY, this._south, this._east, midX),
+            Quadrant.SOUTH_WEST => new RectangularBoundary<TX, TY>(midY, this._south, midX, this._west),
+            _ => throw new ArgumentOutOfRangeException(nameof(quadrant), quadrant, null)
+        };
+    }
 
     public bool Contains(TX x, TY y) {
         var northIn = this._north.RelativePosition(y) > 0;
@@ -65,6 +79,7 @@ public class RectangularBoundary<TX, TY> {
         
         return northIn && southIn && eastIn && westin;
     }
+
 
     
 }
