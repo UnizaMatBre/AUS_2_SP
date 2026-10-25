@@ -54,10 +54,10 @@ public class FunctionalityTester {
     private ITestable2DCollection _testedCollection;
 
     private DataSource _dataSource;
-    
+    private readonly List<TestPoint> _insertedPoints;
     
     private Dictionary<string, int> _counters;
-    private readonly List<TestPoint> _dataStorage;
+
     private int _dataCountMax;
     
     private void _CheckInsert() {
@@ -66,7 +66,7 @@ public class FunctionalityTester {
         // generate new unique point
         var newTestPoint = this._dataSource.NextPoint();
         
-        this._dataStorage.Add(newTestPoint);
+        this._insertedPoints.Add(newTestPoint);
         if (this._testedCollection.Insert(newTestPoint) == false) {
             
             throw new InvalidDataException($"Tree Insert Failed => Data {newTestPoint} is already in the tree");
@@ -74,7 +74,7 @@ public class FunctionalityTester {
     }
 
     private void _CheckRemove() {
-        if (this._dataStorage.Count < 1) {
+        if (this._insertedPoints.Count < 1) {
             this._CheckInsert();
             return;
 
@@ -84,7 +84,7 @@ public class FunctionalityTester {
     }
     
     private void _CheckFindInterval() {
-        if(this._dataStorage.Count < 2) {
+        if(this._insertedPoints.Count < 2) {
             this._CheckInsert();
             return;
         }
@@ -112,8 +112,7 @@ public class FunctionalityTester {
 
         IDimensionalComparer<TestPoint> comparer = new TestPoint.DimensionalComparer();
 
-        var expectedValues = this._dataStorage.Where((item) =>
-        {
+        var expectedValues = this._insertedPoints.Where((item) => {
             return comparer.InclusiveBetween(item, lowerBoundary, upperBoundary);
         }).ToList();
         
@@ -151,7 +150,7 @@ public class FunctionalityTester {
         
         
         
-        this._dataStorage.Clear();
+        this._insertedPoints.Clear();
         this._dataCountMax = 0;
         
         // initialize opereration picker
@@ -202,7 +201,7 @@ public class FunctionalityTester {
     public FunctionalityTester(ITestable2DCollection collection, Random masterRandom) {
         this._masterRandom = masterRandom;
         this._testedCollection = collection;
-        this._dataStorage = new();
+        this._insertedPoints = new();
         this._counters = new Dictionary<string, int>();
     }
     
