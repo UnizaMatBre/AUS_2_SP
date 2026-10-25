@@ -57,8 +57,6 @@ public class FunctionalityTester {
     private readonly List<TestPoint> _insertedPoints;
     
     private Dictionary<string, int> _counters;
-
-    private int _dataCountMax;
     
     private void _CheckInsert() {
         this._counters["Insert"]++;
@@ -90,8 +88,8 @@ public class FunctionalityTester {
         }
         this._counters["Interval"]++;
         
-        int xMax = this._dataCountMax < this._dataSource.GetDataWidth() ? this._dataCountMax : this._dataSource.GetDataWidth();
-        int yMax = this._dataCountMax / this._dataSource.GetDataWidth();
+        int xMax = (this._insertedPoints.Count < this._dataSource.GetDataWidth()) ? this._insertedPoints.Count : this._dataSource.GetDataWidth();
+        int yMax = (this._insertedPoints.Count / this._dataSource.GetDataWidth());
 
         (int, int) GenerateRange(int maximum) {
             int halfPoint = maximum / 2;
@@ -142,17 +140,16 @@ public class FunctionalityTester {
             ["Interval"] = 0
         };
         
-        // generate source data 
+        // generate data 
         {
             this._dataSource = new(iterationCount, this._masterRandom.Next());   
-            Console.WriteLine("Source Data generated.");
+            this._insertedPoints.Clear();
+            Console.WriteLine("Source Data generated and initialized.");
         }
         
         
-        
-        this._insertedPoints.Clear();
-        this._dataCountMax = 0;
-        
+
+
         // initialize opereration picker
         var insertsChanceCml = insertsChance;
         var removesChanceCml = insertsChanceCml + removesChance;
