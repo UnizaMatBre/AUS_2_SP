@@ -42,19 +42,18 @@ struct DataSource {
 
 
 public class FunctionalityTester {
-    
-    
+    private readonly Random _masterRandom;
+    private readonly List<TestPoint> _insertedPoints;
     
     private int _iterationCount;
 
-    private readonly Random _masterRandom;
-    private Random? _chanceRandom;
+
     private Random? _valueRandom;
 
     private ITestable2DCollection _testedCollection;
 
     private DataSource _dataSource;
-    private readonly List<TestPoint> _insertedPoints;
+
     
     private Dictionary<string, int> _counters;
     
@@ -130,7 +129,7 @@ public class FunctionalityTester {
         this._iterationCount = iterationCount;
         
         // initialize random generators
-        this._chanceRandom = new Random(this._masterRandom.Next());
+
         this._valueRandom = new Random(this._masterRandom.Next());
         
         // initialize counters
@@ -161,9 +160,11 @@ public class FunctionalityTester {
             (intervalsChanceCml, this._CheckFindInterval)
         };
 
+        
+        var actionRandom = new Random(this._masterRandom.Next());
 
         for (var counter = 0; counter < this._iterationCount; ++counter) {
-            var chance = this._chanceRandom.NextDouble();
+            var chance = actionRandom.NextDouble();
 
             // each 10 iterations check tree validity
             if (this._testedCollection.CheckValidity() == false) {
