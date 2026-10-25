@@ -35,14 +35,10 @@ public class QuadTree<TValue> where TValue : IComparable<TValue> {
 		}
 
 		public bool Insert(TValue value) {
-			if (this.IsLeaf() == false) {
+			if (this.IsLeaf() == false || this._items.Count > 0) {
 				return false;
 			}
 
-			if (this._items.Any()) {
-				return false;
-			}
-			
 			this._items.Add(value);
 			return true;
 		}
