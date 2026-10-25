@@ -52,13 +52,18 @@ public class QuadTree<TValue> {
 				this.NorthWest == null;
 		}
 
-		public bool Insert(TValue value) {
-			if (this.IsLeaf() == false || this._items.Count > 0) {
+		public bool Insert(TValue value, uint maxDepth) {
+			if (this.IsLeaf() == false) {
 				return false;
 			}
 
-			this._items.Add(value);
-			return true;
+			if (this._items.Count == 0 || this._depth >= maxDepth) {
+				this._items.Add(value);
+				return true;
+			}
+			
+
+			return false;
 		}
 
 		public void Split() {
@@ -115,15 +120,20 @@ public class QuadTree<TValue> {
 	}
 	
 	
-
+	
 	private readonly RectangularBoundary<TValue, TValue> _outerBoundary;
-
+	private readonly uint _maxDepth;
 
 	private QuadTreeNode? _root;
 	
-	public QuadTree(RectangularBoundary<TValue, TValue> outerBoundary) {
+	public QuadTree(RectangularBoundary<TValue, TValue> outerBoundary, uint maxDepth = 20) {
+		if (maxDepth == 0) {
+			throw new ArgumentException("Maximum depth cannot be zero", nameof(maxDepth));
+		}
+		
 		
 		this._outerBoundary = outerBoundary;
+		this._maxDepth = maxDepth;
 		this._root = null;
 	}
 	
@@ -140,7 +150,7 @@ public class QuadTree<TValue> {
 		}
 		
 		QuadTreeNode? currentNode = this._root;
-		while (currentNode.Insert(valueToInsert) == false) {
+		while (currentNode.Insert(valueToInsert, this._maxDepth) == false) {
 			if (currentNode.IsLeaf()) {
 				currentNode.Split();
 			}
