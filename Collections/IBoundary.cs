@@ -98,7 +98,20 @@ public class RectangularBoundary<TX, TY> {
             (false, true) => Quadrant.SOUTH_EAST,
             (false, false) => Quadrant.SOUTH_WEST
         };
+    }
 
+    public bool Intersect(RectangularBoundary<TX, TY> other) {
+        ArgumentNullException.ThrowIfNull(other);
+        
+        bool overlapX =
+            this._west.CompareTo(other._east) < 0 &&
+            this._east.CompareTo(other._west) > 0;
+
+        bool overlapY =
+            this._south.CompareTo(other._north) < 0 &&
+            this._north.CompareTo(other._south) > 0;
+
+        return overlapX && overlapY;
     }
 }
      
