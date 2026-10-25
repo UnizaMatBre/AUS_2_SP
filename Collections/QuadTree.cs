@@ -8,8 +8,18 @@ namespace Collections;
 
 
 
-public class QuadTree<TValue> where TValue : IComparable<TValue> {
+public class QuadTree<TValue> where TValue : IComparable<TValue>
+{
 
+	private static readonly Quadrant[] TRAVERSAL_ORDER = [
+		Quadrant.NORTH_WEST,
+		Quadrant.NORTH_EAST,
+		Quadrant.SOUTH_EAST,
+		Quadrant.SOUTH_WEST
+	];
+	
+	
+	
 	private class QuadTreeNode {
 		private readonly RectangularBoundary<TValue, TValue> _myBoundary;
 
@@ -26,6 +36,8 @@ public class QuadTree<TValue> where TValue : IComparable<TValue> {
 			this._items = new List<TValue>();
 		}
 
+		
+		
 		public bool IsLeaf() {
 			return 
 				this.SouthWest == null && 
@@ -41,6 +53,14 @@ public class QuadTree<TValue> where TValue : IComparable<TValue> {
 
 			this._items.Add(value);
 			return true;
+		}
+
+		public void Split() {
+			if (this.IsLeaf() == false) {
+				throw new InvalidOperationException("Only leaf can be split.");
+			}
+			
+			throw new NotImplementedException();
 		}
 	}
 	
