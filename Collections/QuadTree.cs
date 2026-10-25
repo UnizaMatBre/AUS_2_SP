@@ -93,7 +93,12 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 			return true;
 		}
 		
-		throw new NotImplementedException();
+		QuadTreeNode currentNode = this._root;
+		while (currentNode.Insert(valueToInsert) == false) {
+			throw new NotImplementedException();
+		}
+
+		return true;
 	}
 	
 	public IEnumerable<TValue> EnumerateRange(TValue upperLeft, TValue lowerRight) {
