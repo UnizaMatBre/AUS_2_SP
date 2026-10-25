@@ -65,14 +65,11 @@ public class RectangularBoundary<TX, TY> {
     
     
     public RectangularBoundary<TX, TY> SubBoundary(Quadrant quadrant) {
-        var midX = this._east.Midpoint(this._west);
-        var midY = this._north.Midpoint(this._south);
-
-        return quadrant switch {
-            Quadrant.NORTH_WEST => new RectangularBoundary<TX, TY>(this._north, midY, midX, this._west),
-            Quadrant.NORTH_EAST => new RectangularBoundary<TX, TY>(this._north, midY, this._east, midX),
-            Quadrant.SOUTH_EAST => new RectangularBoundary<TX, TY>(midY, this._south, this._east, midX),
-            Quadrant.SOUTH_WEST => new RectangularBoundary<TX, TY>(midY, this._south, midX, this._west),
+       return quadrant switch {
+            Quadrant.NORTH_WEST => new RectangularBoundary<TX, TY>(this._north, this._midY, this._midX, this._west),
+            Quadrant.NORTH_EAST => new RectangularBoundary<TX, TY>(this._north, this._midY, this._east, this._midX),
+            Quadrant.SOUTH_EAST => new RectangularBoundary<TX, TY>(this._midY, this._south, this._east, this._midX),
+            Quadrant.SOUTH_WEST => new RectangularBoundary<TX, TY>(this._midY, this._south, this._midX, this._west),
             _ => throw new ArgumentOutOfRangeException(nameof(quadrant), quadrant, null)
         };
     }
