@@ -38,9 +38,12 @@ public class RectangularBoundary<TX, TY> {
     
     private readonly IBoundary<TY> _north;
     private readonly IBoundary<TY> _south;
+    private readonly IBoundary<TY> _midY;
     
     private readonly IBoundary<TX> _east;
     private readonly IBoundary<TX> _west;
+    private readonly IBoundary<TX> _midX;
+    
     
     
     public RectangularBoundary(IBoundary<TY> north, IBoundary<TY> south, IBoundary<TX> east, IBoundary<TX> west) {
@@ -51,9 +54,11 @@ public class RectangularBoundary<TX, TY> {
         
         this._north = north;
         this._south = south;
-
+        this._midY = north.Midpoint(south);
+        
         this._east = east;
         this._west = west;
+        this._midX = east.Midpoint(west);
     }
     
     
@@ -79,8 +84,7 @@ public class RectangularBoundary<TX, TY> {
         
         return northIn && southIn && eastIn && westin;
     }
-
-
+    
     
 }
      
