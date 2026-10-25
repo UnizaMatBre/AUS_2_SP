@@ -5,7 +5,6 @@ namespace CollectionsTests;
 
 public class FunctionalityTester {
     
-    public const int GRID_WIDTH = 100;
     
     
     private int _iterationCount;
@@ -17,6 +16,8 @@ public class FunctionalityTester {
     private ITestable2DCollection _testedCollection;
 
     private TestPoint[] _sourceDataset;
+
+    private int _maxWidth;
     
     
     private Dictionary<string, int> _counters;
@@ -27,10 +28,7 @@ public class FunctionalityTester {
         this._counters["Insert"]++;
 
         // generate new unique point
-        TestPoint newTestPoint = new(
-            this._dataCountMax % GRID_WIDTH,
-            this._dataCountMax / GRID_WIDTH
-        );
+        var newTestPoint = this._sourceDataset[this._dataCountMax];
         ++this._dataCountMax;
         
         this._dataStorage.Add(newTestPoint);
@@ -58,8 +56,8 @@ public class FunctionalityTester {
         }
         this._counters["Interval"]++;
         
-        int xMax = this._dataCountMax < GRID_WIDTH ? this._dataCountMax : GRID_WIDTH;
-        int yMax = this._dataCountMax / GRID_WIDTH;
+        int xMax = this._dataCountMax < this._maxWidth ? this._dataCountMax : this._maxWidth;
+        int yMax = this._dataCountMax / this._maxWidth;
 
         (int, int) GenerateRange(int maximum) {
             int halfPoint = maximum / 2;
@@ -113,13 +111,13 @@ public class FunctionalityTester {
         
         // generate source data 
         {
-            var maxWidth = (int)Math.Sqrt(iterationCount);
+            this._maxWidth = (int)Math.Sqrt(iterationCount);
             
             this._sourceDataset = Enumerable
                 .Range(0, iterationCount)
                 .Select((index) => {
                     return new TestPoint(
-                        index % maxWidth, index / maxWidth 
+                        (index % this._maxWidth), (index / this._maxWidth) 
                     );
                 })
                 .ToArray();
