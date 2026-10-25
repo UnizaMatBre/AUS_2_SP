@@ -22,10 +22,11 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 	
 	
 	private class QuadTreeNode {
-		private readonly RectangularBoundary<TValue, TValue> _myBoundary;
 
 		private readonly uint _depth;
 		
+		
+		public readonly RectangularBoundary<TValue, TValue> Boundary;
 		public QuadTreeNode? NorthWest;
 		public QuadTreeNode? NorthEast;
 		public QuadTreeNode? SouthEast;
@@ -35,11 +36,12 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 		
 		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
 			
-			this._myBoundary = myBoundary;
+			this.Boundary = myBoundary;
 			this._depth = depth;
 			this._items = new List<TValue>();
 		}
-
+		
+		 
 		
 		
 		public bool IsLeaf() {
@@ -66,7 +68,7 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 			
 			var childrenMap = new Dictionary<Quadrant, QuadTreeNode>();
 			foreach (var oneQuadrant in TRAVERSAL_ORDER) {
-				var childrenBoundary = this._myBoundary.SubBoundary(oneQuadrant);
+				var childrenBoundary = this.Boundary.SubBoundary(oneQuadrant);
 
 				childrenMap[oneQuadrant] = new QuadTreeNode(childrenBoundary, this._depth + 1);
 			}
@@ -74,7 +76,7 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 			
 			
 			foreach (var oneItem in this._items) {
-				var itemQuadrant = this._myBoundary.LocateQuadrantPosition(oneItem, oneItem);
+				var itemQuadrant = this.Boundary.LocateQuadrantPosition(oneItem, oneItem);
 				
 				childrenMap[itemQuadrant]._items.Add(oneItem);
 			}
@@ -102,8 +104,13 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 
 		public QuadTreeNode? GetChildFor(TValue value) {
 			return this.GetChildAt(
-				this._myBoundary.LocateQuadrantPosition(value, value)
+				this.Boundary.LocateQuadrantPosition(value, value)
 			);
+		}
+
+		public List<TValue>? GetItems() {
+
+			return this._items;
 		}
 	}
 	
@@ -151,5 +158,35 @@ public class QuadTree<TValue> where TValue : IComparable<TValue>
 	public IEnumerable<TValue> EnumerateRange(TValue upperLeft, TValue lowerRight) {
 		
 		throw new NotImplementedException();
+	}
+
+	public IEnumerable<TValue> EnumerateBoundary(RectangularBoundary<TValue, TValue> searchBoundary) {
+		Stack<QuadTreeNode> pendingNodes = new();
+		if (this._root is not null) {
+			pendingNodes.Push(this._root);
+		}
+
+		while (pendingNodes.Count != 0) {
+			var currentNode = pendingNodes.Pop();
+
+			// skip nodes that don't intersect in any way
+			if (currentNode.Boundary.Intersect(searchBoundary)) {
+				continue;
+			}
+
+			if (currentNode.IsLeaf()) {
+				// NOTE: Fix null
+				foreach (var oneItem in currentNode.GetItems()) {
+					if (searchBoundary.Contains(oneItem, oneItem)) {
+						yield return oneItem;
+					}
+				}
+			}
+			else {
+				foreach (var oneQuadrant in TRAVERSAL_ORDER) {
+					pendingNodes.Push(currentNode.GetChildAt(oneQuadrant)!);	
+				}
+			}
+		}
 	}
 }
