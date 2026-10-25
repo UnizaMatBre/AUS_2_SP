@@ -113,5 +113,15 @@ public class RectangularBoundary<TX, TY> {
 
         return overlapX && overlapY;
     }
+
+
+
+
+    public bool CanSplit() {
+        var xValid = this._north.CompareTo(this._midY) == 0 && this._south.CompareTo(this._midY) == 0;
+        var yValid = this._east.CompareTo(this._midX) == 0 && this._west.CompareTo(this._midX) == 0;
+
+        return xValid && yValid;
+    }
 }
      
