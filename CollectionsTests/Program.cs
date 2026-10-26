@@ -1,5 +1,7 @@
 ﻿using System.Drawing;
+using System.Runtime.CompilerServices;
 using Collections;
+using nietras.SeparatedValues;
 
 namespace CollectionsTests;
 
@@ -27,12 +29,42 @@ class Program
 
     }
 
+    static void RunPerformanceTests() {
+        List<TestPoint> insertData = new();
+        List<(TestPoint, TestPoint)> intervalData = new();
 
-    static void RunKdTreeExample() {
+        {
+            var pointReader = Sep.Reader().FromFile("../../../data/slovakia_nodes.csv");
+
+            foreach (var row in pointReader) {
+                insertData.Add(new(
+                    row["lat"].Parse<double>(),
+                    row["lon"].Parse<double>()
+                ));
+            }
+        }
+
+        {
+            var intervalReader = Sep.Reader().FromFile("../../../data/testovacie_oblasti.csv");
+            foreach (var row in intervalReader)
+            {
+                var min_lat = row["min_lat"].Parse<double>();
+                var min_lon = row["min_lon"].Parse<double>();
+                var max_lat = row["max_lat"].Parse<double>();
+                var max_lon = row["max_lon"].Parse<double>();
+                
+                intervalData.Add((
+                    new(min_lat, min_lon), new (max_lat, max_lon)
+                ));
+            }
+        }
+
+
+
     }
 
 
-    public const TestType SELECTED_TESTS = TestType.FUNCTITONALITY_TEST;
+    public const TestType SELECTED_TESTS = TestType.PERFORMANCE_TEST;
     
 
     static void Main(string[] args) {
@@ -45,7 +77,8 @@ class Program
 
             case TestType.PERFORMANCE_TEST: {
 
-                throw new NotImplementedException();
+                RunPerformanceTests();
+                break;
             }
         }
         
