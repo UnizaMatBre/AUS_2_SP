@@ -17,19 +17,23 @@ class Program
         int iterationCount = 100_000;
         int width = (int)Math.Sqrt(iterationCount);
         
-        //(new FunctionalityTester(new KdTreeTestingWrapper(), new Random())).Run(10_000, 0.5, 0.2, 0.3);
+        (new FunctionalityTester(new KdTreeTestingWrapper(), new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
 
+        /*
         var quadTreeWrap = new QuadTreeTestingWrapper(
             new(-1, -1), new(width + 1, width + 1)
         );
         
         (new FunctionalityTester(quadTreeWrap, new Random(1234))).Run(iterationCount, 0.5, 0.2, 0.3);
-        
+        */
         
 
     }
 
-    static void RunPerformanceTests() {
+    static void RunPerformanceTests()
+    {
+        double minX, minY, maxX, maxY;
+        
         List<TestPoint> insertData = new();
         List<(TestPoint, TestPoint)> intervalData = new();
 
@@ -42,6 +46,11 @@ class Program
                     row["lon"].Parse<double>()
                 ));
             }
+
+            minX = insertData.Min(p => p.GetX());
+            maxX = insertData.Max(p => p.GetX());
+            minY = insertData.Min(p => p.GetY());
+            maxY = insertData.Max(p => p.GetY());
         }
 
         {
@@ -59,8 +68,14 @@ class Program
             }
         }
 
-        (new PerformanceTester("my-KDTree", new KdTreeTestingWrapper(), insertData, intervalData)).Run();
-
+        // my quad tree
+        {
+            var quadTreeWrapper = new QuadTreeTestingWrapper(
+                new TestPoint(minX, minY),
+                new TestPoint(maxX, maxY)
+            );
+            (new PerformanceTester("my-QuadTree", quadTreeWrapper, insertData, intervalData)).Run();
+        }
     }
 
 
