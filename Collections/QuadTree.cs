@@ -219,21 +219,25 @@ public class QuadTree<TValue> {
 		bool CheckNode(QuadTreeNode node, RectangularBoundary<TValue, TValue> expectedBoundary, uint expectedDepth) {
 			// each node can be visited only once
 			if (visited.Add(node) == false) {
+				Console.WriteLine("Fail: node already visited");
 				return false;
 			}
 
 			// node must have correct depth
 			if (node.GetDepth() != expectedDepth) {
+				Console.WriteLine("Fail: node has the wrong depth");
 				return false;
 			}
 
 			// node cannot be deeper than maximum
 			if (node.GetDepth() > this._maxDepth) {
+				Console.WriteLine("Fail: node is deeper than maximum");
 				return false;
 			}
 
 			// node must have expected boundary
 			if (node.GetBoundary().HasSameBounds(expectedBoundary) == false) {
+				Console.WriteLine("Fail: node has wrong boundary.");
 				return false;
 			}
 			
@@ -249,6 +253,7 @@ public class QuadTree<TValue> {
 			if (childCount == 0) {
 				// if leaf is not at max depth, it cannot have more items than one
 				if (node.GetDepth() < this._maxDepth && node.GetItems().Count > 1) {
+					Console.WriteLine("Fail: Leaf that is not on bottom can have at most 1 member");
 					return false;
 				}
 
@@ -256,6 +261,7 @@ public class QuadTree<TValue> {
 				// all items must be inside of node's boundaries
 				foreach (var item in node.GetItems()) {
 					if (node.GetBoundary().Contains(item, item) == false) {
+						Console.WriteLine("Fail: Item must be inside bounds of node");
 						return false;
 					}
 				}
@@ -265,21 +271,20 @@ public class QuadTree<TValue> {
 
 			// non-leaf node must have exactly 4 children
 			if (childCount != TRAVERSAL_ORDER.Length) {
+				Console.WriteLine("Fail: Node must have either 0 or 4 children");
 				return false;
 			}
 			
 			// check all children
 			foreach (var quadrant in TRAVERSAL_ORDER) {
 				var child = node.GetChildAt(quadrant);
-				
-				
+
+
 				// check kid using recursion
 				if (CheckNode(child!, node.GetBoundary().SubBoundary(quadrant), expectedDepth + 1) == false) {
-					
+
 					return false;
 				}
-				
-
 			}
 
 			return true;
