@@ -15,6 +15,7 @@
       <PackageReference Include="Auios.QuadTree" Version="1.2.0" />
       <PackageReference Include="OmniCollections.Spatial" Version="3.0.0" />
       <PackageReference Include="Sep" Version="0.17.1" />
+      <PackageReference Include="SpatialTrees" Version="3.0.0" />
     </ItemGroup>
 
 </Project>
