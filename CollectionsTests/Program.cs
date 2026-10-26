@@ -68,13 +68,23 @@ class Program
             }
         }
 
-        // my quad tree
+        // breznican1.QuadTree
         {
             var quadTreeWrapper = new QuadTreeTestingWrapper(
                 new TestPoint(minX, minY),
                 new TestPoint(maxX, maxY)
             );
-            (new PerformanceTester("my-QuadTree", quadTreeWrapper, insertData, intervalData)).Run();
+            (new PerformanceTester("beznican1.QuadTree", quadTreeWrapper, insertData, intervalData)).Run();
+        }
+
+        // omnicollection.spatial.quadtree
+        {
+            var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
+                new TestPoint(minX, minY),
+                new TestPoint(maxX, maxY)
+            );
+            (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
+            
         }
     }
 
