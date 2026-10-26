@@ -1,4 +1,5 @@
-﻿using Collections;
+﻿using Auios.QuadTree;
+using Collections;
 using Omni.Collections.Spatial;
 
 namespace CollectionsTests;
@@ -91,6 +92,46 @@ public class OmnoCollectionQuadTreeWrapper : ITestable2DCollection {
 
         var result = this._tree.Query(rect);
         
+        return result;
+    }
+
+    public bool CheckValidity() {
+        throw new NotImplementedException();
+    }
+}
+
+
+public class AuiosQuadTreeWrapper : ITestable2DCollection {
+    private class TestPointBound : IQuadTreeObjectBounds<TestPoint> {
+        public float GetTop(TestPoint obj) => (float)obj.GetY();
+
+        public float GetBottom(TestPoint obj) => (float)obj.GetY();
+
+        public float GetLeft(TestPoint obj) => (float)obj.GetX();
+
+        public float GetRight(TestPoint obj) => (float)obj.GetX();
+    }
+    
+    private Auios.QuadTree.QuadTree<TestPoint> _tree;
+
+    public AuiosQuadTreeWrapper(float maxX, float maxY) {
+        this._tree = new(maxX, maxY, new TestPointBound());
+    }
+
+
+    public bool Insert(TestPoint point) => this._tree.Insert(point);
+
+    public IEnumerable<TestPoint> EnumerateRange(TestPoint northWestCorner, TestPoint southEastCorner) {
+        double width = southEastCorner.GetX() - northWestCorner.GetX();
+        double height = southEastCorner.GetY() - northWestCorner.GetY();
+        
+        var rect = new Auios.QuadTree.QuadTreeRect(
+            (float)northWestCorner.GetX(), (float)northWestCorner.GetY(),
+            (float)width, (float)height
+        );
+
+        var result = this._tree.FindObjects(rect);
+
         return result;
     }
 

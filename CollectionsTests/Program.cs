@@ -86,6 +86,15 @@ class Program
             (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
             
         }
+        
+        // Auios.QuadTree
+        {
+            var auiosQuadTree = new AuiosQuadTreeWrapper(
+                (float)maxX, (float)maxY
+            );
+            
+            (new PerformanceTester("Auios.QuadTree", auiosQuadTree, insertData, intervalData)).Run();
+        }
     }
 
 
