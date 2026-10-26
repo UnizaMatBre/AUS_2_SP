@@ -113,7 +113,15 @@ public class RectangularBoundary<TX, TY> {
         return overlapX && overlapY;
     }
 
+    public bool HasSameBounds(RectangularBoundary<TX, TY> other) {
+        ArgumentNullException.ThrowIfNull(other);
 
+        return
+            this._minY.CompareTo(other._minY) == 0 &&
+            this._maxY.CompareTo(other._maxY) == 0 &&
+            this._minX.CompareTo(other._minX) == 0 &&
+            this._maxX.CompareTo(other._maxX) == 0;
+    }
 
 
     public bool CanSplit() {
