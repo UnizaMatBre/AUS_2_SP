@@ -67,7 +67,7 @@ class Program
             new(0, 0), new(width + 1, width + 1)
         );
         
-        (new FunctionalityTester(quadTreeWrap, new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
+        (new FunctionalityTester(quadTreeWrap, new Random(1234))).Run(iterationCount, 0.5, 0.2, 0.3);
         
         
 
