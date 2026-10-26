@@ -3,13 +3,14 @@
 namespace CollectionsTests;
 
 public class PerformanceTester {
+    private string name;
     private ITestable2DCollection _testedCollection;
     private List<TestPoint> _insertData;
     private List<(TestPoint, TestPoint)> _intervalData;
     
     
-    public PerformanceTester(ITestable2DCollection testedCollection, List<TestPoint> insertData, List<(TestPoint, TestPoint)> intervalData) {
-        
+    public PerformanceTester(string name, ITestable2DCollection testedCollection, List<TestPoint> insertData, List<(TestPoint, TestPoint)> intervalData) {
+        this.name = name;
         this._testedCollection = testedCollection;
         this._insertData = insertData;
         this._intervalData = intervalData;
@@ -24,7 +25,7 @@ public class PerformanceTester {
     }
 
 
-    public Dictionary<string, double> Run(List<TestPoint> data, int findCount, int findIntervalCount) {
+    public Dictionary<string, double> Run() {
         Dictionary<string, double> results = new();
 
         
@@ -43,6 +44,7 @@ public class PerformanceTester {
             }
         }) / this._intervalData.Count;
         
+        Console.WriteLine($"== {this.name} ==");
         foreach (var kvp in results) {
             Console.WriteLine($"{kvp.Key}: {kvp.Value}");
         }

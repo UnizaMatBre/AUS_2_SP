@@ -59,7 +59,7 @@ class Program
             }
         }
 
-
+        (new PerformanceTester("my-KDTree", new KdTreeTestingWrapper(), insertData, intervalData)).Run();
 
     }
 
