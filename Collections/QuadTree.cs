@@ -215,58 +215,81 @@ public class QuadTree<TValue> {
 	public bool Debug_IsQuadTree() {
 
 		HashSet<QuadTreeNode> visited = new();
-		
-		bool CheckNode(QuadTreeNode node) {
-			
-			// checks if node was already visited - something impossible in quad tree
-			if (visited.Contains(node)) {
+
+		bool CheckNode(QuadTreeNode node, RectangularBoundary<TValue, TValue> expectedBoundary, uint expectedDepth) {
+			// each node can be visited only once
+			if (visited.Add(node) == false) {
 				return false;
 			}
-			visited.Add(node);
-			
-			
-			
-			// is this leaf?
-			if (node.IsLeaf()) {
-				foreach (var oneItem in node.GetItems()) {
-					var result = node.GetBoundary().Contains(oneItem, oneItem);
 
-					if (result == false) {
+			// node must have correct depth
+			if (node.GetDepth() != expectedDepth) {
+				return false;
+			}
+
+			// node cannot be deeper than maximum
+			if (node.GetDepth() > this._maxDepth) {
+				return false;
+			}
+
+			// node must have expected boundary
+			if (node.GetBoundary().HasSameBounds(expectedBoundary) == false) {
+				return false;
+			}
+			
+			// count kids
+			var childCount = 0;
+			foreach (var quadrant in TRAVERSAL_ORDER) {
+				if (node.GetChildAt(quadrant) is not null) {
+					childCount++;
+				}
+			}
+
+			// no children means it is leaf
+			if (childCount == 0) {
+				// if leaf is not at max depth, it cannot have more items than one
+				if (node.GetDepth() < this._maxDepth && node.GetItems().Count > 1) {
+					return false;
+				}
+
+				
+				// all items must be inside of node's boundaries
+				foreach (var item in node.GetItems()) {
+					if (node.GetBoundary().Contains(item, item) == false) {
 						return false;
 					}
-
 				}
 
 				return true;
 			}
+
+			// non-leaf node must have exactly 4 children
+			if (childCount != TRAVERSAL_ORDER.Length) {
+				return false;
+			}
 			
-			// not a leaf
-			{
-				// non-leafs are not allowed to have items
-				if (!node.GetItems().Any()) {
+			// check all children
+			foreach (var quadrant in TRAVERSAL_ORDER) {
+				var child = node.GetChildAt(quadrant);
+				
+				
+				// check kid using recursion
+				if (CheckNode(child!, node.GetBoundary().SubBoundary(quadrant), expectedDepth + 1) == false) {
+					
 					return false;
 				}
 				
-				// check if each children has proper depth
-				foreach (var oneQuadrant in TRAVERSAL_ORDER) {
-					var oneChild = node.GetChildAt(oneQuadrant);
 
-					if (oneChild.GetDepth() != node.GetDepth() + 1) {
-						return false;
-					}
-					
-					
-				}
-
-				return true;
 			}
-		};
 
-
-		if (this._root is null) {
 			return true;
 		}
-		
-		return CheckNode(this._root);
+
+		if (this._root is null) {
+			
+			return true;
+		}
+
+		return CheckNode(this._root, this._outerBoundary, 0);
 	}
 }
