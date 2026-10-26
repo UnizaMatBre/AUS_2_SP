@@ -34,7 +34,7 @@ public class PerformanceTester {
             foreach (var testPoint in this._insertData) {
                 this._testedCollection.Insert(testPoint);
             }
-        }) / this._intervalData.Count;
+        }) / this._insertData.Count;
         
         
         results["Interval"] = this._Measure(() =>
