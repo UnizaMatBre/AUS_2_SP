@@ -5,6 +5,7 @@ using Collections;
 using Omni.Collections.Spatial;
 using QuadTrees;
 using QuadTrees.Common;
+using SpatialTrees.Quadtrees;
 
 namespace CollectionsTests;
 
@@ -150,6 +151,54 @@ public class AuiosQuadTreeWrapper : ITestable2DCollection {
 
     public bool CheckValidity()
     {
+        throw new NotImplementedException();
+    }
+}
+
+public class HrogerQuadTreeWrapper : ITestable2DCollection {
+    private static FastG.AARectangle MakeRect(TestPoint northWestCorner, TestPoint southEastCorner) {
+        float width =  (float)(southEastCorner.GetX() - northWestCorner.GetX());
+        float height = (float)(southEastCorner.GetY() - northWestCorner.GetY());
+        
+        return new  FastG.AARectangle(
+            (float)northWestCorner.GetX(), (float)northWestCorner.GetY(),
+            width, height    
+        );
+    }
+    
+    private readonly SpatialTrees.Quadtrees.Quadtree _tree;
+
+    public HrogerQuadTreeWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
+        var rect = MakeRect(northWestCorner, southEastCorner);
+        
+        this._tree = new(rect);
+    }
+
+    public bool Insert(TestPoint point) {
+
+        try {
+            // this one throws on invalid input
+            this._tree.AddItem(point);
+        }
+        catch (ArgumentException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public IEnumerable<TestPoint> EnumerateRange(TestPoint northWestCorner, TestPoint southEastCorner) {
+        var rect = MakeRect(northWestCorner, southEastCorner);
+        
+        
+        var found = new List<IMapObject2d>();
+        bool anyFound = this._tree.GetCollidingItems(rect, 1, found);
+
+        return found.Select((value) => (TestPoint)value);
+    }
+
+    public bool CheckValidity() {
+        
         throw new NotImplementedException();
     }
 }

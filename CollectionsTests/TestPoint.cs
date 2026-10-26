@@ -1,13 +1,13 @@
 ﻿using Collections;
+using FastG;
 
 namespace CollectionsTests;
 
-public readonly struct TestPoint : IEquatable<TestPoint>
-{
+public struct TestPoint : IEquatable<TestPoint>, SpatialTrees.Quadtrees.IMapObject2d {
 
 
-    private readonly double _x;
-    private readonly double _y;
+    private double _x;
+    private double _y;
 
     public TestPoint() {
         this._x = 0;
@@ -21,7 +21,19 @@ public readonly struct TestPoint : IEquatable<TestPoint>
 
     public double GetX() => this._x;
     public double GetY() => this._y;
-    
+
+    public int ObjectType { get; set; } = 1;
+
+    public FastG.Point2 Location {
+        get => new(this._x, this._y);
+        set { 
+            this._x = value.X;
+            this._y = value.Y;
+        }
+    }
+
+    public AARectangle BoundingBox => new((float)this._x, (float)this._y, 0, 0);
+
 
     public class DimensionalComparer : IDimensionalComparer<TestPoint> {
         public uint GetDimensionCount() => 2;
