@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Collections\Collections.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Sep" Version="0.17.1" />
+    </ItemGroup>
+
 </Project>
