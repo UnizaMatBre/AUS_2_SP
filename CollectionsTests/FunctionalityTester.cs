@@ -53,6 +53,8 @@ public class FunctionalityTester {
 
     
     private Dictionary<string, int> _counters;
+
+    private int _mainCounter;
     
     private void _CheckInsert() {
         this._counters["Insert"]++;
@@ -63,7 +65,7 @@ public class FunctionalityTester {
         this._insertedPoints.Add(newTestPoint);
         if (this._testedCollection.Insert(newTestPoint) == false) {
             
-            throw new InvalidDataException($"Tree Insert Failed => Data {newTestPoint} is already in the tree");
+            throw new InvalidDataException($"[{this._mainCounter}] Tree Insert Failed for data {newTestPoint}");
         }
     }
 
@@ -114,7 +116,7 @@ public class FunctionalityTester {
         
         foreach (var oneFoundValue in foundValues) {
             if (expectedValues.Contains(oneFoundValue) == false) {
-                throw new InvalidDataException($"Tree Find Interval failed => Data {oneFoundValue} is not in result interval {lowerBoundary}-{upperBoundary}");
+                throw new InvalidDataException($"[{this._mainCounter}] Tree Find Interval failed => Data {oneFoundValue} is not in result interval {lowerBoundary}-{upperBoundary}");
             }
         }
         
@@ -158,13 +160,16 @@ public class FunctionalityTester {
         var actionRandom = new Random(this._masterRandom.Next());
 
         for (var counter = 0; counter < iterationCount; ++counter) {
+            this._mainCounter = counter;
+            
+            
             var chance = actionRandom.NextDouble();
 
             // each 10 iterations check tree validity
             if (counter % 10 == 0) {
                 if (this._testedCollection.CheckValidity() == false) {
 
-                    throw new InvalidDataException("Tree is invalid.");
+                    throw new InvalidDataException($"[{this._mainCounter}] Tree is invalid.");
                 }
             }
 
