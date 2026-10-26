@@ -5,21 +5,21 @@ namespace CollectionsTests;
 public class TestPoint {
 
 
-    private readonly int _x;
-    private readonly int _y;
+    private readonly double _x;
+    private readonly double _y;
 
     public TestPoint() {
         this._x = 0;
         this._y = 0;
     }
 
-    public TestPoint(int x, int y) {
+    public TestPoint(double x, double y) {
         this._x = x;
         this._y = y;
     }
 
-    public int GetX() => this._x;
-    public int GetY() => this._y;
+    public double GetX() => this._x;
+    public double GetY() => this._y;
 
 
     public int DimensionalCompareTo(uint dimension, TestPoint other) {
@@ -44,9 +44,9 @@ public class TestPoint {
     }
     
     public class XBoundary : IBoundary<TestPoint> {
-        private readonly int _delimiter;
+        private readonly double _delimiter;
         
-        public XBoundary(int delimiter) {
+        public XBoundary(double delimiter) {
             this._delimiter = delimiter;
         }
 
@@ -62,7 +62,7 @@ public class TestPoint {
             
             var realMidDelimiter = (this._delimiter + xBoundaryOther._delimiter) / 2.0;
             
-            return new XBoundary((int)realMidDelimiter);
+            return new XBoundary(realMidDelimiter);
         }
 
         public int CompareTo(IBoundary<TestPoint> other) {
@@ -76,9 +76,9 @@ public class TestPoint {
     
     
     public class YBoundary : IBoundary<TestPoint> {
-        private readonly int _delimiter;
+        private readonly double _delimiter;
         
-        public YBoundary(int delimiter) {
+        public YBoundary(double delimiter) {
             this._delimiter = delimiter;
         }
 
@@ -94,7 +94,7 @@ public class TestPoint {
             
             var realMidDelimiter = (this._delimiter + yBoundaryOther._delimiter) / 2.0;
             
-            return new YBoundary((int)realMidDelimiter);
+            return new YBoundary(realMidDelimiter);
         }
 
         public int CompareTo(IBoundary<TestPoint> other) {
