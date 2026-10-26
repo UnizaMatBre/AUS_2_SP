@@ -52,7 +52,7 @@ public class TestPoint {
 
         public int RelativePosition(TestPoint value) {
 
-            return this._delimiter.CompareTo(value._x);
+            return value._x.CompareTo(this._delimiter);
         }
 
         public IBoundary<TestPoint> Midpoint(IBoundary<TestPoint> other) {
@@ -84,7 +84,7 @@ public class TestPoint {
 
         public int RelativePosition(TestPoint value) {
 
-            return this._delimiter.CompareTo(value._x);
+            return value._y.CompareTo(this._delimiter);
         }
 
         public IBoundary<TestPoint> Midpoint(IBoundary<TestPoint> other) {
