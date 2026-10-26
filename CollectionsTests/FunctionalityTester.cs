@@ -161,11 +161,13 @@ public class FunctionalityTester {
             var chance = actionRandom.NextDouble();
 
             // each 10 iterations check tree validity
-            if (this._testedCollection.CheckValidity() == false) {
-                
-                throw new InvalidDataException("Tree is invalid.");
+            if (counter % 10 == 0) {
+                if (this._testedCollection.CheckValidity() == false) {
+
+                    throw new InvalidDataException("Tree is invalid.");
+                }
             }
-            
+
             if (counter % (iterationCount / 100) == 0) {
                 Console.WriteLine($"Iteration: {counter}");
             }
