@@ -49,6 +49,13 @@ public class RectangularBoundary<TX, TY> {
     private readonly IBoundary<TX> _west;
     private readonly IBoundary<TX> _midX;
     
+    public IBoundary<TX> GetEastBound() => this._east;
+    public IBoundary<TX> GetWestBound() => this._west;
+    public IBoundary<TX> GetMidXBound() => this._midX;
+
+    public IBoundary<TY> GetNorthBound() => this._north;
+    public IBoundary<TY> GetSouthBound() => this._south;
+    public IBoundary<TY> GetMidYBound() => this._midY;
     
     
     public RectangularBoundary(IBoundary<TY> north, IBoundary<TY> south, IBoundary<TX> east, IBoundary<TX> west) {
