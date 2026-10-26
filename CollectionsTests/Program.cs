@@ -69,7 +69,6 @@ class Program
         }
 
         // breznican1.QuadTree
-        /*
         {
             var quadTreeWrapper = new QuadTreeTestingWrapper(
                 new TestPoint(minX, minY),
@@ -77,9 +76,8 @@ class Program
             );
             (new PerformanceTester("beznican1.QuadTree", quadTreeWrapper, insertData, intervalData)).Run();
         }
-        */
+        
         // omnicollection.spatial.quadtree
-        /*
         {
             var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
                 new TestPoint(minX, minY),
@@ -88,10 +86,9 @@ class Program
             (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
             
         }
-        */
+        
 
         // Auios.QuadTree
-        /*
         {
             var auiosQuadTree = new AuiosQuadTreeWrapper(
                 new TestPoint(minX, minY),
@@ -100,7 +97,7 @@ class Program
             (new PerformanceTester("Auios.QuadTree", auiosQuadTree, insertData, intervalData)).Run();
 
         }
-        */
+        
         // SpatialTrees.QuadTree
         {
             var hrogenQuadTree = new HrogerQuadTreeWrapper(
