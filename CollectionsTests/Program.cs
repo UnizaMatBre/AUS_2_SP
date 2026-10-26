@@ -58,7 +58,7 @@ public enum TestType {
 class Program
 {
     static void RunFunctionalityTests() {
-        int iterationCount = 10_000;
+        int iterationCount = 100_000;
         int width = (int)Math.Sqrt(iterationCount);
         
         //(new FunctionalityTester(new KdTreeTestingWrapper(), new Random())).Run(10_000, 0.5, 0.2, 0.3);
