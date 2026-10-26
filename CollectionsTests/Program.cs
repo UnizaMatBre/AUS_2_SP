@@ -49,7 +49,6 @@ class QuadTreeTestingWrapper : ITestable2DCollection {
 }
 
 public enum TestType {
-    EXAMPLE_TEST,
     FUNCTITONALITY_TEST,
     PERFORMANCE_TEST
 }
@@ -81,17 +80,10 @@ class Program
     public const TestType SELECTED_TESTS = TestType.FUNCTITONALITY_TEST;
     
 
-    static void Main(string[] args)
-    {
-        switch (SELECTED_TESTS)
-        {
-            case TestType.EXAMPLE_TEST: {
-                var testobj = new KdExampleTest();
-                break;
+    static void Main(string[] args) {
+        switch (SELECTED_TESTS) {
 
-            }
-
-            case TestType.FUNCTITONALITY_TEST: {
+             case TestType.FUNCTITONALITY_TEST: {
                 RunFunctionalityTests();
                 break;
             }
