@@ -14,8 +14,10 @@
     <ItemGroup>
       <PackageReference Include="Auios.QuadTree" Version="1.2.0" />
       <PackageReference Include="OmniCollections.Spatial" Version="3.0.0" />
+      <PackageReference Include="QuadTrees" Version="1.0.4" />
       <PackageReference Include="Sep" Version="0.17.1" />
       <PackageReference Include="SpatialTrees" Version="3.0.0" />
+      <PackageReference Include="Themis.Index" Version="2025.3.5" />
     </ItemGroup>
 
 </Project>

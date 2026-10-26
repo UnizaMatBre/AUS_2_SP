@@ -40,7 +40,10 @@ public class PerformanceTester {
         
         double intervals = this._Measure(() => {
             foreach (var pointPair in this._intervalData) {
-                var result = this._testedCollection.EnumerateRange(pointPair.Item1, pointPair.Item2).ToArray();
+                var result = this._testedCollection.EnumerateRange(pointPair.Item1, pointPair.Item2);
+                foreach (var testPoint in result) {
+                    var stored = testPoint.GetX();
+                }
             }
         }) / this._intervalData.Count;
         Console.WriteLine($"+ Intervals: {intervals}");

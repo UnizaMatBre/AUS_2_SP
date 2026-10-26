@@ -1,6 +1,10 @@
-﻿using Auios.QuadTree;
+﻿using System.Numerics;
+using System.Security.AccessControl;
+using Auios.QuadTree;
 using Collections;
 using Omni.Collections.Spatial;
+using QuadTrees;
+using QuadTrees.Common;
 
 namespace CollectionsTests;
 
@@ -102,7 +106,8 @@ public class OmnoCollectionQuadTreeWrapper : ITestable2DCollection {
 
 
 public class AuiosQuadTreeWrapper : ITestable2DCollection {
-    private class TestPointBound : IQuadTreeObjectBounds<TestPoint> {
+    private class CustomBounds : Auios.QuadTree.IQuadTreeObjectBounds<TestPoint>
+    {
         public float GetTop(TestPoint obj) => (float)obj.GetY();
 
         public float GetBottom(TestPoint obj) => (float)obj.GetY();
@@ -111,31 +116,40 @@ public class AuiosQuadTreeWrapper : ITestable2DCollection {
 
         public float GetRight(TestPoint obj) => (float)obj.GetX();
     }
-    
-    private Auios.QuadTree.QuadTree<TestPoint> _tree;
 
-    public AuiosQuadTreeWrapper(float maxX, float maxY) {
-        this._tree = new(maxX, maxY, new TestPointBound());
+
+    private readonly Auios.QuadTree.QuadTree<TestPoint> _tree;
+
+    public AuiosQuadTreeWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
+        float width =  (float)(southEastCorner.GetX() - northWestCorner.GetX());
+        float height = (float)(southEastCorner.GetY() - northWestCorner.GetY());
+        
+        
+        this._tree = new( 
+            new Vector2((float)northWestCorner.GetX(), (float)northWestCorner.GetY()),
+            new Vector2(width, height),
+            new CustomBounds()
+        );
     }
-
 
     public bool Insert(TestPoint point) => this._tree.Insert(point);
 
     public IEnumerable<TestPoint> EnumerateRange(TestPoint northWestCorner, TestPoint southEastCorner) {
-        double width = southEastCorner.GetX() - northWestCorner.GetX();
-        double height = southEastCorner.GetY() - northWestCorner.GetY();
         
-        var rect = new Auios.QuadTree.QuadTreeRect(
+        float width =  (float)(southEastCorner.GetX() - northWestCorner.GetX());
+        float height = (float)(southEastCorner.GetY() - northWestCorner.GetY());
+
+        Auios.QuadTree.QuadTreeRect searchArea = new(
             (float)northWestCorner.GetX(), (float)northWestCorner.GetY(),
-            (float)width, (float)height
+            width, height
         );
-
-        var result = this._tree.FindObjects(rect);
-
-        return result;
+        
+        
+        return this._tree.FindObjects(searchArea);
     }
 
-    public bool CheckValidity() {
+    public bool CheckValidity()
+    {
         throw new NotImplementedException();
     }
 }
