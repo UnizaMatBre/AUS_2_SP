@@ -64,7 +64,7 @@ class Program
         //(new FunctionalityTester(new KdTreeTestingWrapper(), new Random())).Run(10_000, 0.5, 0.2, 0.3);
 
         var quadTreeWrap = new QuadTreeTestingWrapper(
-            new(0, 0), new(width + 1, width + 1)
+            new(-1, -1), new(width + 1, width + 1)
         );
         
         (new FunctionalityTester(quadTreeWrap, new Random(1234))).Run(iterationCount, 0.5, 0.2, 0.3);
