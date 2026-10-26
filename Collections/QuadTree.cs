@@ -117,6 +117,17 @@ public class QuadTree<TValue> {
 
 			return this._items;
 		}
+			
+
+		public RectangularBoundary<TValue, TValue> GetBoundary() {
+
+			return this.Boundary;
+		}
+
+		public uint GetDepth() {
+			
+			return this._depth;
+		}
 	}
 	
 	
@@ -203,6 +214,59 @@ public class QuadTree<TValue> {
 
 	public bool Debug_IsQuadTree() {
 
-		throw new NotImplementedException();
+		HashSet<QuadTreeNode> visited = new();
+		
+		bool CheckNode(QuadTreeNode node) {
+			
+			// checks if node was already visited - something impossible in quad tree
+			if (visited.Contains(node)) {
+				return false;
+			}
+			visited.Add(node);
+			
+			
+			
+			// is this leaf?
+			if (node.IsLeaf()) {
+				foreach (var oneItem in node.GetItems()) {
+					var result = node.GetBoundary().Contains(oneItem, oneItem);
+
+					if (result == false) {
+						return false;
+					}
+
+				}
+
+				return true;
+			}
+			
+			// not a leaf
+			{
+				// non-leafs are not allowed to have items
+				if (!node.GetItems().Any()) {
+					return false;
+				}
+				
+				// check if each children has proper depth
+				foreach (var oneQuadrant in TRAVERSAL_ORDER) {
+					var oneChild = node.GetChildAt(oneQuadrant);
+
+					if (oneChild.GetDepth() != node.GetDepth() + 1) {
+						return false;
+					}
+					
+					
+				}
+
+				return true;
+			}
+		};
+
+
+		if (this._root is null) {
+			return true;
+		}
+		
+		return CheckNode(this._root);
 	}
 }
