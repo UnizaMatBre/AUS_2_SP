@@ -89,13 +89,13 @@ public class RectangularBoundary<TX, TY> {
 
     public Quadrant LocateQuadrantPosition(TX x, TY y) {
         bool inNorth = this._midY.RelativePosition(y) <= 0;
-        bool inEast = this._midX.RelativePosition(x) <= 0;
+        bool inWest = this._midX.RelativePosition(x) <= 0;
 
-        return (inNorth, inEast) switch {
-            (true, true) => Quadrant.NORTH_EAST,
-            (true, false) => Quadrant.NORTH_WEST,
-            (false, true) => Quadrant.SOUTH_EAST,
-            (false, false) => Quadrant.SOUTH_WEST
+        return (inNorth, inWest) switch {
+            (true, true) => Quadrant.NORTH_WEST,
+            (true, false) => Quadrant.NORTH_EAST,
+            (false, true) => Quadrant.SOUTH_WEST,
+            (false, false) => Quadrant.SOUTH_EAST
         };
     }
 
