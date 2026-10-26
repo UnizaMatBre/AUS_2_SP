@@ -2,7 +2,8 @@
 
 namespace CollectionsTests;
 
-public class TestPoint {
+public readonly struct TestPoint : IEquatable<TestPoint>
+{
 
 
     private readonly double _x;
@@ -20,16 +21,7 @@ public class TestPoint {
 
     public double GetX() => this._x;
     public double GetY() => this._y;
-
-
-    public int DimensionalCompareTo(uint dimension, TestPoint other) {
-        return dimension switch {
-            0 => this._x.CompareTo(other._x),
-            1 => this._y.CompareTo(other._y),
-            _ => throw new ArgumentOutOfRangeException(nameof(dimension))
-        };
-    }
-
+    
 
     public class DimensionalComparer : IDimensionalComparer<TestPoint> {
         public uint GetDimensionCount() => 2;
@@ -109,5 +101,17 @@ public class TestPoint {
     public override String ToString() {
 
         return $"({this._x} : {this._y})";
+    }
+
+    public bool Equals(TestPoint other) {
+        return this._x.Equals(other._x) && this._y.Equals(other._y);
+    }
+
+    public override bool Equals(object? obj) {
+        return obj is TestPoint other && this.Equals(other);
+    }
+
+    public override int GetHashCode() {
+        return HashCode.Combine(this._x, this._y);
     }
 }
