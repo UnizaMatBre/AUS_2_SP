@@ -111,12 +111,12 @@ public class RectangularBoundary<TX, TY> {
         ArgumentNullException.ThrowIfNull(other);
         
         bool overlapX =
-            this._west.CompareTo(other._east) < 0 &&
-            this._east.CompareTo(other._west) > 0;
+            this._west.CompareTo(other._east) <= 0 &&
+            this._east.CompareTo(other._west) >= 0;
 
         bool overlapY =
-            this._south.CompareTo(other._north) < 0 &&
-            this._north.CompareTo(other._south) > 0;
+            this._south.CompareTo(other._north) <= 0 &&
+            this._north.CompareTo(other._south) >= 0;
 
         return overlapX && overlapY;
     }
