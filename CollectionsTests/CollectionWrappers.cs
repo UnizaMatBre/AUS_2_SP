@@ -1,4 +1,5 @@
 ﻿using Collections;
+using Omni.Collections.Spatial;
 
 namespace CollectionsTests;
 
@@ -15,7 +16,7 @@ public class KdTreeTestingWrapper : ITestable2DCollection {
 }
 
 public class QuadTreeTestingWrapper : ITestable2DCollection {
-    private readonly QuadTree<TestPoint> _tree;
+    private readonly Collections.QuadTree<TestPoint> _tree;
 
     private static RectangularBoundary<TestPoint, TestPoint> FromCorners(TestPoint northWestCorner, TestPoint southEastCorner) {
         var north = new TestPoint.YBoundary(northWestCorner.GetY());
@@ -32,7 +33,7 @@ public class QuadTreeTestingWrapper : ITestable2DCollection {
     public QuadTreeTestingWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
         var rect = FromCorners(northWestCorner, southEastCorner);
         
-        this._tree = new QuadTree<TestPoint>(rect);
+        this._tree = new Collections.QuadTree<TestPoint>(rect);
     }
     
     
@@ -46,4 +47,54 @@ public class QuadTreeTestingWrapper : ITestable2DCollection {
     }
 
     public bool CheckValidity() => this._tree.Debug_IsQuadTree();
+}
+
+
+public class OmnoCollectionQuadTreeWrapper : ITestable2DCollection {
+    private readonly Omni.Collections.Spatial.QuadTree<TestPoint> _tree;
+
+    private static Omni.Collections.Spatial.Rectangle MakeRectangle(TestPoint northWestCorner, TestPoint southEastCorner) {
+        double width = southEastCorner.GetX() - northWestCorner.GetX();
+        double height = southEastCorner.GetY() - northWestCorner.GetY();
+        
+        
+        return new Omni.Collections.Spatial.Rectangle(
+            northWestCorner.GetX(), northWestCorner.GetY(),
+            width, height
+        );
+        
+    }
+    
+    public OmnoCollectionQuadTreeWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
+        var rect = MakeRectangle(northWestCorner, southEastCorner);
+
+        this._tree = new(rect);
+    }
+
+    public bool Insert(TestPoint point) {
+
+        try {
+            // this one throws on invalid input
+            this._tree.Insert(
+                new(point.GetX(), point.GetY()), point
+            );
+        }
+        catch (ArgumentException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public IEnumerable<TestPoint> EnumerateRange(TestPoint northWestCorner, TestPoint southEastCorner) {
+        var rect = MakeRectangle(northWestCorner, southEastCorner);
+
+        var result = this._tree.Query(rect);
+        
+        return result;
+    }
+
+    public bool CheckValidity() {
+        throw new NotImplementedException();
+    }
 }
