@@ -28,26 +28,26 @@ public class PerformanceTester {
     public Dictionary<string, double> Run() {
         Dictionary<string, double> results = new();
 
-        
-        results["Insert"] = this._Measure(() =>
-        {
+        Console.WriteLine($"== {this.name} ==");
+        double inserts = this._Measure(() => {
             foreach (var testPoint in this._insertData) {
                 this._testedCollection.Insert(testPoint);
             }
         }) / this._insertData.Count;
+        Console.WriteLine($"+ Insert: {inserts}");
         
         
-        results["Interval"] = this._Measure(() =>
-        {
+        
+        double intervals = this._Measure(() => {
             foreach (var pointPair in this._intervalData) {
                 var result = this._testedCollection.EnumerateRange(pointPair.Item1, pointPair.Item2).ToArray();
             }
         }) / this._intervalData.Count;
+        Console.WriteLine($"+ Intervals: {intervals}");
         
-        Console.WriteLine($"== {this.name} ==");
-        foreach (var kvp in results) {
-            Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-        }
+
+        results.Add("Inserts", inserts);
+        results.Add("Intervals", intervals);
         
         return results;
     }
