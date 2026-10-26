@@ -107,8 +107,8 @@ public class RectangularBoundary<TX, TY> {
             this._maxX.CompareTo(other._minX) >= 0;
 
         bool overlapY =
-            this._maxY.CompareTo(other._minY) <= 0 &&
-            this._minY.CompareTo(other._maxY) >= 0;
+            this._minY.CompareTo(other._maxY) <= 0 &&
+            this._maxY.CompareTo(other._minY) >= 0;
 
         return overlapX && overlapY;
     }
