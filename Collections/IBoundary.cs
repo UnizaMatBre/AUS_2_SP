@@ -41,57 +41,49 @@ public interface IBoundary<TValue> {
 
 public class RectangularBoundary<TX, TY> {
     
-    private readonly IBoundary<TY> _north;
-    private readonly IBoundary<TY> _south;
+    private readonly IBoundary<TY> _minY;
+    private readonly IBoundary<TY> _maxY;
     private readonly IBoundary<TY> _midY;
     
-    private readonly IBoundary<TX> _east;
-    private readonly IBoundary<TX> _west;
+    private readonly IBoundary<TX> _maxX;
+    private readonly IBoundary<TX> _minX;
     private readonly IBoundary<TX> _midX;
     
-    public IBoundary<TX> GetEastBound() => this._east;
-    public IBoundary<TX> GetWestBound() => this._west;
-    public IBoundary<TX> GetMidXBound() => this._midX;
-
-    public IBoundary<TY> GetNorthBound() => this._north;
-    public IBoundary<TY> GetSouthBound() => this._south;
-    public IBoundary<TY> GetMidYBound() => this._midY;
     
-    
-    public RectangularBoundary(IBoundary<TY> north, IBoundary<TY> south, IBoundary<TX> east, IBoundary<TX> west) {
-        ArgumentNullException.ThrowIfNull(north);
-        ArgumentNullException.ThrowIfNull(south);
-        ArgumentNullException.ThrowIfNull(east);
-        ArgumentNullException.ThrowIfNull(west);
+    public RectangularBoundary(IBoundary<TY> minY, IBoundary<TY> maxY, IBoundary<TX> maxX, IBoundary<TX> minX) {
+        ArgumentNullException.ThrowIfNull(minY);
+        ArgumentNullException.ThrowIfNull(maxY);
+        ArgumentNullException.ThrowIfNull(maxX);
+        ArgumentNullException.ThrowIfNull(minX);
         
-        this._north = north;
-        this._south = south;
-        this._midY = north.Midpoint(south);
+        this._minY = minY;
+        this._maxY = maxY;
+        this._midY = minY.Midpoint(maxY);
         
-        this._east = east;
-        this._west = west;
-        this._midX = east.Midpoint(west);
+        this._maxX = maxX;
+        this._minX = minX;
+        this._midX = maxX.Midpoint(minX);
     }
     
     
     public RectangularBoundary<TX, TY> SubBoundary(Quadrant quadrant) {
        return quadrant switch {
-            Quadrant.NORTH_WEST => new RectangularBoundary<TX, TY>(this._north, this._midY, this._midX, this._west),
-            Quadrant.NORTH_EAST => new RectangularBoundary<TX, TY>(this._north, this._midY, this._east, this._midX),
-            Quadrant.SOUTH_EAST => new RectangularBoundary<TX, TY>(this._midY, this._south, this._east, this._midX),
-            Quadrant.SOUTH_WEST => new RectangularBoundary<TX, TY>(this._midY, this._south, this._midX, this._west),
+            Quadrant.NORTH_WEST => new RectangularBoundary<TX, TY>(this._minY, this._midY, this._midX, this._minX),
+            Quadrant.NORTH_EAST => new RectangularBoundary<TX, TY>(this._minY, this._midY, this._maxX, this._midX),
+            Quadrant.SOUTH_EAST => new RectangularBoundary<TX, TY>(this._midY, this._maxY, this._maxX, this._midX),
+            Quadrant.SOUTH_WEST => new RectangularBoundary<TX, TY>(this._midY, this._maxY, this._midX, this._minX),
             _ => throw new ArgumentOutOfRangeException(nameof(quadrant), quadrant, null)
         };
     }
 
     public bool Contains(TX x, TY y) {
-        var northIn = this._north.RelativePosition(y) > 0;
-        var southIn = this._south.RelativePosition(y) <= 0;
+        var minYIn = this._minY.RelativePosition(y) > 0;
+        var maxYIn = this._maxY.RelativePosition(y) <= 0;
         
-        var westIn = this._west.RelativePosition(x) > 0;
-        var eastIn = this._east.RelativePosition(x) <= 0;
+        var minXIn = this._minX.RelativePosition(x) > 0;
+        var maxXIn = this._maxX.RelativePosition(x) <= 0;
         
-        return northIn && southIn && eastIn && westIn;
+        return minYIn && maxYIn && maxXIn && minXIn;
     }
 
 
@@ -111,12 +103,12 @@ public class RectangularBoundary<TX, TY> {
         ArgumentNullException.ThrowIfNull(other);
         
         bool overlapX =
-            this._west.CompareTo(other._east) <= 0 &&
-            this._east.CompareTo(other._west) >= 0;
+            this._minX.CompareTo(other._maxX) <= 0 &&
+            this._maxX.CompareTo(other._minX) >= 0;
 
         bool overlapY =
-            this._south.CompareTo(other._north) <= 0 &&
-            this._north.CompareTo(other._south) >= 0;
+            this._maxY.CompareTo(other._minY) <= 0 &&
+            this._minY.CompareTo(other._maxY) >= 0;
 
         return overlapX && overlapY;
     }
@@ -125,12 +117,12 @@ public class RectangularBoundary<TX, TY> {
 
 
     public bool CanSplit() {
-        bool northValid = this._north.CompareTo(this._midY) < 0;
-        bool southValid = this._midY.CompareTo(this._south) < 0;
-        bool westValid = this._west.CompareTo(this._midX) < 0;
-        bool eastValid = this._midX.CompareTo(this._east) < 0;
+        bool minYValid = this._minY.CompareTo(this._midY) < 0;
+        bool maxYValid = this._midY.CompareTo(this._maxY) < 0;
+        bool minXValid = this._minX.CompareTo(this._midX) < 0;
+        bool maxXValid = this._midX.CompareTo(this._maxX) < 0;
         
-        return northValid && southValid && westValid && eastValid;
+        return minYValid && maxYValid && minXValid && maxXValid;
     }
 }
      
