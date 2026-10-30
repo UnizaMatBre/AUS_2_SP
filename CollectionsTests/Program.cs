@@ -77,6 +77,14 @@ class Program
             (new PerformanceTester("beznican1.QuadTree", quadTreeWrapper, insertData, intervalData)).Run();
         }
         
+        // breznican1.KdTree
+        {
+            var kdTreeWrapper = new KdTreeTestingWrapper();
+            (new PerformanceTester("breznican1.KdTree", kdTreeWrapper, insertData, intervalData)).Run();
+        }
+        
+        /*
+        
         // omnicollection.spatial.quadtree
         {
             var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
@@ -107,7 +115,7 @@ class Program
             (new PerformanceTester("Hrogen.SpatialTrees.QuadTree", hrogenQuadTree, insertData, intervalData)).Run();
             
         }
-
+        */
 
     }
 
