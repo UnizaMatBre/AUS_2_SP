@@ -70,28 +70,25 @@ public class QuadTree<TValue> {
 			if (this.IsLeaf() == false) {
 				throw new InvalidOperationException("Only leaf can be split.");
 			}
-			
-			var childrenMap = new Dictionary<Quadrant, QuadTreeNode>();
-			foreach (var oneQuadrant in TRAVERSAL_ORDER) {
-				var childrenBoundary = this.Boundary.SubBoundary(oneQuadrant);
 
-				childrenMap[oneQuadrant] = new QuadTreeNode(childrenBoundary, this._depth + 1);
-			}
-			
-			
-			
-			foreach (var oneItem in this._items) {
-				var itemQuadrant = this.Boundary.LocateQuadrantPosition(oneItem, oneItem);
+			QuadTreeNode MakeChild(Quadrant quadrant) {
+				var childrenBoundary = this.Boundary.SubBoundary(quadrant);
 				
-				childrenMap[itemQuadrant]._items.Add(oneItem);
+				return new QuadTreeNode(childrenBoundary, this._depth + 1);
 			}
 			
-			this.NorthWest = childrenMap[Quadrant.NORTH_WEST];
-			this.NorthEast = childrenMap[Quadrant.NORTH_EAST];
-			this.SouthEast = childrenMap[Quadrant.SOUTH_EAST];
-			this.SouthWest = childrenMap[Quadrant.SOUTH_WEST];
+			this.NorthWest = MakeChild(Quadrant.NORTH_WEST);
+			this.NorthEast = MakeChild(Quadrant.NORTH_EAST);
+			this.SouthEast = MakeChild(Quadrant.SOUTH_EAST);
+			this.SouthWest = MakeChild(Quadrant.SOUTH_WEST);
 
-			// is this really the best approach?
+
+			foreach (var oneItem in this._items) {
+				var itemsQuadrant = this.Boundary.LocateQuadrantPosition(oneItem, oneItem);
+				
+				this.GetChildAt(itemsQuadrant)!._items.Add(oneItem);
+			}
+			
 			this._items = EMPTY_LIST.AsReadOnly();
 		}
 
