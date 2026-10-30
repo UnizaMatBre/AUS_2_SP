@@ -78,10 +78,12 @@ class Program
         }
         
         // breznican1.KdTree
+        /*
         {
             var kdTreeWrapper = new KdTreeTestingWrapper();
             (new PerformanceTester("breznican1.KdTree", kdTreeWrapper, insertData, intervalData)).Run();
         }
+        */
         
         /*
         
