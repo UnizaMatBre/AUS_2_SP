@@ -57,7 +57,7 @@ public class QuadTree<TValue> {
 				return false;
 			}
 
-			if (this._items.Count == 0 || this._depth >= maxDepth) {
+			if (this._items.Count == 0 || this._depth >= maxDepth || this.Boundary.CanSplit() == false) {
 				this._items.Add(value);
 				return true;
 			}
@@ -67,7 +67,7 @@ public class QuadTree<TValue> {
 		}
 
 		public void Split() {
-			if (this.IsLeaf() == false) {
+			if (this.IsLeaf() == false || this.Boundary.CanSplit() == false) {
 				throw new InvalidOperationException("Only leaf can be split.");
 			}
 
