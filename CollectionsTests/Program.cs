@@ -42,7 +42,8 @@ class Program
                 benchmark.GetSouthEastCorner()
             );
 
-            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); ;
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(quadTreeWrapper));
         }
         
         // breznican1.KdTree
