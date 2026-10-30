@@ -32,49 +32,17 @@ class Program
 
     static void RunPerformanceTests()
     {
-        double minX, minY, maxX, maxY;
+        var benchmark = new Benchmark();
+        benchmark.LoadTestData();
         
-        List<TestPoint> insertData = new();
-        List<(TestPoint, TestPoint)> intervalData = new();
-
         {
-            var pointReader = Sep.Reader().FromFile("../../../data/slovakia_nodes.csv");
-
-            foreach (var row in pointReader) {
-                insertData.Add(new(
-                    row["lat"].Parse<double>(),
-                    row["lon"].Parse<double>()
-                ));
-            }
-
-            minX = insertData.Min(p => p.GetX());
-            maxX = insertData.Max(p => p.GetX());
-            minY = insertData.Min(p => p.GetY());
-            maxY = insertData.Max(p => p.GetY());
-        }
-
-        {
-            var intervalReader = Sep.Reader().FromFile("../../../data/testovacie_oblasti.csv");
-            foreach (var row in intervalReader)
-            {
-                var min_lat = row["min_lat"].Parse<double>();
-                var min_lon = row["min_lon"].Parse<double>();
-                var max_lat = row["max_lat"].Parse<double>();
-                var max_lon = row["max_lon"].Parse<double>();
-                
-                intervalData.Add((
-                    new(min_lat, min_lon), new (max_lat, max_lon)
-                ));
-            }
-        }
-
-        // breznican1.QuadTree
-        {
-            var quadTreeWrapper = new QuadTreeTestingWrapper(
-                new TestPoint(minX, minY),
-                new TestPoint(maxX, maxY)
+            Console.WriteLine("=== breznican1.QuadTree ===");
+            var quadTreeWrapper = new QuadTreeTestingWrapper(  
+                benchmark.GetNorthWestCorner(),
+                benchmark.GetSouthEastCorner()
             );
-            (new PerformanceTester("beznican1.QuadTree", quadTreeWrapper, insertData, intervalData)).Run();
+
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); ;
         }
         
         // breznican1.KdTree

@@ -10,6 +10,18 @@ public class Benchmark {
     private readonly List<(TestPoint, TestPoint)> _intervalData;
 
 
+    public double GetMinX() => this._minX;
+    public double GetMaxX() => this._maxX;
+    
+    public double GetMinY() => this._minY;
+    public double GetMaxY() => this._maxY;
+
+
+    public TestPoint GetNorthWestCorner() => new TestPoint(this._minX, this._minY);
+
+    public TestPoint GetSouthEastCorner() => new TestPoint(this._maxX, this._maxY);
+    
+
     public Benchmark() {
         this._insertData = new();
         this._intervalData = new();
