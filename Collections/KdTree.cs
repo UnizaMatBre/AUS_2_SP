@@ -53,6 +53,7 @@ public class KdTree<TValue> {
 	}
 
 	private readonly IDimensionalComparer<TValue> _comparer;
+	private int _itemCount;
 	private KdTreeNode? _root;
 	
 	
@@ -63,6 +64,7 @@ public class KdTree<TValue> {
 		}
 		
 		this._comparer = comparer;
+		this._itemCount = 0;
 		this._root = null;
 	}
 
@@ -75,6 +77,7 @@ public class KdTree<TValue> {
 		if (this._root is null) {
 			this._root = new KdTreeNode(valueToInsert, null);
 			
+			this._itemCount++;
 			return true;
 		}
 		
@@ -102,6 +105,7 @@ public class KdTree<TValue> {
 				KdTreeNode newNode = new KdTreeNode(valueToInsert, current);
 				branch = newNode;
                 
+				this._itemCount++;
 				return true;
 			}
             
@@ -115,6 +119,8 @@ public class KdTree<TValue> {
 
 		throw new NotImplementedException();
 	}
+
+	public int Count() => this._itemCount;
 	
 	/// <summary>
 	/// Returns values that fit into inclusive range between lower bound and upper bound.
