@@ -34,7 +34,14 @@ class Program
     {
         var benchmark = new Benchmark();
         benchmark.LoadTestData();
-        
+
+        {
+            Console.WriteLine("=== breznican1.KdTree ===");
+            var kdTreeWrapper = new KdTreeTestingWrapper();
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(kdTreeWrapper));
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(kdTreeWrapper));
+        }
+
         {
             Console.WriteLine("=== breznican1.QuadTree ===");
             var quadTreeWrapper = new QuadTreeTestingWrapper(  
@@ -45,6 +52,7 @@ class Program
             Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); 
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(quadTreeWrapper));
         }
+        
         
         // breznican1.KdTree
         /*
