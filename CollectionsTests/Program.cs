@@ -18,6 +18,7 @@ class Program
         int width = (int)Math.Sqrt(iterationCount);
         
         (new FunctionalityTester(new KdTreeTestingWrapper(), new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
+        (new FunctionalityTester(new QuadTreeTestingWrapper(new TestPoint(-1, -1), new TestPoint(width + 2, width + 2)), new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
 
         /*
         var quadTreeWrap = new QuadTreeTestingWrapper(
@@ -99,7 +100,7 @@ class Program
     }
 
 
-    public const TestType SELECTED_TESTS = TestType.PERFORMANCE_TEST;
+    public const TestType SELECTED_TESTS = TestType.FUNCTITONALITY_TEST;
     
 
     static void Main(string[] args) {
