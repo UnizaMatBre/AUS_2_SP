@@ -117,51 +117,38 @@ public class KdTree<TValue> {
 	}
 	
 	/// <summary>
-	/// Returns values that fit into inclusive range between lower bound and upper bound. Items will have inorder ordering. 
+	/// Returns values that fit into inclusive range between lower bound and upper bound.
 	/// </summary>
 	/// <param name="lowerBound">lower bound of range</param>
 	/// <param name="upperBound">upper bound of range</param>
 	/// <returns>IEnumerable containing selected values</returns>
 	public IEnumerable<TValue> EnumerateRange(TValue lowerBound, TValue upperBound) {
-		if (this._root is null) {
+		Stack<(KdTreeNode, uint)> pendingNodesWithLayer = new();
+		if(this._root is not null) {
+			pendingNodesWithLayer.Push((this._root, 0));
+		}
+		
+		while(pendingNodesWithLayer.Count > 0) {
+			var (currentNode, layer) = pendingNodesWithLayer.Pop();
 			
-			yield break;
-		}
-		
-		KdTreeNode? current = this._root;
-		KdTreeNode? minimum = null;
-		uint layer = 0;
-		
-		while (current is not null) {
+			// check if current node is in range
+			if(this._comparer.InclusiveBetween(currentNode.Value, lowerBound, upperBound)) {
+				yield return currentNode.Value;
+			}
+			
 			uint dimension = layer % this._comparer.GetDimensionCount();
-
-			int cmpResult = this._comparer.DimensionalCompare(dimension, lowerBound, current.Value);
-
-			if (cmpResult <= 0) {
-				// current is more than lower bound?
-				// remember current and go left
-				minimum = current;
-				current = current.Left;
+			
+			// check left subtree
+			if(currentNode.Left is not null && this._comparer.DimensionalCompare(dimension, currentNode.Value, lowerBound) >= 0) {
+				pendingNodesWithLayer.Push((currentNode.Left, layer + 1));
 			}
-			else {
-				// current is less than lower bound?
-				// we went too far - go right
-				current = current.Right;
+			
+			// check right subtree
+			if(currentNode.Right is not null && this._comparer.DimensionalCompare(dimension, currentNode.Value, upperBound) < 0) {
+				pendingNodesWithLayer.Push((currentNode.Right, layer + 1));
 			}
-
-			++layer;
 		}
 		
-		
-		// from minimum, do inorder traveral until we pass upper bound
-		current = minimum;
-		while (current is not null) {
-			if (this._comparer.InclusiveBetween(current.Value, lowerBound, upperBound)) {
-				yield return current.Value;
-			}
-
-			current = current.InOrderNext();
-		}
 	}
 
 	/// <summary>
