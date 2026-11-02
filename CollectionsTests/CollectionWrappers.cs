@@ -22,7 +22,7 @@ public class KdTreeTestingWrapper : ITestable2DCollection {
 }
 
 public class QuadTreeTestingWrapper : ITestable2DCollection {
-    private readonly Collections.QuadTree<TestPoint> _tree;
+    private readonly Collections.QuadTreeWithList<TestPoint> _treeWithList;
 
     private static RectangularBoundary<TestPoint, TestPoint> FromCorners(TestPoint northWestCorner, TestPoint southEastCorner) {
         var north = new TestPoint.YBoundary(northWestCorner.GetY());
@@ -39,20 +39,20 @@ public class QuadTreeTestingWrapper : ITestable2DCollection {
     public QuadTreeTestingWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
         var rect = FromCorners(northWestCorner, southEastCorner);
         
-        this._tree = new Collections.QuadTree<TestPoint>(rect);
+        this._treeWithList = new Collections.QuadTreeWithList<TestPoint>(rect);
     }
     
     
-    public bool Insert(TestPoint point) => this._tree.Insert(point);
+    public bool Insert(TestPoint point) => this._treeWithList.Insert(point);
 
     public IEnumerable<TestPoint> EnumerateRange(TestPoint northWestCorner, TestPoint southEastCorner) {
         var rect = FromCorners(northWestCorner, southEastCorner);
 
 
-        return this._tree.EnumerateBoundary(rect);
+        return this._treeWithList.EnumerateBoundary(rect);
     }
 
-    public bool CheckValidity() => this._tree.Debug_IsQuadTree();
+    public bool CheckValidity() => this._treeWithList.Debug_IsQuadTree();
 }
 
 

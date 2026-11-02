@@ -9,7 +9,7 @@ namespace Collections;
 
 
 
-public class QuadTree<TValue> {
+public class QuadTreeWithList<TValue> {
 
 	private static readonly Quadrant[] TRAVERSAL_ORDER = [
 		Quadrant.NORTH_WEST,
@@ -134,7 +134,7 @@ public class QuadTree<TValue> {
 
 	private QuadTreeNode? _root;
 	
-	public QuadTree(RectangularBoundary<TValue, TValue> outerBoundary, uint maxDepth = 20) {
+	public QuadTreeWithList(RectangularBoundary<TValue, TValue> outerBoundary, uint maxDepth = 20) {
 		if (maxDepth == 0) {
 			throw new ArgumentException("Maximum depth cannot be zero", nameof(maxDepth));
 		}
