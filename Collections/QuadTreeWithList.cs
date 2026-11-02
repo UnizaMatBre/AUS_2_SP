@@ -21,8 +21,6 @@ public class QuadTreeWithList<TValue> {
 	
 	
 	private class QuadTreeNode {
-		private static readonly IList<TValue> EMPTY_LIST = [];
-		
 		private readonly uint _depth;
 		
 		
@@ -32,7 +30,7 @@ public class QuadTreeWithList<TValue> {
 		public QuadTreeNode? SouthEast;
 		public QuadTreeNode? SouthWest;
 		
-		private IList<TValue> _items;
+		private List<TValue>? _items;
 		
 		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
 			
@@ -57,7 +55,7 @@ public class QuadTreeWithList<TValue> {
 				return false;
 			}
 
-			if (this._items.Count == 0 || this._depth >= maxDepth || this.Boundary.CanSplit() == false) {
+			if (this._items!.Count == 0 || this._depth >= maxDepth || this.Boundary.CanSplit() == false) {
 				this._items.Add(value);
 				return true;
 			}
@@ -83,13 +81,13 @@ public class QuadTreeWithList<TValue> {
 			this.SouthWest = MakeChild(Quadrant.SOUTH_WEST);
 
 
-			foreach (var oneItem in this._items) {
+			foreach (var oneItem in this._items!) {
 				var itemsQuadrant = this.Boundary.LocateQuadrantPosition(oneItem, oneItem);
 				
-				this.GetChildAt(itemsQuadrant)!._items.Add(oneItem);
+				this.GetChildAt(itemsQuadrant)!._items!.Add(oneItem);
 			}
-			
-			this._items = EMPTY_LIST.AsReadOnly();
+
+			this._items = null;
 		}
 
 		public QuadTreeNode? GetChildAt(Quadrant quadrant)
@@ -112,7 +110,7 @@ public class QuadTreeWithList<TValue> {
 
 		public IList<TValue> GetItems() {
 
-			return this._items;
+			return this._items!;
 		}
 			
 
