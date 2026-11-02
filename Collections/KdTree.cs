@@ -68,6 +68,10 @@ public class KdTree<TValue> {
 		this._root = null;
 	}
 
+	public IDimensionalComparer<TValue> GetComparer() {
+		
+		return this._comparer;
+	}
 	
 	
 	public bool Insert(TValue valueToInsert) {
