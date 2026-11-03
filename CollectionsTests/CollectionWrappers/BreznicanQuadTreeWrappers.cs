@@ -2,7 +2,20 @@
 
 namespace CollectionsTests.Breznican {
     public class QuadTreeWithListTestingWrapper : ITestable2DCollection {
-        private readonly Collections.QuadTreeWithList<TestPoint> _treeWithList;
+        public class ListStorage : Collections.IQuadTreeValueStorage<TestPoint> {
+            private readonly List<TestPoint> _list = new();
+            
+            public int Count() => this._list.Count;
+            
+            public bool Insert(TestPoint value) {
+                this._list.Add(value);
+                return true;
+            }
+
+            public IEnumerable<TestPoint> EnumerateAll() => this._list;
+        }
+        
+        private readonly Collections.QuadTree<TestPoint, ListStorage> _treeWithList;
 
         private static RectangularBoundary<TestPoint, TestPoint> FromCorners(TestPoint northWestCorner, TestPoint southEastCorner) {
             var north = new TestPoint.YBoundary(northWestCorner.GetY());
@@ -19,7 +32,7 @@ namespace CollectionsTests.Breznican {
         public QuadTreeWithListTestingWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
             var rect = FromCorners(northWestCorner, southEastCorner);
         
-            this._treeWithList = new Collections.QuadTreeWithList<TestPoint>(rect);
+            this._treeWithList = new(rect);
         }
     
     
@@ -36,7 +49,17 @@ namespace CollectionsTests.Breznican {
     }
     
     public class QuadTreeWithKdTestingWrapper : ITestable2DCollection {
-        private readonly Collections.QuadTreeWithKd<TestPoint> _treeWithList;
+        private class KdTreeStorage : Collections.IQuadTreeValueStorage<TestPoint> {
+            private readonly KdTree<TestPoint> _tree = new(new TestPoint.DimensionalComparer());
+            
+            public int Count() => this._tree.Count();
+            
+            public bool Insert(TestPoint value) => this._tree.Insert(value);
+
+            public IEnumerable<TestPoint> EnumerateAll() => this._tree.EnumerateAll();
+        }
+        
+        private readonly Collections.QuadTree<TestPoint, KdTreeStorage> _treeWithList;
 
         private static RectangularBoundary<TestPoint, TestPoint> FromCorners(TestPoint northWestCorner, TestPoint southEastCorner) {
             var north = new TestPoint.YBoundary(northWestCorner.GetY());
@@ -53,7 +76,7 @@ namespace CollectionsTests.Breznican {
         public QuadTreeWithKdTestingWrapper(TestPoint northWestCorner, TestPoint southEastCorner) {
             var rect = FromCorners(northWestCorner, southEastCorner);
         
-            this._treeWithList = new Collections.QuadTreeWithKd<TestPoint>(rect, new TestPoint.DimensionalComparer());
+            this._treeWithList = new(rect);
         }
     
     

@@ -9,7 +9,7 @@ public interface IQuadTreeValueStorage<TValue> {
 }
 
 
-public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValueStorage<TValue> {
+public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValueStorage<TValue>, new() {
 	
     private static readonly Quadrant[] TRAVERSAL_ORDER = [
         Quadrant.NORTH_WEST,
@@ -31,12 +31,11 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		private readonly Func<TValueStorage> _storageFactory;
 		private TValueStorage? _items;
 		
-		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, Func<TValueStorage> storageFactory, uint depth) {
+		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
 			
 			this.Boundary = myBoundary;
 			this._depth = depth;
-			this._storageFactory = storageFactory;
-			this._items = storageFactory();
+			this._items = new TValueStorage();
 		}
 		
 		 
@@ -72,7 +71,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 			QuadTreeNode MakeChild(Quadrant quadrant) {
 				var childrenBoundary = this.Boundary.SubBoundary(quadrant);
 				
-				return new QuadTreeNode(childrenBoundary, this._storageFactory, this._depth + 1);
+				return new QuadTreeNode(childrenBoundary, this._depth + 1);
 			}
 			
 			this.NorthWest = MakeChild(Quadrant.NORTH_WEST);
@@ -126,7 +125,6 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 	}
 
 	private readonly RectangularBoundary<TValue, TValue> _outerBoundary;
-	private readonly Func<TValueStorage> _storageFactory;
 	private readonly uint _maxDepth;
 
 	private QuadTreeNode? _root;
@@ -135,7 +133,6 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
     
 	public QuadTree(
 		RectangularBoundary<TValue, TValue> outerBoundary,
-		Func<TValueStorage> storageFactory,
 		uint maxDepth = 20
 	) {
 		if (maxDepth == 0) {
@@ -143,7 +140,6 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		}
 
 		this._outerBoundary = outerBoundary;
-		this._storageFactory = storageFactory;
 		this._maxDepth = maxDepth;
 
 		this._root = null;
@@ -158,7 +154,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		}
 
 		if (this._root == null) {
-			this._root = new QuadTreeNode(this._outerBoundary, this._storageFactory, 0);
+			this._root = new QuadTreeNode(this._outerBoundary, 0);
 		}
 		
 		QuadTreeNode? currentNode = this._root;

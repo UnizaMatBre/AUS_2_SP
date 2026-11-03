@@ -111,7 +111,7 @@ class Program
     }
 
 
-    public const TestType SELECTED_TESTS = TestType.FUNCTITONALITY_TEST;
+    public const TestType SELECTED_TESTS = TestType.PERFORMANCE_TEST;
     
 
     static void Main(string[] args) {
