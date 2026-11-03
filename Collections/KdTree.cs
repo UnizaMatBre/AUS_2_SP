@@ -161,6 +161,21 @@ public class KdTree<TValue> {
 		
 	}
 
+	public IEnumerable<TValue> EnumerateAll() {
+		KdTreeNode? currentNode = this._root;
+		
+		// find minimum
+		while(currentNode?.Left is not null) {
+			currentNode = currentNode.Left;
+		}
+		
+		// use inorder to travel entire tree
+		while(currentNode is not null) {
+			yield return currentNode.Value;
+			currentNode = currentNode.InOrderNext();
+		}
+	}
+	
 	/// <summary>
 	/// Tests if this tree still follows rules of KdTree - for debugging purposes only
 	/// </summary>
