@@ -175,6 +175,54 @@ public class KdTree<TValue> {
 			currentNode = currentNode.InOrderNext();
 		}
 	}
+
+
+	/// <summary>
+	/// Loads values from CSV file and inserts them into the tree.
+	/// </summary>
+	/// <param name="fileName">Path to the CSV file</param>
+	/// <param name="fromCsvString">Function to convert CSV line into TValue</param>
+	public void LoadCsv(string fileName, Func<string, TValue> fromCsvString) {
+		using (var reader = new StreamReader(fileName)) {
+			
+			string? line;
+			while((line = reader.ReadLine()) is not null) {
+				this.Insert(fromCsvString(line));
+			}
+		}
+	}
+
+	/// <summary>
+	/// Saves all values from the tree to a CSV file.
+	/// </summary>
+	/// <param name="fileName">Path to the CSV file</param>
+	/// <param name="toCsvString">Function to convert TValue into CSV line</param>
+	public void DumbCsv(string fileName, Func<TValue, string> toCsvString) {
+		if(this._root is null) {
+			return;
+		}
+		
+		Queue<KdTreeNode> pendingNodes = new();
+		pendingNodes.Enqueue(this._root);
+		
+		using (var writer = new StreamWriter(fileName)) {
+			
+			while(pendingNodes.Count > 0) {
+				var currentNode = pendingNodes.Dequeue();
+				
+				writer.WriteLine(toCsvString(currentNode.Value));
+				
+				if(currentNode.Left is not null) {
+					pendingNodes.Enqueue(currentNode.Left);
+				}
+				
+				if(currentNode.Right is not null) {
+					pendingNodes.Enqueue(currentNode.Right);
+				}
+			}
+			
+		}
+	}
 	
 	/// <summary>
 	/// Tests if this tree still follows rules of KdTree - for debugging purposes only
