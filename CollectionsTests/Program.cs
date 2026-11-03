@@ -14,11 +14,12 @@ public enum TestType {
 class Program
 {
     static void RunFunctionalityTests() {
-        int iterationCount = 100_000;
+        int iterationCount = 10_000;
         int width = (int)Math.Sqrt(iterationCount);
         
         (new FunctionalityTester(new KdTreeTestingWrapper(), new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
         (new FunctionalityTester(new Breznican.QuadTreeWithListTestingWrapper(new TestPoint(-1, -1), new TestPoint(width + 2, width + 2)), new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
+        (new FunctionalityTester(new Breznican.QuadTreeWithKdTestingWrapper(new TestPoint(-1, -1), new TestPoint(width + 2, width + 2)), new Random())).Run(iterationCount, 0.5, 0.2, 0.3);
 
         /*
         var quadTreeWrap = new QuadTreeTestingWrapper(
@@ -44,7 +45,7 @@ class Program
         }
 
         {
-            Console.WriteLine("=== breznican1.QuadTree ===");
+            Console.WriteLine("=== breznican1.QuadTreeWithList ===");
             var quadTreeWrapper = new Breznican.QuadTreeWithListTestingWrapper(  
                 benchmark.GetNorthWestCorner(),
                 benchmark.GetSouthEastCorner()
@@ -54,6 +55,16 @@ class Program
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(quadTreeWrapper));
         }
         
+        {
+            Console.WriteLine("=== breznican1.QuadTreeWithKd ===");
+            var quadTreeWrapper = new Breznican.QuadTreeWithKdTestingWrapper(  
+                benchmark.GetNorthWestCorner(),
+                benchmark.GetSouthEastCorner()
+            );
+
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(quadTreeWrapper));
+        }
         
         // breznican1.KdTree
         /*
