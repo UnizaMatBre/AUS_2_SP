@@ -27,6 +27,8 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		public QuadTreeNode? NorthEast;
 		public QuadTreeNode? SouthEast;
 		public QuadTreeNode? SouthWest;
+
+		private bool _isLeaf;
 		
 		private readonly Func<TValueStorage> _storageFactory;
 		private TValueStorage? _items;
@@ -35,6 +37,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 			
 			this.Boundary = myBoundary;
 			this._depth = depth;
+			this._isLeaf = true;
 			this._items = new TValueStorage();
 		}
 		
@@ -42,11 +45,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		
 		
 		public bool IsLeaf() {
-			return 
-				this.SouthWest == null && 
-				this.SouthEast == null && 
-				this.NorthEast == null && 
-				this.NorthWest == null;
+			return this._isLeaf;
 		}
 
 		public bool Insert(TValue value, uint maxDepth) {
@@ -87,6 +86,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 			}
 
 			this._items = default(TValueStorage);
+			this._isLeaf = false;
 		}
 
 		public QuadTreeNode? GetChildAt(Quadrant quadrant)
