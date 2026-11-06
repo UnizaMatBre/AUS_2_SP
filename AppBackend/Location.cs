@@ -101,8 +101,8 @@ public struct Location {
 
         public int DimensionalCompare(uint dimension, Location a, Location b) {
             return dimension switch {
-                0 => a.GetLatitude().CompareTo(b.GetLatitude()),
-                1 => a.GetLongitude().CompareTo(b.GetLongitude()),
+                0 => a._latitude.CompareTo(b._latitude),
+                1 => a._longitude.CompareTo(b._longitude),
                 _ => throw new ArgumentOutOfRangeException(nameof(dimension), "Dimension index is out of range.")
             };
         }
