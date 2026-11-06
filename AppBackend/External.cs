@@ -69,6 +69,19 @@ public class Location {
         this._createdAt = DateTime.Now;
         this._updatedAt = DateTime.Now;
     }
+
+    public Location(ref Location original) {
+        this._id = original._id;
+        
+        this._coordinates = original._coordinates;
+        
+        this._name = original._name;
+        this._description = original._description;
+        this._address = original._address;
+        
+        this._createdAt = original._createdAt;
+        this._updatedAt = original._updatedAt;
+    }
     
     public long GetId() {
         return this._id;
