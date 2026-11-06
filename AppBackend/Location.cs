@@ -7,11 +7,11 @@ public readonly struct GeoCoordinates {
     private readonly double _longitude;
     
     public GeoCoordinates(double latitude, double longitude) {
-        if (latitude < -90 || latitude > 90) {
+        if (!double.IsFinite(latitude) || latitude < -90 || latitude > 90) {
             throw new ArgumentOutOfRangeException(nameof(latitude));
         }
 
-        if (longitude < -180 || longitude > 180) {
+        if (!double.IsFinite(longitude) ||longitude < -180 || longitude > 180) {
             throw new ArgumentOutOfRangeException(nameof(longitude));
         }
 
@@ -23,6 +23,11 @@ public readonly struct GeoCoordinates {
     public double GetLongitude() => this._longitude;
 
     public bool IsInsideCircle(ref GeoCoordinates center, double radius) {
+        
+        if (!double.IsFinite(radius) || radius < 0) {
+            throw new ArgumentOutOfRangeException(nameof(radius));
+        }
+        
         const double METERS_PER_DEGREE = 111320.0;
 
         // NOTE: We are allowed to completely ignore earth's curvature
