@@ -134,9 +134,51 @@ public class KdTree<TValue> {
 		}
 	}
 
+	/// <summary>
+	/// Removes a value from the tree.
+	/// </summary>
+	/// <param name="valueToRemove">Value we want to remove</param>
+	/// <returns>True if the value was found and removed, false otherwise</returns>
+	/// <exception cref="ArgumentNullException"></exception>
 	public bool Remove(TValue valueToRemove) {
+		ArgumentNullException.ThrowIfNull(valueToRemove);
 
-		throw new NotImplementedException();
+		if(this._root is null) {
+			return false;
+		}
+		
+		// initialize variables
+		uint layer = 0;
+		KdTreeNode current = this._root;
+
+		while (true) {
+			// check if this is our node
+			bool isSearchedNode = !current.IsRemoved && this._equalityComparer.Equals(current.Value, valueToRemove);
+			
+			if (isSearchedNode) {
+				current.MarkAsRemoved();
+				this._itemCount--;
+				
+				return true;
+			}
+
+
+			uint dimension = layer % this._dimensionalComparer.GetDimensionCount();
+
+			// -1 => new value is larger than current node - goes to right subtree
+			// +1 => new value is smaller than current node - goes to left subtree
+			//  0 => new value is possibly equal to current node - if not, goes to left subtree
+			int cmpResult = this._dimensionalComparer.DimensionalCompare(dimension, current.Value, valueToRemove);
+			
+			// pick proper branch
+			// +1 or 0 => left (larger) subtree
+			// -1 => right (larger) subtree
+			ref KdTreeNode? branch = ref (cmpResult > 0 ? ref current.Left : ref current.Right);
+
+			if (branch is null) {
+				return false;
+			}
+		}
 	}
 
 	public int Count() => this._itemCount;
