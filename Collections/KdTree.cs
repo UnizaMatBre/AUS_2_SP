@@ -11,10 +11,17 @@ public class KdTree<TValue> {
 		public KdTreeNode? Parent;
 		public KdTreeNode? Left;
 		public KdTreeNode? Right;
+		public bool IsRemoved { get; private set; }
 
 		public KdTreeNode(TValue value, KdTreeNode? parent) {
 			this.Value = value;
 			this.Parent = parent;
+			this.IsRemoved = false;
+		}
+		
+		public void MarkAsRemoved() {
+			
+			this.IsRemoved = true;
 		}
 
 		/// <summary>
