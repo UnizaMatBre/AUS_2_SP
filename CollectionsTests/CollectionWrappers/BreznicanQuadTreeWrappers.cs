@@ -12,6 +12,8 @@ namespace CollectionsTests.Breznican {
                 return true;
             }
 
+            public bool Remove(TestPoint value) => this._list.Remove(value);
+
             public IEnumerable<TestPoint> EnumerateAll() => this._list;
         }
         
@@ -58,6 +60,8 @@ namespace CollectionsTests.Breznican {
             public int Count() => this._tree.Count();
             
             public bool Insert(TestPoint value) => this._tree.Insert(value);
+
+            public bool Remove(TestPoint value) => this._tree.Remove(value);
 
             public IEnumerable<TestPoint> EnumerateAll() => this._tree.EnumerateAll();
         }

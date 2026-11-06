@@ -5,6 +5,8 @@ public interface IQuadTreeValueStorage<TValue> {
     
     public bool Insert(TValue value);
 
+    public bool Remove(TValue value);
+    
     public IEnumerable<TValue> EnumerateAll();
 }
 
