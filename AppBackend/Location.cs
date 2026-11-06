@@ -95,7 +95,10 @@ public class Location {
         this._coordinates = new GeoCoordinates(this._coordinates.GetLatitude(), longitude);
         this._updatedAt = DateTime.Now;
     }
-    
+
+    public ref GeoCoordinates GetCoordinates() {
+        return ref this._coordinates;
+    }
     
     
     public String GetName() {
