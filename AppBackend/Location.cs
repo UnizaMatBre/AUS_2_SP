@@ -76,19 +76,17 @@ public class Location {
     
     
     
-    public double GetLatitude() {
-        return this._coordinates.GetLatitude();
-    }
+    public double GetLatitude() => this._coordinates.GetLatitude();
+    
+    public double GetLongitude() => this._coordinates.GetLongitude();
+
+    public ref GeoCoordinates GetCoordinates() => ref this._coordinates;
+    
+    
     
     public void SetLatitude(double latitude) {
         this._coordinates = new GeoCoordinates(latitude, this._coordinates.GetLongitude());
         this._updatedAt = DateTime.Now;
-    }
-    
-    
-    
-    public double GetLongitude() {
-        return this._coordinates.GetLongitude();
     }
     
     public void SetLongitude(double longitude) {
@@ -96,9 +94,7 @@ public class Location {
         this._updatedAt = DateTime.Now;
     }
 
-    public ref GeoCoordinates GetCoordinates() {
-        return ref this._coordinates;
-    }
+
     
     
     public String GetName() {
