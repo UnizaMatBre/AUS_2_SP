@@ -1,4 +1,6 @@
-﻿namespace AppBackend;
+﻿using Collections;
+
+namespace AppBackend;
 
 public struct GPSLocation {
     private readonly long _id;
@@ -92,5 +94,17 @@ public struct GPSLocation {
     
     public DateTime GetUpdatedAt() {
         return this._updatedAt;
+    }
+
+    public class GPSLocationDimensionalComparer : IDimensionalComparer<GPSLocation> {
+        public uint GetDimensionCount() => 2;
+
+        public int DimensionalCompare(uint dimension, GPSLocation a, GPSLocation b) {
+            return dimension switch {
+                0 => a.GetLatitude().CompareTo(b.GetLatitude()),
+                1 => a.GetLongitude().CompareTo(b.GetLongitude()),
+                _ => throw new ArgumentOutOfRangeException(nameof(dimension), "Dimension index is out of range.")
+            };
+        }
     }
 }
