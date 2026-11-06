@@ -2,11 +2,32 @@
 
 namespace AppBackend;
 
-public struct Location {
-    private readonly long _id;
+public readonly struct GeoCoordinates {
+    private readonly double _latitude;
+    private readonly double _longitude;
     
-    private double _latitude;
-    private double _longitude;
+    public GeoCoordinates(double latitude, double longitude) {
+        if (latitude < -90 || latitude > 90) {
+            throw new ArgumentOutOfRangeException(nameof(latitude));
+        }
+
+        if (longitude < -180 || longitude > 180) {
+            throw new ArgumentOutOfRangeException(nameof(longitude));
+        }
+
+        this._latitude = latitude;
+        this._longitude = longitude;
+    }
+
+    public double GetLatitude() => this._latitude;
+    public double GetLongitude() => this._longitude;
+}
+
+
+public class Location {
+    private readonly long _id;
+
+    private GeoCoordinates _coordinates;
 
     private String _name;
     private String? _description;
@@ -18,8 +39,7 @@ public struct Location {
     public Location(long id, double latitude, double longitude, String name, String? description, String? address) {
         this._id = id;
         
-        this._latitude = latitude;
-        this._longitude = longitude;
+        this._coordinates = new GeoCoordinates(latitude, longitude);
         
         this._name = name;
         this._description = description;
@@ -36,22 +56,22 @@ public struct Location {
     
     
     public double GetLatitude() {
-        return this._latitude;
+        return this._coordinates.GetLatitude();
     }
     
     public void SetLatitude(double latitude) {
-        this._latitude = latitude;
+        this._coordinates = new GeoCoordinates(latitude, this._coordinates.GetLongitude());
         this._updatedAt = DateTime.Now;
     }
     
     
     
     public double GetLongitude() {
-        return this._longitude;
+        return this._coordinates.GetLongitude();
     }
     
     public void SetLongitude(double longitude) {
-        this._longitude = longitude;
+        this._coordinates = new GeoCoordinates(this._coordinates.GetLatitude(), longitude);
         this._updatedAt = DateTime.Now;
     }
     
@@ -101,8 +121,8 @@ public struct Location {
 
         public int DimensionalCompare(uint dimension, Location a, Location b) {
             return dimension switch {
-                0 => a._latitude.CompareTo(b._latitude),
-                1 => a._longitude.CompareTo(b._longitude),
+                0 => a.GetLatitude().CompareTo(b.GetLatitude()),
+                1 => a.GetLongitude().CompareTo(b.GetLongitude()),
                 _ => throw new ArgumentOutOfRangeException(nameof(dimension), "Dimension index is out of range.")
             };
         }
@@ -116,7 +136,7 @@ public struct Location {
         }
 
         public int RelativePosition(Location value) {
-            return value._latitude.CompareTo(this._latitude);
+            return value.GetLatitude().CompareTo(this._latitude);
         }
 
         public IBoundary<Location> Midpoint(IBoundary<Location> other) {
@@ -145,7 +165,7 @@ public struct Location {
         }
 
         public int RelativePosition(Location value) {
-            return value._longitude.CompareTo(this._longitude);
+            return value.GetLongitude().CompareTo(this._longitude);
         }
 
         public IBoundary<Location> Midpoint(IBoundary<Location> other) {
