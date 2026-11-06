@@ -50,7 +50,10 @@ namespace CollectionsTests.Breznican {
     
     public class QuadTreeWithKdTestingWrapper : ITestable2DCollection {
         private class KdTreeStorage : Collections.IQuadTreeValueStorage<TestPoint> {
-            private readonly KdTree<TestPoint> _tree = new(new TestPoint.DimensionalComparer());
+            private readonly KdTree<TestPoint> _tree = new(
+                new TestPoint.DimensionalComparer(),
+                new TestPoint.EqualityComparer()
+            );
             
             public int Count() => this._tree.Count();
             

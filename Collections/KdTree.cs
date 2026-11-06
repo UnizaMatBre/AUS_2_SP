@@ -53,17 +53,21 @@ public class KdTree<TValue> {
 	}
 
 	private readonly IDimensionalComparer<TValue> _dimensionalComparer;
+	private readonly IEqualityComparer<TValue> _equalityComparer;
+	
 	private int _itemCount;
 	private KdTreeNode? _root;
 	
 	
-	public KdTree(IDimensionalComparer<TValue> dimensionalComparer) {
+	public KdTree(IDimensionalComparer<TValue> dimensionalComparer, IEqualityComparer<TValue> equalityComparer) {
 		if (dimensionalComparer.GetDimensionCount() == 0) {
 			
 			throw new ArgumentException("Comparer with 0 dimensions is not allowed");
 		}
 		
 		this._dimensionalComparer = dimensionalComparer;
+		this._equalityComparer = equalityComparer;
+		
 		this._itemCount = 0;
 		this._root = null;
 	}
@@ -73,7 +77,11 @@ public class KdTree<TValue> {
 		return this._dimensionalComparer;
 	}
 	
-	
+	public IEqualityComparer<TValue> GetEqualityComparer() {
+		
+		return this._equalityComparer;
+	}
+
 	public bool Insert(TValue valueToInsert) {
 		ArgumentNullException.ThrowIfNull(valueToInsert);
 		

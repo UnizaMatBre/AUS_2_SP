@@ -35,6 +35,18 @@ public struct TestPoint : IEquatable<TestPoint>, SpatialTrees.Quadtrees.IMapObje
     public AARectangle BoundingBox => new((float)this._x, (float)this._y, 0, 0);
 
 
+    public class EqualityComparer : IEqualityComparer<TestPoint> {
+        public bool Equals(TestPoint x, TestPoint y) {
+            
+            return x._x.Equals(y._x) && x._y.Equals(y._y);
+        }
+
+        public int GetHashCode(TestPoint obj) {
+            
+            return HashCode.Combine(obj._x, obj._y);
+        }
+    }
+
     public class DimensionalComparer : IDimensionalComparer<TestPoint> {
         public uint GetDimensionCount() => 2;
 
