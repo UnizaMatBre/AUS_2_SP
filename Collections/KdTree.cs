@@ -156,8 +156,12 @@ public class KdTree<TValue> {
 		while(pendingNodesWithLayer.Count > 0) {
 			var (currentNode, layer) = pendingNodesWithLayer.Pop();
 			
-			// check if current node is in range
-			if(this._dimensionalComparer.InclusiveBetween(currentNode.Value, lowerBound, upperBound)) {
+			// check if current node is valid for the range
+			bool isValid = 
+				this._dimensionalComparer.InclusiveBetween(currentNode.Value, lowerBound, upperBound) &&
+				!currentNode.IsRemoved;
+			
+			if(isValid) {
 				yield return currentNode.Value;
 			}
 			
@@ -186,8 +190,14 @@ public class KdTree<TValue> {
 		
 		// use inorder to travel entire tree
 		while(currentNode is not null) {
-			yield return currentNode.Value;
+			var forYield = currentNode;
 			currentNode = currentNode.InOrderNext();
+
+			if (forYield.IsRemoved) {
+				continue;
+			}
+
+			yield return forYield.Value;
 		}
 	}
 
@@ -225,7 +235,9 @@ public class KdTree<TValue> {
 			while(pendingNodes.Count > 0) {
 				var currentNode = pendingNodes.Dequeue();
 				
-				writer.WriteLine(toCsvString(currentNode.Value));
+				if(!currentNode.IsRemoved) {
+					writer.WriteLine(toCsvString(currentNode.Value));
+				}
 				
 				if(currentNode.Left is not null) {
 					pendingNodes.Enqueue(currentNode.Left);
