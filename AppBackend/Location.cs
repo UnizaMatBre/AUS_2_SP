@@ -107,4 +107,62 @@ public struct Location {
             };
         }
     }
+    
+    public class LocationLatitudeBoundary : IBoundary<Location> {
+        private readonly double _latitude;
+
+        public LocationLatitudeBoundary(double latitude) {
+            this._latitude = latitude;
+        }
+
+        public int RelativePosition(Location value) {
+            return value._latitude.CompareTo(this._latitude);
+        }
+
+        public IBoundary<Location> Midpoint(IBoundary<Location> other) {
+            if (other is not LocationLatitudeBoundary otherBoundary) {
+                throw new ArgumentException("Other boundary must be of type LocationLatitudeBoundary.", nameof(other));
+            }
+
+            double midpointLatitude = (this._latitude + otherBoundary._latitude) / 2.0;
+            return new LocationLatitudeBoundary(midpointLatitude);
+        }
+
+        public int CompareTo(IBoundary<Location> other) {
+            if (other is not LocationLatitudeBoundary otherBoundary) {
+                throw new ArgumentException("Other boundary must be of type LocationLatitudeBoundary.", nameof(other));
+            }
+
+            return this._latitude.CompareTo(otherBoundary._latitude);
+        }
+    }
+    
+    public class LocationLongitudeBoundary : IBoundary<Location> {
+        private readonly double _longitude;
+
+        public LocationLongitudeBoundary(double longitude) {
+            this._longitude = longitude;
+        }
+
+        public int RelativePosition(Location value) {
+            return value._longitude.CompareTo(this._longitude);
+        }
+
+        public IBoundary<Location> Midpoint(IBoundary<Location> other) {
+            if (other is not LocationLongitudeBoundary otherBoundary) {
+                throw new ArgumentException("Other boundary must be of type LocationLongitudeBoundary.", nameof(other));
+            }
+
+            double midpointLongitude = (this._longitude + otherBoundary._longitude) / 2.0;
+            return new LocationLongitudeBoundary(midpointLongitude);
+        }
+
+        public int CompareTo(IBoundary<Location> other) {
+            if (other is not LocationLongitudeBoundary otherBoundary) {
+                throw new ArgumentException("Other boundary must be of type LocationLongitudeBoundary.", nameof(other));
+            }
+
+            return this._longitude.CompareTo(otherBoundary._longitude);
+        }
+    }
 }
