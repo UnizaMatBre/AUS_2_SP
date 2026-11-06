@@ -1,6 +1,6 @@
-﻿using Collections;
+﻿namespace AppBackend;
 
-namespace AppBackend;
+using Collections;
 
 public readonly struct GeoCoordinates {
     private readonly double _latitude;
