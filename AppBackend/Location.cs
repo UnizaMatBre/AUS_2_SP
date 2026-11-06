@@ -21,6 +21,22 @@ public readonly struct GeoCoordinates {
 
     public double GetLatitude() => this._latitude;
     public double GetLongitude() => this._longitude;
+
+    public bool IsInsideCircle(ref GeoCoordinates center, double radius) {
+        const double METERS_PER_DEGREE = 111320.0;
+
+        // NOTE: We are allowed to completely ignore earth's curvature
+        double deltaLat = (this._latitude - center._latitude) * METERS_PER_DEGREE;
+        double deltaLon = (this._longitude - center._longitude) * METERS_PER_DEGREE;
+
+        double deltaLatSquared = (deltaLat * deltaLat);
+        double deltaLonSquared = (deltaLon * deltaLon);
+        double radiusSquared = (radius * radius);
+        
+        // calculate circle using formula
+        return deltaLatSquared + deltaLonSquared <= radiusSquared;
+    }
+    
 }
 
 
