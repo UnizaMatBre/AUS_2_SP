@@ -2,7 +2,7 @@
 
 namespace AppBackend;
 
-public struct GPSLocation {
+public struct Location {
     private readonly long _id;
     
     private double _latitude;
@@ -15,7 +15,7 @@ public struct GPSLocation {
     private readonly DateTime _createdAt;   
     private DateTime _updatedAt;
     
-    public GPSLocation(long id, double latitude, double longitude, String name, String? description, String? address) {
+    public Location(long id, double latitude, double longitude, String name, String? description, String? address) {
         this._id = id;
         
         this._latitude = latitude;
@@ -96,10 +96,10 @@ public struct GPSLocation {
         return this._updatedAt;
     }
 
-    public class GPSLocationDimensionalComparer : IDimensionalComparer<GPSLocation> {
+    public class LocationDimensionalComparer : IDimensionalComparer<Location> {
         public uint GetDimensionCount() => 2;
 
-        public int DimensionalCompare(uint dimension, GPSLocation a, GPSLocation b) {
+        public int DimensionalCompare(uint dimension, Location a, Location b) {
             return dimension switch {
                 0 => a.GetLatitude().CompareTo(b.GetLatitude()),
                 1 => a.GetLongitude().CompareTo(b.GetLongitude()),
