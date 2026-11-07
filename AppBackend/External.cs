@@ -75,6 +75,8 @@ public class Location {
         this._updatedAt = DateTime.Now;
     }
 
+    
+    
     public Location(ref Location original) {
         this._id = original._id;
         
@@ -223,4 +225,16 @@ public class Location {
             return this._longitude.CompareTo(otherBoundary._longitude);
         }
     }
+}
+
+
+public static class CsvHelpers {
+    public static string LocationToCsvLine(Location location) {
+        // CSV: id,name,description,latitude,longitude,address,createdAt,updatedAt
+        return $"{location.GetId()},{location.GetName()},{location.GetDescription()},{location.GetLatitude()},{location.GetLongitude()},{location.GetAddress()},{location.GetCreatedAt()},{location.GetCreatedAt()},{location.GetUpdatedAt()}";
+    }
+    
+    
+    
+    
 }
