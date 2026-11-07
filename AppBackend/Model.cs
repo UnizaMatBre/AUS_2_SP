@@ -39,9 +39,23 @@ public class Model {
     
 
     // 2
-    public IEnumerable<Location> DoGetLocationsInCircle(GeoCoordinates center, double radius) {
+    public IEnumerable<Location> DoGetLocationsInCircle(Location center, double radius) {
 
-        throw new NotImplementedException();
+        var centerCoord = center.Coordinates;
+
+        var northEastCorner = new Location(
+            centerCoord.GetLatitude() + radius,
+            centerCoord.GetLongitude() + radius
+        );
+        
+        var southWestCorner = new Location(
+            centerCoord.GetLatitude() - radius,
+            centerCoord.GetLongitude() - radius
+        );
+        
+        var rectLocations = this._locationTree.EnumerateRange(southWestCorner, northEastCorner);
+
+        return rectLocations;
     }
     
     // 3
