@@ -3,6 +3,8 @@
 public interface ILocationTree {
     
     public bool Insert(Location location);
+
+    public bool Remove(Location location);
     
     public IEnumerable<Location> EnumerateRange(Location lowerBound, Location upperBound);
     
@@ -66,9 +68,9 @@ public class Model {
     }
     
     // 6
-    public bool DoRemoveLocation(long locationId) {
+    public bool DoRemoveLocation(Location location) {
 
-        throw new NotImplementedException();
+        return this._locationTree.Remove(location);
     }
     
     
