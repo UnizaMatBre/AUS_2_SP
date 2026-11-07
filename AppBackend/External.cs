@@ -21,6 +21,11 @@ public readonly struct GeoCoordinates {
         this._longitude = longitude;
     }
 
+    public GeoCoordinates(ref GeoCoordinates other) {
+        this._latitude = other._latitude;
+        this._longitude = other._longitude;
+    }
+    
     public double GetLatitude() => this._latitude;
     public double GetLongitude() => this._longitude;
 
@@ -61,7 +66,7 @@ public class LocalInformation {
 
     public DateTime CreatedAt = DateTime.Now;
     public DateTime UpdatedAt = DateTime.Now;
-
+    
     public void UpdateName(String newName) {
         this.Name = newName;
         this.UpdatedAt = DateTime.Now;
