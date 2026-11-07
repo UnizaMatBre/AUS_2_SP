@@ -70,7 +70,7 @@ public class Model {
         var rectLocations = this._locationTree.EnumerateRange(upperLeft, lowerRight);
 
         return rectLocations
-            .Where((oneLocation) => oneLocation.GetName().Contains(searchedString))
+            .Where((oneLocation) => oneLocation.Information!.Name.Contains(searchedString))
             .Select((oneLocation) => new Location(ref oneLocation));
     }
     

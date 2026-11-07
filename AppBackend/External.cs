@@ -44,147 +44,76 @@ public readonly struct GeoCoordinates {
     
 }
 
+public class LocalInformation {
+    public long Id;
 
-public class Location {
-    private readonly long _id;
+    public String Name;
+    public String? Description;
+    public String? Address;
 
-    private GeoCoordinates _coordinates;
+    public DateTime CreatedAt = DateTime.Now;
+    public DateTime UpdatedAt = DateTime.Now;
 
-    private String _name;
-    private String? _description;
-    private String? _address;
-    
-    private DateTime _createdAt;   
-    private DateTime _updatedAt;
-
-    public Location(GeoCoordinates coordinates) {
-        // NOTE: Intentionaly not setting anything else, for consistency sake
-        this._coordinates = coordinates;
-    }
-
-    public static Location FromCsvLine(String csvLine) {
-        var parts = csvLine.Split(',');
-        if (parts.Length != 9) {
-
-            throw new FormatException("Invalid CSV line for Location.");
-        }
-        
-        var newLocation = new Location(
-            id: long.Parse(parts[0]),
-            latitude: long.Parse(parts[3]),
-            longitude: double.Parse(parts[4]),
-            name: parts[1],
-            description: string.IsNullOrEmpty(parts[2]) ? null : parts[2],
-            address: string.IsNullOrEmpty(parts[5]) ? null : parts[5]
-        );
-        
-        newLocation._createdAt = DateTime.Parse(parts[6]);
-        newLocation._updatedAt = DateTime.Parse(parts[7]);
-
-        return newLocation;
+    public void UpdateName(String newName) {
+        this.Name = newName;
+        this.UpdatedAt = DateTime.Now;
     }
     
-    public Location(long id, double latitude, double longitude, String name, String? description, String? address) {
-        this._id = id;
-        
-        this._coordinates = new GeoCoordinates(latitude, longitude);
-        
-        this._name = name;
-        this._description = description;
-        this._address = address;
-        
-        this._createdAt = DateTime.Now;
-        this._updatedAt = DateTime.Now;
-    }
-
-    
-    
-    public Location(ref Location original) {
-        this._id = original._id;
-        
-        this._coordinates = original._coordinates;
-        
-        this._name = original._name;
-        this._description = original._description;
-        this._address = original._address;
-        
-        this._createdAt = original._createdAt;
-        this._updatedAt = original._updatedAt;
+    public void UpdateDescription(String? newDescription) {
+        this.Description = newDescription;
+        this.UpdatedAt = DateTime.Now;
     }
     
-    public long GetId() {
-        return this._id;
+    public void UpdateAddress(String? newAddress) {
+        this.Address = newAddress;
+        this.UpdatedAt = DateTime.Now;
     }
-    
-    
-    
-    public double GetLatitude() => this._coordinates.GetLatitude();
-    
-    public double GetLongitude() => this._coordinates.GetLongitude();
-
-    public ref GeoCoordinates GetCoordinates() => ref this._coordinates;
-    
-    
-    
-    public void SetLatitude(double latitude) {
-        this._coordinates = new GeoCoordinates(latitude, this._coordinates.GetLongitude());
-        this._updatedAt = DateTime.Now;
-    }
-    
-    public void SetLongitude(double longitude) {
-        this._coordinates = new GeoCoordinates(this._coordinates.GetLatitude(), longitude);
-        this._updatedAt = DateTime.Now;
-    }
+}
 
 
-    
-    
-    public String GetName() {
-        return this._name;
-    }
-    
-    public void SetName(String name) {
-        this._name = name;
-        this._updatedAt = DateTime.Now;
-    }
+
+public struct Location {
+
+    public GeoCoordinates Coordinates;
+    public LocalInformation? Information;
 
     
-    
-    public String? GetDescription() {
-        return this._description;
+    public Location(ref Location other) {
+        this.Coordinates = other.Coordinates;
+        this.Information = other.Information is not null ? new LocalInformation {
+            Id = other.Information.Id,
+            Name = other.Information.Name,
+            Description = other.Information.Description,
+            Address = other.Information.Address,
+            CreatedAt = other.Information.CreatedAt,
+            UpdatedAt = other.Information.UpdatedAt
+        } : null;
     }
     
-    public void SetDescription(String? description) {
-        this._description = description;
-        this._updatedAt = DateTime.Now;
+    public Location(GeoCoordinates coordinates, LocalInformation? information = null) {
+        this.Coordinates = coordinates;
+        this.Information = information;
     }
     
-    
-    public String? GetAddress() {
-        return this._address;
+    public Location(double latitude, double longitude, LocalInformation? information = null) {
+        this.Coordinates = new GeoCoordinates(latitude, longitude);
+        this.Information = information;
     }
     
-    public void SetAddress(String? address) {
-        this._address = address;
-        this._updatedAt = DateTime.Now;
-    }
+
+    public bool HasInformation() => this.Information is not null;
     
-    
-    public DateTime GetCreatedAt() {
-        return this._createdAt;
-    }
-    
-    public DateTime GetUpdatedAt() {
-        return this._updatedAt;
-    }
 
     public class LocationDimensionalComparer : IDimensionalComparer<Location> {
         public uint GetDimensionCount() => 2;
 
         public int DimensionalCompare(uint dimension, Location a, Location b) {
+            var aCoord = a.Coordinates;
+            var bCoord = b.Coordinates;
+            
             return dimension switch {
-                0 => a.GetLatitude().CompareTo(b.GetLatitude()),
-                1 => a.GetLongitude().CompareTo(b.GetLongitude()),
+                0 => aCoord.GetLatitude().CompareTo(bCoord.GetLatitude()),
+                1 => aCoord.GetLongitude().CompareTo(bCoord.GetLongitude()),
                 _ => throw new ArgumentOutOfRangeException(nameof(dimension), "Dimension index is out of range.")
             };
         }
@@ -198,7 +127,7 @@ public class Location {
         }
 
         public int RelativePosition(Location value) {
-            return value.GetLatitude().CompareTo(this._latitude);
+            return value.Coordinates.GetLatitude().CompareTo(this._latitude);
         }
 
         public IBoundary<Location> Midpoint(IBoundary<Location> other) {
@@ -227,7 +156,7 @@ public class Location {
         }
 
         public int RelativePosition(Location value) {
-            return value.GetLongitude().CompareTo(this._longitude);
+            return value.Coordinates.GetLongitude().CompareTo(this._longitude);
         }
 
         public IBoundary<Location> Midpoint(IBoundary<Location> other) {
@@ -252,8 +181,40 @@ public class Location {
 
 public static class CsvHelpers {
     public static string LocationToCsvLine(Location location) {
+        var coord = location.Coordinates;
+        var info = location.Information;
+
+        if (info is null) {
+            throw new ArgumentNullException(nameof(location.Information), "Location must have non-null LocalInformation to convert to CSV line.");
+        }
+        
         // CSV: id,name,description,latitude,longitude,address,createdAt,updatedAt
-        return $"{location.GetId()},{location.GetName()},{location.GetDescription()},{location.GetLatitude()},{location.GetLongitude()},{location.GetAddress()},{location.GetCreatedAt()},{location.GetCreatedAt()},{location.GetUpdatedAt()}";
+        return $"{info.Id},{info.Name},{info.Description},{coord.GetLatitude()},{coord.GetLongitude()},{info.Address},{info.CreatedAt},{info.UpdatedAt}";
+    }
+    
+    public static Location LocationFromCsvLine(string csvLine) {
+        var parts = csvLine.Split(',');
+        if (parts.Length != 8) {
+            throw new FormatException("Invalid CSV line for Location.");
+        }
+
+
+        var info = new LocalInformation {
+            Id = long.Parse(parts[0]),
+            Name = parts[1],
+            
+            Description = string.IsNullOrEmpty(parts[2]) ? null : parts[2],
+            Address = string.IsNullOrEmpty(parts[5]) ? null : parts[5],
+            
+            CreatedAt = DateTime.Parse(parts[6]),
+            UpdatedAt = DateTime.Parse(parts[7])
+        };
+        
+        var coordinates = new GeoCoordinates(
+            double.Parse(parts[3]), double.Parse(parts[4])
+        );
+
+        return new Location(coordinates, info);
     }
     
     
