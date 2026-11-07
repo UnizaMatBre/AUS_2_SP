@@ -56,6 +56,11 @@ public class Location {
     
     private readonly DateTime _createdAt;   
     private DateTime _updatedAt;
+
+    public Location(GeoCoordinates coordinates) {
+        // NOTE: Intentionaly not setting anything else, for consistency sake
+        this._coordinates = coordinates;
+    }
     
     public Location(long id, double latitude, double longitude, String name, String? description, String? address) {
         this._id = id;
