@@ -11,7 +11,7 @@ public interface IQuadTreeValueStorage<TValue> {
 }
 
 
-public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValueStorage<TValue>, new() {
+public abstract class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValueStorage<TValue> {
 	
     private static readonly Quadrant[] TRAVERSAL_ORDER = [
         Quadrant.NORTH_WEST,
@@ -23,6 +23,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
     private class QuadTreeNode {
 		private readonly uint _depth;
 		
+		private readonly QuadTree<TValue, TValueStorage> _myTree;
 		
 		public readonly RectangularBoundary<TValue, TValue> Boundary;
 		public QuadTreeNode? NorthWest;
@@ -32,15 +33,16 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 
 		private bool _isLeaf;
 		
-		private readonly Func<TValueStorage> _storageFactory;
 		private TValueStorage? _items;
 		
-		public QuadTreeNode(RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
+		public QuadTreeNode(QuadTree<TValue, TValueStorage> myTree, RectangularBoundary<TValue, TValue> myBoundary, uint depth) {
 			
 			this.Boundary = myBoundary;
 			this._depth = depth;
+			this._myTree = myTree;
 			this._isLeaf = true;
-			this._items = new TValueStorage();
+			
+			this._items = myTree.CreateStorage();
 		}
 		
 		 
@@ -72,7 +74,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 			QuadTreeNode MakeChild(Quadrant quadrant) {
 				var childrenBoundary = this.Boundary.SubBoundary(quadrant);
 				
-				return new QuadTreeNode(childrenBoundary, this._depth + 1);
+				return new QuadTreeNode(this._myTree, childrenBoundary, this._depth + 1);
 			}
 			
 			this.NorthWest = MakeChild(Quadrant.NORTH_WEST);
@@ -148,6 +150,9 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 	}
 	
 	
+	protected abstract TValueStorage CreateStorage();
+	
+	
 	public bool Insert(TValue valueToInsert) {
 		ArgumentNullException.ThrowIfNull(valueToInsert, nameof(valueToInsert));
 		
@@ -156,7 +161,7 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		}
 
 		if (this._root == null) {
-			this._root = new QuadTreeNode(this._outerBoundary, 0);
+			this._root = new QuadTreeNode(this, this._outerBoundary, 0);
 		}
 		
 		QuadTreeNode? currentNode = this._root;
@@ -342,4 +347,72 @@ public class QuadTree<TValue, TValueStorage> where TValueStorage : IQuadTreeValu
 		return CheckNode(this._root, this._outerBoundary, 0);
 	}
 	
+}
+
+public readonly struct QuadTreeListStorage<TValue> : IQuadTreeValueStorage<TValue> {
+	private readonly List<TValue> _list;
+	
+	public QuadTreeListStorage() {
+		this._list = new List<TValue>();
+	}
+	
+	public int Count() => this._list.Count;
+	
+	public bool Insert(TValue value) {
+		this._list.Add(value);
+		return true;
+	}
+
+	public bool Remove(TValue value) => this._list.Remove(value);
+
+	public IEnumerable<TValue> EnumerateAll() => this._list;
+}
+
+public class QuadTreeWithList<TValue> : QuadTree<TValue, QuadTreeListStorage<TValue>> {
+	public QuadTreeWithList(RectangularBoundary<TValue, TValue> outerBoundary, uint maxDepth = 20) 
+		: base(outerBoundary, maxDepth) { }
+
+	protected override QuadTreeListStorage<TValue> CreateStorage() {
+		return new QuadTreeListStorage<TValue>();
+	}
+}
+
+
+public readonly struct QuadTreeKdTreeStorage<TValue> : IQuadTreeValueStorage<TValue> {
+	private readonly KdTree<TValue> _tree;
+	
+	public QuadTreeKdTreeStorage(IDimensionalComparer<TValue> dimensionalComparer, IEqualityComparer<TValue> equalityComparer) {
+		this._tree = new KdTree<TValue>(dimensionalComparer, equalityComparer);
+	}
+	
+	public int Count() => this._tree.Count();
+
+	public bool Insert(TValue value) {
+		this._tree.Insert(value);
+		return true;
+	}
+
+	public bool Remove(TValue value) => this._tree.Remove(value);
+
+	public IEnumerable<TValue> EnumerateAll() => this._tree.EnumerateAll();
+}
+
+public class QuadTreeWithKdTree<TValue> : QuadTree<TValue, QuadTreeKdTreeStorage<TValue>> {
+	private readonly IDimensionalComparer<TValue> _dimensionalComparer;
+	private readonly IEqualityComparer<TValue> _equalityComparer;
+	
+	public QuadTreeWithKdTree(
+		RectangularBoundary<TValue, TValue> outerBoundary,
+		IDimensionalComparer<TValue> dimensionalComparer,
+		IEqualityComparer<TValue> equalityComparer,
+		uint maxDepth = 20
+	) : base(outerBoundary, maxDepth) {
+		
+		this._dimensionalComparer = dimensionalComparer;
+		this._equalityComparer = equalityComparer;
+	}
+
+	protected override QuadTreeKdTreeStorage<TValue> CreateStorage() {
+		return new QuadTreeKdTreeStorage<TValue>(this._dimensionalComparer, this._equalityComparer);
+	}
 }
