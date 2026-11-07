@@ -3,6 +3,8 @@
 using Collections;
 
 public readonly struct GeoCoordinates {
+    public const double METERS_PER_DEGREE = 111320.0;
+    
     private readonly double _latitude;
     private readonly double _longitude;
     
@@ -27,12 +29,10 @@ public readonly struct GeoCoordinates {
         if (!double.IsFinite(radius) || radius < 0) {
             throw new ArgumentOutOfRangeException(nameof(radius));
         }
-        
-        const double METERS_PER_DEGREE = 111320.0;
 
         // NOTE: We are allowed to completely ignore earth's curvature
-        double deltaLat = (this._latitude - center._latitude) * METERS_PER_DEGREE;
-        double deltaLon = (this._longitude - center._longitude) * METERS_PER_DEGREE;
+        double deltaLat = (this._latitude - center._latitude) * GeoCoordinates.METERS_PER_DEGREE;
+        double deltaLon = (this._longitude - center._longitude) * GeoCoordinates.METERS_PER_DEGREE;
 
         double deltaLatSquared = (deltaLat * deltaLat);
         double deltaLonSquared = (deltaLon * deltaLon);
@@ -40,6 +40,14 @@ public readonly struct GeoCoordinates {
         
         // calculate circle using formula
         return deltaLatSquared + deltaLonSquared <= radiusSquared;
+    }
+    
+    public GeoCoordinates MoveTo(double deltaLatMetres, double deltaLonMetres) {
+
+        double newLat = this._latitude + (deltaLatMetres / GeoCoordinates.METERS_PER_DEGREE);
+        double newLon = this._longitude + (deltaLonMetres / GeoCoordinates.METERS_PER_DEGREE);
+
+        return new GeoCoordinates(newLat, newLon);
     }
     
 }
