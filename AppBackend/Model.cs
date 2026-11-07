@@ -13,6 +13,8 @@ public interface ILocationTree {
 }
 
 public class Model {
+    private long _idCounter = 0;
+    
     private readonly ILocationTree _locationTree;
 
     public Model(ILocationTree locationTree) {
@@ -57,11 +59,21 @@ public class Model {
     }
     
     // 3
-    public bool DoCreateLocation(Location location) {
-        var localCopy = new Location(ref location);
+    public bool DoCreateLocation(GeoCoordinates coordinates, String name, String? description, String? address) {
+        var newInformation = new LocalInformation {
+            Id = this._idCounter++,
+            
+            Name = name,
+            Description = description,
+            Address = address,
+            
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+        
+        var newLocation = new Location(coordinates, newInformation);
 
-
-        return this._locationTree.Insert(localCopy);
+        return this._locationTree.Insert(newLocation);
     }
     
     
