@@ -44,13 +44,11 @@ public class Model {
         var centerCoord = center.Coordinates;
 
         var northEastCorner = new Location(
-            centerCoord.GetLatitude() + radius,
-            centerCoord.GetLongitude() + radius
+            centerCoord.MoveTo(-radius, -radius)
         );
         
         var southWestCorner = new Location(
-            centerCoord.GetLatitude() - radius,
-            centerCoord.GetLongitude() - radius
+            centerCoord.MoveTo(radius, radius)
         );
         
         var rectLocations = this._locationTree.EnumerateRange(southWestCorner, northEastCorner);
