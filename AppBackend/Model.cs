@@ -38,7 +38,11 @@ public class Model {
         throw new NotImplementedException();
     }
 
-    
+    // 1
+    public IEnumerable<Location> DoGetLocationsInRectangle(Location upperLeft, Location lowerRight) {
+        
+        return this._locationTree.EnumerateRange(upperLeft, lowerRight);
+    }
 
     // 2
     public IEnumerable<Location> DoGetLocationsInCircle(Location center, double radius) {
