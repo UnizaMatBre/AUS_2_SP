@@ -1,4 +1,6 @@
-﻿namespace AppBackend;
+﻿using Collections;
+
+namespace AppBackend;
 
 public interface ILocationTree {
     
@@ -16,7 +18,7 @@ public class Model {
     public Model(ILocationTree locationTree) {
         this._locationTree = locationTree;
     }
-
+    
 
 
     public bool DoGenerateRandomData() {
@@ -64,9 +66,12 @@ public class Model {
     }
     
     // 5
-    public IEnumerable<Location> DoGetLocationsWithStringInName(String searchedString) {
+    public IEnumerable<Location> DoGetLocationsWithStringInName(Location upperLeft, Location lowerRight, String searchedString) {
+        var rectLocations = this._locationTree.EnumerateRange(upperLeft, lowerRight);
 
-        throw new NotImplementedException();
+        return rectLocations
+            .Where((oneLocation) => oneLocation.GetName().Contains(searchedString))
+            .Select((oneLocation) => new Location(ref oneLocation));
     }
     
     // 6
