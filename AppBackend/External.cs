@@ -54,12 +54,34 @@ public class Location {
     private String? _description;
     private String? _address;
     
-    private readonly DateTime _createdAt;   
+    private DateTime _createdAt;   
     private DateTime _updatedAt;
 
     public Location(GeoCoordinates coordinates) {
         // NOTE: Intentionaly not setting anything else, for consistency sake
         this._coordinates = coordinates;
+    }
+
+    public static Location FromCsvLine(String csvLine) {
+        var parts = csvLine.Split(',');
+        if (parts.Length != 9) {
+
+            throw new FormatException("Invalid CSV line for Location.");
+        }
+        
+        var newLocation = new Location(
+            id: long.Parse(parts[0]),
+            latitude: long.Parse(parts[3]),
+            longitude: double.Parse(parts[4]),
+            name: parts[1],
+            description: string.IsNullOrEmpty(parts[2]) ? null : parts[2],
+            address: string.IsNullOrEmpty(parts[5]) ? null : parts[5]
+        );
+        
+        newLocation._createdAt = DateTime.Parse(parts[6]);
+        newLocation._updatedAt = DateTime.Parse(parts[7]);
+
+        return newLocation;
     }
     
     public Location(long id, double latitude, double longitude, String name, String? description, String? address) {
