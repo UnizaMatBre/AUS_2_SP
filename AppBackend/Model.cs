@@ -44,8 +44,10 @@ public class Model {
     
     // 3
     public bool DoCreateLocation(Location location) {
+        var localCopy = new Location(ref location);
 
-        throw new NotImplementedException();
+
+        return this._locationTree.Insert(localCopy);
     }
     
     
