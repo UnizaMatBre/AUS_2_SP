@@ -3,9 +3,9 @@
 namespace AppFrontend.ViewModels;
 
 public class WorkingViewModel {
+    private readonly Model _model;
 
-
-    public WorkingViewModel(TreeChoices treeChoice) {
-        
+    public WorkingViewModel(Model model) {
+        this._model = model;
     }
 }

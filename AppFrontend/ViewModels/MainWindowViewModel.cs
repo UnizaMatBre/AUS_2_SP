@@ -7,6 +7,8 @@ namespace AppFrontend.ViewModels;
 public class MainWindowViewModel : INotifyPropertyChanged {
     private object _currentViewModel;
 
+    private Model? _model;
+    
     public object CurrentViewModel {
         
         get => _currentViewModel;
@@ -17,13 +19,15 @@ public class MainWindowViewModel : INotifyPropertyChanged {
     }
 
     public MainWindowViewModel() {
-
+        this._model = null;
         this.CurrentViewModel = new TreeSelectionViewModel(this._OnSelectContinue);
     }
 
     private void _OnSelectContinue(TreeChoices choice) {
 
-        this.CurrentViewModel = new WorkingViewModel(choice);
+        this._model = new Model(choice);
+        
+        this.CurrentViewModel = new WorkingViewModel(this._model);
     }
 
 
