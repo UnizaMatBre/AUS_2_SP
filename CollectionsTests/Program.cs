@@ -7,7 +7,8 @@ namespace CollectionsTests;
 
 public enum TestType {
     FUNCTITONALITY_TEST,
-    PERFORMANCE_TEST
+    PERFORMANCE_TEST_LOCAL,
+    PERFORMANCE_TEST_ALL
 }
 
 
@@ -32,8 +33,8 @@ class Program
 
     }
 
-    static void RunPerformanceTests()
-    {
+    static void RunPerformanceTests(bool includeForeignTypes) {
+        
         var benchmark = new Benchmark();
         benchmark.LoadTestData();
 
@@ -120,7 +121,8 @@ class Program
         var testTypeStr = args[0];
         TestType selectedTestType = testTypeStr switch {
             "func" => TestType.FUNCTITONALITY_TEST,
-            "perf" => TestType.PERFORMANCE_TEST,
+            "perf_local" => TestType.PERFORMANCE_TEST_LOCAL,
+            "perf_all" => TestType.PERFORMANCE_TEST_ALL,
             _ => throw new ArgumentException($"Invalid test type '{testTypeStr}'.")
         };
         
@@ -131,10 +133,16 @@ class Program
                 break;
             }
 
-            case TestType.PERFORMANCE_TEST: {
+            case TestType.PERFORMANCE_TEST_LOCAL: {
 
-                RunPerformanceTests();
+                RunPerformanceTests(includeForeignTypes: false);
                 break;
+            }
+
+            case TestType.PERFORMANCE_TEST_ALL: {
+                RunPerformanceTests(includeForeignTypes: true);
+                break;
+
             }
         }
         
