@@ -42,6 +42,7 @@ struct DataSource {
 
 
 public class FunctionalityTester {
+    private readonly string _name;
     private readonly Random _masterRandom;
     private readonly List<TestPoint> _insertedPoints;
 
@@ -135,6 +136,8 @@ public class FunctionalityTester {
             ["Interval"] = 0
         };
         
+        Console.WriteLine("");
+        
         // generate data 
         {
             this._dataSource = new(iterationCount, this._masterRandom.Next());   
@@ -191,13 +194,17 @@ public class FunctionalityTester {
         
         Console.WriteLine();
         Console.WriteLine("== TEST DONE ==");
-        Console.WriteLine("===============");
+        Console.WriteLine($"> Name: {this._name}");
         foreach (var keyValue in this._counters) {
-            Console.WriteLine($"{keyValue.Key}: {keyValue.Value}");
+            Console.WriteLine($"> {keyValue.Key}: {keyValue.Value}");
         }
+        Console.WriteLine("===============");
+        Console.WriteLine();
     }
 
-    public FunctionalityTester(ITestable2DCollection collection, Random masterRandom) {
+    public FunctionalityTester(String name, ITestable2DCollection collection, Random masterRandom)
+    {
+        this._name = name;
         this._masterRandom = masterRandom;
         this._testedCollection = collection;
         this._insertedPoints = new();

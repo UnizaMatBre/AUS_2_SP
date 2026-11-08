@@ -19,17 +19,17 @@ class Program
         int width = (int)Math.Sqrt(iterationCount);
         
         
-        (new FunctionalityTester(
+        (new FunctionalityTester("K-d Tree",
             new KdTreeTestingWrapper(), 
             new Random())
         ).Run(iterationCount, 0.5, 0.2, 0.3);
         
-        (new FunctionalityTester(
+        (new FunctionalityTester("Quad Tree With List",
             new Breznican.QuadTreeWithListTestingWrapper(new TestPoint(-1, -1), new TestPoint(width + 2, width + 2)), 
             new Random())
         ).Run(iterationCount, 0.5, 0.2, 0.3);
         
-        (new FunctionalityTester(
+        (new FunctionalityTester("Quad Tree with Kd Tree",
             new Breznican.QuadTreeWithKdTestingWrapper(new TestPoint(-1, -1), new TestPoint(width + 2, width + 2)), 
             new Random())
         ).Run(iterationCount, 0.5, 0.2, 0.3);
