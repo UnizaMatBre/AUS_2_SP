@@ -23,7 +23,7 @@ public class MainWindowViewModel : INotifyPropertyChanged {
 
     private void _OnSelectContinue(TreeChoices choice) {
 
-        this._currentViewModel = new WorkingVIewModel(choice);
+        this._currentViewModel = new WorkingViewModel(choice);
     }
 
 

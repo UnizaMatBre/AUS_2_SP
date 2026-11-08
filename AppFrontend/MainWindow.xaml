@@ -14,7 +14,7 @@
                         <views:TreeSelectionView/>
                 </DataTemplate>
 
-                <DataTemplate DataType="{x:Type viewmodel:WorkingVIewModel}">
+                <DataTemplate DataType="{x:Type viewmodel:WorkingViewModel}">
                         <views:WorkingView/>
                 </DataTemplate>
         </Window.Resources>
