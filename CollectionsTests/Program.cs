@@ -69,17 +69,13 @@ class Program
             Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); 
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(quadTreeWrapper));
         }
-        
-        // breznican1.KdTree
-        /*
-        {
-            var kdTreeWrapper = new KdTreeTestingWrapper();
-            (new PerformanceTester("breznican1.KdTree", kdTreeWrapper, insertData, intervalData)).Run();
+
+        if (includeForeignTypes == false) {
+            return;
         }
-        */
         
         /*
-        
+
         // omnicollection.spatial.quadtree
         {
             var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
@@ -87,9 +83,9 @@ class Program
                 new TestPoint(maxX, maxY)
             );
             (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
-            
+
         }
-        
+
 
         // Auios.QuadTree
         {
@@ -100,7 +96,7 @@ class Program
             (new PerformanceTester("Auios.QuadTree", auiosQuadTree, insertData, intervalData)).Run();
 
         }
-        
+
         // SpatialTrees.QuadTree
         {
             var hrogenQuadTree = new HrogerQuadTreeWrapper(
@@ -108,7 +104,7 @@ class Program
                 new TestPoint(maxX, maxY)
             );
             (new PerformanceTester("Hrogen.SpatialTrees.QuadTree", hrogenQuadTree, insertData, intervalData)).Run();
-            
+
         }
         */
 
