@@ -138,6 +138,16 @@ public struct Location {
             };
         }
     }
+
+    public class LocationEqualityComparer : IEqualityComparer<Location> {
+        public bool Equals(Location x, Location y) {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Location obj) {
+            return obj.Id.GetHashCode();
+        }
+    }
     
     public class LocationLatitudeBoundary : IBoundary<Location> {
         private readonly double _latitude;
