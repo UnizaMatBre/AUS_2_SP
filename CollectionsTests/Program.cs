@@ -83,19 +83,19 @@ class Program
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(omnicollecionQuadTree));
         }
         
+        {
+            Console.WriteLine("=== hrogen.SpatialTrees.QuadTree ===");
+            var hrogenQuadTree = new HrogerQuadTreeWrapper(
+                benchmark.GetNorthWestCorner(),
+                benchmark.GetSouthEastCorner()
+            );
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(hrogenQuadTree)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(hrogenQuadTree));
+        }
+
         /*
 
        // omnicollection.spatial.quadtree
-       {
-           var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
-               new TestPoint(minX, minY),
-               new TestPoint(maxX, maxY)
-           );
-           (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
-
-       }
-
-
        // Auios.QuadTree
        {
            var auiosQuadTree = new AuiosQuadTreeWrapper(
