@@ -15,6 +15,8 @@ public interface ILocationTree {
 }
 
 public class Model {
+    public const long INVALID_ID = -1;
+    
     private long _idCounter = 0;
     
     private readonly ILocationTree _locationTree;
@@ -52,11 +54,11 @@ public class Model {
         var centerCoord = center.Coordinates;
 
         var northEastCorner = new Location(
-            centerCoord.MoveTo(-radius, -radius)
+            Model.INVALID_ID,centerCoord.MoveTo(-radius, -radius)
         );
         
         var southWestCorner = new Location(
-            centerCoord.MoveTo(radius, radius)
+            Model.INVALID_ID, centerCoord.MoveTo(radius, radius)
         );
         
         var rectLocations = this._locationTree.EnumerateRange(southWestCorner, northEastCorner);
@@ -67,8 +69,6 @@ public class Model {
     // 3
     public bool DoCreateLocation(GeoCoordinates coordinates, String name, String? description, String? address) {
         var newInformation = new LocalInformation {
-            Id = this._idCounter++,
-            
             Name = name,
             Description = description,
             Address = address,
@@ -77,7 +77,11 @@ public class Model {
             UpdatedAt = DateTime.Now
         };
         
-        var newLocation = new Location(coordinates, newInformation);
+        var newLocation = new Location(
+            this._idCounter++,
+            coordinates, 
+            newInformation
+        );
 
         return this._locationTree.Insert(newLocation);
     }

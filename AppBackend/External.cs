@@ -58,8 +58,6 @@ public readonly struct GeoCoordinates {
 }
 
 public class LocalInformation {
-    public long Id;
-
     public String Name;
     public String? Description;
     public String? Address;
@@ -86,29 +84,38 @@ public class LocalInformation {
 
 
 public struct Location {
-
+    public long Id;
+    
     public GeoCoordinates Coordinates;
     public LocalInformation? Information;
 
     
     public Location(ref Location other) {
+        this.Id = other.Id;
         this.Coordinates = other.Coordinates;
-        this.Information = other.Information is not null ? new LocalInformation {
-            Id = other.Information.Id,
-            Name = other.Information.Name,
-            Description = other.Information.Description,
-            Address = other.Information.Address,
-            CreatedAt = other.Information.CreatedAt,
-            UpdatedAt = other.Information.UpdatedAt
-        } : null;
+        this.Information = null;
+        
+        if (other.Information is not null) {
+            this.Information = new LocalInformation {
+                Name = other.Information.Name,
+                
+                Description = other.Information.Description,
+                Address = other.Information.Address,
+                
+                CreatedAt = other.Information.CreatedAt,
+                UpdatedAt = other.Information.UpdatedAt
+            };
+        }
     }
     
-    public Location(GeoCoordinates coordinates, LocalInformation? information = null) {
+    public Location(long id, GeoCoordinates coordinates, LocalInformation? information = null) {
+        this.Id = id;
         this.Coordinates = coordinates;
         this.Information = information;
     }
     
-    public Location(double latitude, double longitude, LocalInformation? information = null) {
+    public Location(long id, double latitude, double longitude, LocalInformation? information = null) {
+        this.Id = id;
         this.Coordinates = new GeoCoordinates(latitude, longitude);
         this.Information = information;
     }
@@ -202,7 +209,7 @@ public static class CsvHelpers {
         }
         
         // CSV: id,name,description,latitude,longitude,address,createdAt,updatedAt
-        return $"{info.Id},{info.Name},{info.Description},{coord.GetLatitude()},{coord.GetLongitude()},{info.Address},{info.CreatedAt},{info.UpdatedAt}";
+        return $"{location.Id},{info.Name},{info.Description},{coord.GetLatitude()},{coord.GetLongitude()},{info.Address},{info.CreatedAt},{info.UpdatedAt}";
     }
     
     public static Location LocationFromCsvLine(string csvLine) {
@@ -213,7 +220,6 @@ public static class CsvHelpers {
 
 
         var info = new LocalInformation {
-            Id = long.Parse(parts[0]),
             Name = parts[1],
             
             Description = string.IsNullOrEmpty(parts[2]) ? null : parts[2],
@@ -227,7 +233,10 @@ public static class CsvHelpers {
             double.Parse(parts[3]), double.Parse(parts[4])
         );
 
-        return new Location(coordinates, info);
+        
+        var id = long.Parse(parts[0]);
+        
+        return new Location(id, coordinates, info);
     }
     
     
