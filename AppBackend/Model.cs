@@ -36,13 +36,15 @@ public class Model {
     }
     
     public bool DoDumpDataIntoFile() {
-        
-        throw new NotImplementedException();
+
+        this._locationTree.DumpCsv("locations.csv", CsvHelpers.LocationToCsvLine);
+        return true;
     }
     
     public bool DoLoadDataFromFile() {
         
-        throw new NotImplementedException();
+        this._locationTree.LoadCsv("locations.csv", CsvHelpers.LocationFromCsvLine);
+        return true;
     }
 
     // 1
