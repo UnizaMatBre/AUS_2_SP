@@ -181,6 +181,56 @@ public class KdTree<TValue> {
 		}
 	}
 
+	
+	/// <summary>
+	/// Updates a value in the tree. If the value is found, it is replaced with the new value.
+	/// </summary>
+	/// <param name="valueToUpdate">Value we are targeting</param>
+	/// <param name="newValue">Value which will replace new one</param>
+	/// <returns>True if value was successfully updated, False otherwise</returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	public bool Update(TValue valueToUpdate, TValue newValue) {
+		ArgumentNullException.ThrowIfNull(valueToUpdate);
+		ArgumentNullException.ThrowIfNull(newValue);
+
+		if (this._root is null)
+		{
+			return false;
+		}
+
+		// initialize variables
+		uint layer = 0;
+		KdTreeNode current = this._root;
+
+		while (true) {
+			// check if this is our node
+			bool isSearchedNode = !current.IsRemoved && this._equalityComparer.Equals(current.Value, valueToUpdate);
+			
+			if (isSearchedNode) {
+				current.Value = newValue;
+				
+				return true;
+			}
+
+
+			uint dimension = layer % this._dimensionalComparer.GetDimensionCount();
+
+			// -1 => new value is larger than current node - goes to right subtree
+			// +1 => new value is smaller than current node - goes to left subtree
+			//  0 => new value is possibly equal to current node - if not, goes to left subtree
+			int cmpResult = this._dimensionalComparer.DimensionalCompare(dimension, current.Value, valueToUpdate);
+			
+			// pick proper branch
+			// +1 or 0 => left (larger) subtree
+			// -1 => right (larger) subtree
+			ref KdTreeNode? branch = ref (cmpResult > 0 ? ref current.Left : ref current.Right);
+
+			if (branch is null) {
+				return false;
+			}
+		}
+	}
+	
 	public int Count() => this._itemCount;
 	
 	/// <summary>
