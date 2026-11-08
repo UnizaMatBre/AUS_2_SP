@@ -21,7 +21,7 @@ class Program
         
         
         (new FunctionalityTester("K-d Tree",
-            new KdTreeTestingWrapper(), 
+            new Breznican.KdTreeTestingWrapper(), 
             new Random())
         ).Run(iterationCount, 0.5, 0.2, 0.3);
         
@@ -42,7 +42,7 @@ class Program
         
         {
             Console.WriteLine("=== breznican1.KdTree ===");
-            var kdTreeWrapper = new KdTreeTestingWrapper();
+            var kdTreeWrapper = new Breznican.KdTreeTestingWrapper();
             Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(kdTreeWrapper));
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(kdTreeWrapper));
         }

@@ -10,19 +10,6 @@ using SpatialTrees.Quadtrees;
 namespace CollectionsTests;
 
 
-public class KdTreeTestingWrapper : ITestable2DCollection {
-    private KdTree<TestPoint> _tree = new(
-        new TestPoint.DimensionalComparer(),
-        new TestPoint.EqualityComparer()
-    );
-
-
-    public bool Insert(TestPoint point) => this._tree.Insert(point);
-    
-    public IEnumerable<TestPoint> EnumerateRange(TestPoint lower, TestPoint upper) => this._tree.EnumerateRange(lower, upper);
-
-    public bool CheckValidity() => this._tree.Debug_IsKdTree();
-}
 
 
 
