@@ -2,6 +2,14 @@
 
 using Collections;
 
+
+
+public enum TreeChoices {
+    KdTree,
+    QuadTreeWithList,
+    QuadTreeWithKd
+}
+
 public readonly struct GeoCoordinates {
     public const double METERS_PER_DEGREE = 111320.0;
     

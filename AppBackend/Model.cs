@@ -24,7 +24,7 @@ public class Model {
     
     private readonly ILocationTree _locationTree;
 
-    public Model(ILocationTree locationTree) {
+    public Model(TreeChoices treeChoice) {
         this._locationTree = locationTree;
     }
     
