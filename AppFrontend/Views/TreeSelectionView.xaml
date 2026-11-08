@@ -6,7 +6,19 @@
              xmlns:local="clr-namespace:AppFrontend.Views"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
-    </Grid>
+    <StackPanel Margin="20">
+        <TextBlock Text="Select Tree Type:" FontWeight="Bold" />
+        <ListBox
+            ItemsSource="{Binding Choices}"
+            SelectedItem="{Binding SelectedChoice}"
+            Height="150" 
+        />
+
+        <Button
+            Content="Continue"
+            Command="{Binding ContinueCommand}"
+            Margin="0,15,0,0" 
+        />
+
+    </StackPanel>
 </UserControl>
