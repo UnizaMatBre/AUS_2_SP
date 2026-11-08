@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using AppBackend;
 
 namespace AppFrontend.ViewModels;
 
@@ -13,6 +14,16 @@ public class MainWindowViewModel : INotifyPropertyChanged {
             this._currentViewModel = value;
             this.OnPropertyChanged(nameof(CurrentViewModel));
         }
+    }
+
+    public MainWindowViewModel() {
+
+        this.CurrentViewModel = new TreeSelectionViewModel(this._OnSelectContinue);
+    }
+
+    private void _OnSelectContinue(TreeChoices choice) {
+
+        this._currentViewModel = new WorkingVIewModel(choice);
     }
 
 
