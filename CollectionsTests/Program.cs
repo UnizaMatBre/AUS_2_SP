@@ -115,9 +115,20 @@ class Program
     
 
     static void Main(string[] args) {
-        switch (SELECTED_TESTS) {
+        if (args.Length == 0) {
+            throw new ArgumentException("Missing test type argument.");
+        }
+        
+        var testTypeStr = args[0];
+        TestType selectedTestType = testTypeStr switch {
+            "func" => TestType.FUNCTITONALITY_TEST,
+            "perf" => TestType.PERFORMANCE_TEST,
+            _ => throw new ArgumentException($"Invalid test type '{testTypeStr}'.")
+        };
+        
 
-             case TestType.FUNCTITONALITY_TEST: {
+        switch (selectedTestType) {
+            case TestType.FUNCTITONALITY_TEST: {
                 RunFunctionalityTests();
                 break;
             }
