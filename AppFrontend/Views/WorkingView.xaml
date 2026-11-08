@@ -46,7 +46,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 
-                <Button Content="Submit" Command="{Binding SubmitOperation}" />
+                <Button Content="Submit" Command="{Binding SubmitCommand}" />
             </StackPanel>
         </Border>
 
