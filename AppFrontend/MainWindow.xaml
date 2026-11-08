@@ -6,7 +6,18 @@
         xmlns:local="clr-namespace:AppFrontend"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        
+        <Window.Resources>
+                <DataTemplate DataType="{x:Type vm:SelectionViewModel}">
+                        <views:SelectionView/>
+                </DataTemplate>
 
-    </Grid>
+                <DataTemplate DataType="{x:Type vm:WorkingViewModel}">
+                        <views:WorkingView/>
+                </DataTemplate>
+        </Window.Resources>
+        
+        <ContentControl
+                Content="{Binding CurrentViewModel}"
+        />
 </Window>
