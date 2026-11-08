@@ -7,7 +7,8 @@ namespace CollectionsTests;
 
 public enum TestType {
     FUNCTITONALITY_TEST,
-    PERFORMANCE_TEST_LOCAL,
+    PERFORMANCE_TEST_LOCAL_ONLY,
+    PERFORMANCE_TEST_FOREIGN_ONLY,
     PERFORMANCE_TEST_ALL
 }
 
@@ -36,11 +37,9 @@ class Program
 
     }
 
-    static void RunPerformanceTests(bool includeForeignTypes) {
-        
-        var benchmark = new Benchmark();
-        benchmark.LoadTestData();
 
+    private static void _RunPerformanceTestsLocal(ref Benchmark benchmark) {
+        
         {
             Console.WriteLine("=== breznican1.KdTree ===");
             var kdTreeWrapper = new KdTreeTestingWrapper();
@@ -69,11 +68,11 @@ class Program
             Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(quadTreeWrapper)); 
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(quadTreeWrapper));
         }
-
-        if (includeForeignTypes == false) {
-            return;
-        }
-
+        
+    }
+    
+    private static void _RunPerformanceTestsForeign(ref Benchmark benchmark) {
+        
         {
             Console.WriteLine("=== omnicollection.spatial.quadtree ===");
             var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
@@ -83,40 +82,57 @@ class Program
             Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(omnicollecionQuadTree)); 
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(omnicollecionQuadTree));
         }
-
+        
         /*
 
-        // omnicollection.spatial.quadtree
-        {
-            var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
-                new TestPoint(minX, minY),
-                new TestPoint(maxX, maxY)
-            );
-            (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
+       // omnicollection.spatial.quadtree
+       {
+           var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
+               new TestPoint(minX, minY),
+               new TestPoint(maxX, maxY)
+           );
+           (new PerformanceTester("omnicollection.QuadTree", omnicollecionQuadTree, insertData, intervalData)).Run();
 
+       }
+
+
+       // Auios.QuadTree
+       {
+           var auiosQuadTree = new AuiosQuadTreeWrapper(
+               new TestPoint(minX, minY),
+               new TestPoint(maxX, maxY)
+           );
+           (new PerformanceTester("Auios.QuadTree", auiosQuadTree, insertData, intervalData)).Run();
+
+       }
+
+       // SpatialTrees.QuadTree
+       {
+           var hrogenQuadTree = new HrogerQuadTreeWrapper(
+               new TestPoint(minX, minY),
+               new TestPoint(maxX, maxY)
+           );
+           (new PerformanceTester("Hrogen.SpatialTrees.QuadTree", hrogenQuadTree, insertData, intervalData)).Run();
+
+       }
+       */
+    }
+
+
+    static void RunPerformanceTests(bool includeLocalTypes, bool includeForeignTypes) {
+        
+        var benchmark = new Benchmark();
+        benchmark.LoadTestData();
+
+        if (includeLocalTypes) {
+            _RunPerformanceTestsLocal(ref benchmark);
         }
 
-
-        // Auios.QuadTree
-        {
-            var auiosQuadTree = new AuiosQuadTreeWrapper(
-                new TestPoint(minX, minY),
-                new TestPoint(maxX, maxY)
-            );
-            (new PerformanceTester("Auios.QuadTree", auiosQuadTree, insertData, intervalData)).Run();
-
+        if (includeForeignTypes) {
+            _RunPerformanceTestsForeign(ref benchmark);
         }
-
-        // SpatialTrees.QuadTree
-        {
-            var hrogenQuadTree = new HrogerQuadTreeWrapper(
-                new TestPoint(minX, minY),
-                new TestPoint(maxX, maxY)
-            );
-            (new PerformanceTester("Hrogen.SpatialTrees.QuadTree", hrogenQuadTree, insertData, intervalData)).Run();
-
-        }
-        */
+        
+       
 
     }
 
@@ -130,7 +146,8 @@ class Program
         var testTypeStr = args[0];
         TestType selectedTestType = testTypeStr switch {
             "func" => TestType.FUNCTITONALITY_TEST,
-            "perf_local" => TestType.PERFORMANCE_TEST_LOCAL,
+            "perf_local" => TestType.PERFORMANCE_TEST_LOCAL_ONLY,
+            "perf_foreign" => TestType.PERFORMANCE_TEST_FOREIGN_ONLY,
             "perf_all" => TestType.PERFORMANCE_TEST_ALL,
             _ => throw new ArgumentException($"Invalid test type '{testTypeStr}'.")
         };
@@ -138,20 +155,27 @@ class Program
 
         switch (selectedTestType) {
             case TestType.FUNCTITONALITY_TEST: {
+                
                 RunFunctionalityTests();
                 break;
             }
 
-            case TestType.PERFORMANCE_TEST_LOCAL: {
+            case TestType.PERFORMANCE_TEST_LOCAL_ONLY: {
 
-                RunPerformanceTests(includeForeignTypes: false);
+                RunPerformanceTests(includeLocalTypes: true ,includeForeignTypes: false);
                 break;
             }
 
-            case TestType.PERFORMANCE_TEST_ALL: {
-                RunPerformanceTests(includeForeignTypes: true);
+            case TestType.PERFORMANCE_TEST_FOREIGN_ONLY: {
+                
+                RunPerformanceTests(includeLocalTypes: false ,includeForeignTypes: true);
                 break;
-
+            }
+            
+            case TestType.PERFORMANCE_TEST_ALL: {
+                
+                RunPerformanceTests(includeLocalTypes: true, includeForeignTypes: true);
+                break;
             }
         }
         
