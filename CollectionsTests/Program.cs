@@ -73,7 +73,17 @@ class Program
         if (includeForeignTypes == false) {
             return;
         }
-        
+
+        {
+            Console.WriteLine("=== omnicollection.spatial.quadtree ===");
+            var omnicollecionQuadTree = new OmnoCollectionQuadTreeWrapper(
+                benchmark.GetNorthWestCorner(),
+                benchmark.GetSouthEastCorner()
+            );
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(omnicollecionQuadTree)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(omnicollecionQuadTree));
+        }
+
         /*
 
         // omnicollection.spatial.quadtree
