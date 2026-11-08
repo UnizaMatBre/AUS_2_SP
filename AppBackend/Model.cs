@@ -94,9 +94,17 @@ public class Model {
     }
     
     // 4.2 - coordinate edit
-    public bool DoEditLocationCoordinates(/* ADD PROPER PARAMETERS HERE */) {
+    public bool DoEditLocationCoordinates(Location oldLocation, GeoCoordinates coordinates) {
+        var removeResult = this._locationTree.Remove(oldLocation);
+        if (removeResult == false) {
+            return false;
+        }
+        
+        var newLocation = oldLocation with {
+            Coordinates = coordinates
+        };
 
-        throw new NotImplementedException();
+        return this._locationTree.Insert(newLocation);
     }
     
     // 5
