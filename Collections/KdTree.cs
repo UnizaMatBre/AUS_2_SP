@@ -135,31 +135,30 @@ public class KdTree<TValue> {
 	}
 
 	/// <summary>
-	/// Removes a value from the tree.
+	/// Finds the node containing the specified value in the tree.
 	/// </summary>
-	/// <param name="valueToRemove">Value we want to remove</param>
-	/// <returns>True if the value was found and removed, false otherwise</returns>
+	/// <param name="valueToFind">Value we want to find</param>
+	/// <returns>The node if we manage to find it, null otherwise</returns>
 	/// <exception cref="ArgumentNullException"></exception>
-	public bool Remove(TValue valueToRemove) {
-		ArgumentNullException.ThrowIfNull(valueToRemove);
+	private KdTreeNode? _FindNodeByValue(TValue valueToFind) {
+		ArgumentNullException.ThrowIfNull(valueToFind);
 
-		if(this._root is null) {
-			return false;
+		if (this._root is null) {
+			return null;
 		}
 		
 		// initialize variables
 		uint layer = 0;
 		KdTreeNode current = this._root;
 
+		
 		while (true) {
+			
 			// check if this is our node
-			bool isSearchedNode = !current.IsRemoved && this._equalityComparer.Equals(current.Value, valueToRemove);
+			bool isSearchedNode = !current.IsRemoved && this._equalityComparer.Equals(current.Value, valueToFind);
 			
 			if (isSearchedNode) {
-				current.MarkAsRemoved();
-				this._itemCount--;
-				
-				return true;
+				return current;
 			}
 
 
@@ -168,22 +167,50 @@ public class KdTree<TValue> {
 			// -1 => new value is larger than current node - goes to right subtree
 			// +1 => new value is smaller than current node - goes to left subtree
 			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._dimensionalComparer.DimensionalCompare(dimension, current.Value, valueToRemove);
+			int cmpResult = this._dimensionalComparer.DimensionalCompare(dimension, current.Value, valueToFind);
 			
 			// pick proper branch
 			// +1 or 0 => left (larger) subtree
 			// -1 => right (larger) subtree
 			ref KdTreeNode? branch = ref (cmpResult > 0 ? ref current.Left : ref current.Right);
 
+			// if there is nothing anymore, we didn't find the value
 			if (branch is null) {
-				return false;
+				return null;
 			}
+			
+			// move into the branch
+			current = branch;
+			layer += 1;
 		}
+	}
+
+	/// <summary>
+	/// Removes a value from the tree.
+	/// </summary>
+	/// <param name="valueToRemove">Value we want to remove</param>
+	/// <returns>True if the value was found and removed, false otherwise</returns>
+	/// <exception cref="ArgumentNullException"></exception>
+	public bool Remove(TValue valueToRemove) {
+		ArgumentNullException.ThrowIfNull(valueToRemove);
+
+		var result = this._FindNodeByValue(valueToRemove);
+		if (result is null) {
+			return false;
+		}
+
+		result.MarkAsRemoved();
+		this._itemCount--;
+		return true;
 	}
 
 	
 	/// <summary>
 	/// Updates a value in the tree. If the value is found, it is replaced with the new value.
+	///
+	/// Note that if you update values that are used for comparison, the tree may become invalid. Don't do that please.
+	///
+	/// TODO: Should i rewrite tree to split key and value? That would eliminate this problem completly.
 	/// </summary>
 	/// <param name="valueToUpdate">Value we are targeting</param>
 	/// <param name="newValue">Value which will replace new one</param>
@@ -193,42 +220,13 @@ public class KdTree<TValue> {
 		ArgumentNullException.ThrowIfNull(valueToUpdate);
 		ArgumentNullException.ThrowIfNull(newValue);
 
-		if (this._root is null)
-		{
+		var result = this._FindNodeByValue(valueToUpdate);
+		if (result is null) {
 			return false;
 		}
-
-		// initialize variables
-		uint layer = 0;
-		KdTreeNode current = this._root;
-
-		while (true) {
-			// check if this is our node
-			bool isSearchedNode = !current.IsRemoved && this._equalityComparer.Equals(current.Value, valueToUpdate);
-			
-			if (isSearchedNode) {
-				current.Value = newValue;
-				
-				return true;
-			}
-
-
-			uint dimension = layer % this._dimensionalComparer.GetDimensionCount();
-
-			// -1 => new value is larger than current node - goes to right subtree
-			// +1 => new value is smaller than current node - goes to left subtree
-			//  0 => new value is possibly equal to current node - if not, goes to left subtree
-			int cmpResult = this._dimensionalComparer.DimensionalCompare(dimension, current.Value, valueToUpdate);
-			
-			// pick proper branch
-			// +1 or 0 => left (larger) subtree
-			// -1 => right (larger) subtree
-			ref KdTreeNode? branch = ref (cmpResult > 0 ? ref current.Left : ref current.Right);
-
-			if (branch is null) {
-				return false;
-			}
-		}
+		
+		result.Value = newValue;
+		return true;
 	}
 	
 	public int Count() => this._itemCount;
