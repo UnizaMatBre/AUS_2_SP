@@ -38,11 +38,15 @@ public class MainWindowViewModel : INotifyPropertyChanged {
     private void _OnSelectContinue(TreeChoices choice) {
 
         this._model = new Model(choice);
-        
-        this.CurrentViewModel = new WorkingViewModel(this._model);
+    
+        this.GoToMainWorkView();
     }
 
 
+    public void GoToMainWorkView() {
+        this.CurrentViewModel = new WorkingViewModel(this._model);
+    }
+    
     public event PropertyChangedEventHandler? PropertyChanged;
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
         
