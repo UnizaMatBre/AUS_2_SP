@@ -12,8 +12,40 @@ public class Model {
     private readonly ILocationTree _locationTree;
 
     public Model(TreeChoices treeChoice) {
-        // todo: this is removed for a moment, i will reimplement it later
-        //this._locationTree = locationTree;
+
+        // kd tree
+        if (treeChoice == TreeChoices.KdTree) {
+            var kdTree = new KdTree<Location>(
+                new Location.LocationDimensionalComparer(), new Location.LocationEqualityComparer()
+            );
+            
+            this._locationTree = new KdTreeWrapper(kdTree);
+
+            return;
+        }
+
+        var northWest = new GeoCoordinates(latitude: +90, longitude: -180);
+        var southEast = new GeoCoordinates(latitude: -90, longitude: +180);
+
+        var globalRect = Location.MakeRect(
+            new(INVALID_ID, northWest), 
+            new Location(INVALID_ID, southEast)
+        );
+
+        if (treeChoice == TreeChoices.QuadTreeWithList) {
+            var quadTree = new QuadTreeWithList<Location>(globalRect);
+
+            this._locationTree = new QuadTreeWrapper(quadTree);
+            return;
+        }
+
+        
+        if (treeChoice == TreeChoices.QuadTreeWithKd) {
+            var quadTree = new QuadTreeWithList<Location>(globalRect);
+
+            this._locationTree = new QuadTreeWrapper(quadTree);
+            return;
+        }
     }
     
 
