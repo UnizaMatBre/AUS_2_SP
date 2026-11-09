@@ -5,10 +5,11 @@ using AppBackend;
 namespace AppFrontend.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged {
-    private object _currentViewModel;
+
 
     private Model? _model;
     
+    private object _currentViewModel;
     public object CurrentViewModel {
         
         get => _currentViewModel;
@@ -18,9 +19,20 @@ public class MainWindowViewModel : INotifyPropertyChanged {
         }
     }
 
+    private string _statusDisplay;
+
+    public string StatusDisplay {
+        get => _statusDisplay;
+        set {
+            this._statusDisplay = value;
+            this.OnPropertyChanged(nameof(StatusDisplay));
+        }
+    }
+
     public MainWindowViewModel() {
         this._model = null;
         this.CurrentViewModel = new TreeSelectionViewModel(this._OnSelectContinue);
+        this.StatusDisplay = ".......";
     }
 
     private void _OnSelectContinue(TreeChoices choice) {
