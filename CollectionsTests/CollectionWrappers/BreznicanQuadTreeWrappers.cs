@@ -8,6 +8,11 @@ namespace CollectionsTests.Breznican {
         );
 
 
+        public void Build(IEnumerable<TestPoint> points) {
+
+            throw new NotSupportedException();
+        }
+        
         public bool Insert(TestPoint point) => this._tree.Insert(point);
     
         public IEnumerable<TestPoint> EnumerateRange(TestPoint lower, TestPoint upper) => this._tree.EnumerateRange(lower, upper);
@@ -40,6 +45,11 @@ namespace CollectionsTests.Breznican {
         }
     
     
+        public void Build(IEnumerable<TestPoint> points) {
+
+            throw new NotSupportedException();
+        }
+        
         public bool Insert(TestPoint point) => this._treeWithList.Insert(point);
 
         public IEnumerable<TestPoint> EnumerateRange(TestPoint northWestCorner, TestPoint southEastCorner) {
@@ -76,6 +86,10 @@ namespace CollectionsTests.Breznican {
             );
         }
     
+        public void Build(IEnumerable<TestPoint> points) {
+
+            throw new NotSupportedException();
+        }
     
         public bool Insert(TestPoint point) => this._treeWithList.Insert(point);
 

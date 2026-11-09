@@ -72,6 +72,12 @@ public class Benchmark {
         return stopwatch.Elapsed.TotalMicroseconds / this._insertData.Count;
     }
 
+    public double TestBuilding(ITestable2DCollection testable2DCollection) {
+        var stopwatch = Stopwatch.StartNew();
+        testable2DCollection.Build(this._insertData);
+        return stopwatch.Elapsed.TotalMicroseconds / this._insertData.Count;
+    }
+    
     public double TestIntervals(ITestable2DCollection testedCollection) {
         var stopwatch = Stopwatch.StartNew();
         foreach (var pointPair in this._intervalData) {

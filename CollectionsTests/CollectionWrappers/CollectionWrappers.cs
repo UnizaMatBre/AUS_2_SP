@@ -19,6 +19,11 @@ public class NetTopologySuiteKdTreeWrapper : ITestable2DCollection {
         this._tree = new();
     }
 
+    public void Build(IEnumerable<TestPoint> points) {
+
+        throw new NotSupportedException();
+    }
+
     public bool Insert(TestPoint point) {
 
         this._tree.Insert(
@@ -63,6 +68,11 @@ public class OmnoCollectionQuadTreeWrapper : ITestable2DCollection {
         var rect = MakeRectangle(northWestCorner, southEastCorner);
 
         this._tree = new(rect);
+    }
+    
+    public void Build(IEnumerable<TestPoint> points) {
+
+        throw new NotSupportedException();
     }
 
     public bool Insert(TestPoint point) {
@@ -120,6 +130,11 @@ public class AuiosQuadTreeWrapper : ITestable2DCollection {
             new CustomBounds()
         );
     }
+    
+    public void Build(IEnumerable<TestPoint> points) {
+
+        throw new NotSupportedException();
+    }
 
     public bool Insert(TestPoint point) => this._tree.Insert(point);
 
@@ -160,6 +175,11 @@ public class HrogerQuadTreeWrapper : ITestable2DCollection {
         var rect = MakeRect(northWestCorner, southEastCorner);
         
         this._tree = new(rect);
+    }
+    
+    public void Build(IEnumerable<TestPoint> points) {
+
+        throw new NotSupportedException();
     }
 
     public bool Insert(TestPoint point) {
