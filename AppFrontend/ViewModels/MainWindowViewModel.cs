@@ -4,7 +4,14 @@ using AppBackend;
 
 namespace AppFrontend.ViewModels;
 
-public class MainWindowViewModel : INotifyPropertyChanged {
+public interface INavigationInterface {
+    public object CurrentViewModel { get; set; }
+
+    public void NavigateToMainWorkingView();
+}
+
+
+public sealed class MainWindowViewModel : INotifyPropertyChanged, INavigationInterface {
 
 
     private Model? _model;
@@ -38,17 +45,19 @@ public class MainWindowViewModel : INotifyPropertyChanged {
     private void _OnSelectContinue(TreeChoices choice) {
 
         this._model = new Model(choice);
-    
-        this.GoToMainWorkView();
+
+        this.NavigateToMainWorkingView();
     }
 
+    public void NavigateToMainWorkingView() {
+        
+        this.CurrentViewModel = new WorkingViewModel(this, this._model!);
 
-    public void GoToMainWorkView() {
-        this.CurrentViewModel = new WorkingViewModel(this._model);
     }
     
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null) {
         
         PropertyChanged?.Invoke( 
             this, new PropertyChangedEventArgs(propertyName)

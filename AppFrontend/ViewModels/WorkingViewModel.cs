@@ -7,6 +7,7 @@ using AppFrontend.ViewModels.Components;
 namespace AppFrontend.ViewModels;
 
 public class WorkingViewModel {
+    private readonly INavigationInterface _navigation;
     private readonly Model _model;
 
     public ObservableCollection<OperationDescriptor> Operations { get; } = new();
@@ -25,7 +26,8 @@ public class WorkingViewModel {
         }
     }
     
-    public WorkingViewModel(Model model) {
+    public WorkingViewModel(INavigationInterface navigation, Model model) {
+        this._navigation = navigation;
         this._model = model;
         this._InitializeOperations();
         this.SubmitCommand = new RelayCommand(this._Submit, () => true);
