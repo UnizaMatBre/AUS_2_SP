@@ -2,6 +2,7 @@
 using System.Security.AccessControl;
 using Auios.QuadTree;
 using Collections;
+using NetTopologySuite.Geometries;
 using Omni.Collections.Spatial;
 using QuadTrees;
 using QuadTrees.Common;
@@ -11,7 +12,36 @@ namespace CollectionsTests;
 
 
 
+public class NetTopologySuiteKdTreeWrapper : ITestable2DCollection {
+    private readonly NetTopologySuite.Index.KdTree.KdTree<TestPoint> _tree;
 
+    public NetTopologySuiteKdTreeWrapper() {
+        this._tree = new();
+    }
+
+    public bool Insert(TestPoint point) {
+
+        this._tree.Insert(
+            new NetTopologySuite.Geometries.Coordinate(point.GetX(), point.GetY()), point
+        );
+        return true;
+    }
+
+    public IEnumerable<TestPoint> EnumerateRange(TestPoint lower, TestPoint upper) {
+        var envelope = new NetTopologySuite.Geometries.Envelope(
+            lower.GetX(), upper.GetX(), 
+            lower.GetY(), upper.GetY()
+        );
+
+        var result = this._tree.Query(envelope);
+
+        return result.Select((node) => node.Data);
+    }
+
+    public bool CheckValidity() {
+        throw new NotImplementedException();
+    }
+}
 
 
 public class OmnoCollectionQuadTreeWrapper : ITestable2DCollection {

@@ -72,6 +72,13 @@ class Program
     }
     
     private static void _RunPerformanceTestsForeign(ref Benchmark benchmark) {
+
+        {
+            Console.WriteLine("=== netTopologySuite.kdtree ===");
+            var netTopologySuiteKdTree = new NetTopologySuiteKdTreeWrapper();
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(netTopologySuiteKdTree)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(netTopologySuiteKdTree));
+        }
         
         {
             Console.WriteLine("=== omnicollection.spatial.quadtree ===");

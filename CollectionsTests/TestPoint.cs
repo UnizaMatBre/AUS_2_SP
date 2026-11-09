@@ -3,7 +3,7 @@ using FastG;
 
 namespace CollectionsTests;
 
-public struct TestPoint : IEquatable<TestPoint>, SpatialTrees.Quadtrees.IMapObject2d {
+public class TestPoint : IEquatable<TestPoint>, SpatialTrees.Quadtrees.IMapObject2d {
 
 
     private double _x;

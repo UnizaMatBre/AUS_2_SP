@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="Auios.QuadTree" Version="1.2.0" />
+      <PackageReference Include="NetTopologySuite" Version="2.6.0" />
       <PackageReference Include="OmniCollections.Spatial" Version="3.0.0" />
       <PackageReference Include="QuadTrees" Version="1.0.4" />
       <PackageReference Include="Sep" Version="0.17.1" />
