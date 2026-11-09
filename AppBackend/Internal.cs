@@ -45,3 +45,37 @@ public class KdTreeWrapper : ILocationTree {
 
 }
 
+public class QuadTreeWrapper : ILocationTree {
+    private readonly QuadTree<Location, IQuadTreeValueStorage<Location>> _tree;
+
+    public QuadTreeWrapper(QuadTree<Location, IQuadTreeValueStorage<Location>> tree) {
+
+        this._tree = tree;
+    }
+
+    public bool Insert(Location location) 
+        => this._tree.Insert(location);
+
+    public bool Remove(Location location) {
+                
+        throw new NotImplementedException();
+    }
+
+    public bool Update(Location oldLocation, Location newValue) {
+        
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<Location> EnumerateRange(Location lowerBound, Location upperBound) {
+        var rect = Location.MakeRect(lowerBound, upperBound);
+
+        return this._tree.EnumerateBoundary(rect);
+    }
+
+    public void DumpCsv(string fileName, Func<Location, string> toCsvString) =>
+        this._tree.DumbCsv(fileName, toCsvString);
+
+    public void LoadCsv(string fileName, Func<string, Location> fromCsvString)
+        => this._tree.LoadCsv(fileName, fromCsvString);
+
+}
