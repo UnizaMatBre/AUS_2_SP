@@ -1,5 +1,6 @@
 ﻿using Collections;
 using FastG;
+using LargeCollections;
 
 namespace CollectionsTests;
 
@@ -57,6 +58,18 @@ public class TestPoint : IEquatable<TestPoint>, SpatialTrees.Quadtrees.IMapObjec
                 _ => throw new ArgumentOutOfRangeException(nameof(dimension))
             };
         }
+    }
+
+    public class PointAccessor : IPointAccessor<TestPoint> {
+        public double GetCoordinate(TestPoint point, int dimension) {
+            return dimension switch {
+                0 => point.GetX(),
+                1 => point.GetY(),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        public int Dimensions { get; } = 2;
     }
     
     public class XBoundary : IBoundary<TestPoint> {

@@ -72,12 +72,19 @@ class Program
     }
     
     private static void _RunPerformanceTestsForeign(ref Benchmark benchmark) {
-
+        
         {
             Console.WriteLine("=== netTopologySuite.kdtree ===");
             var netTopologySuiteKdTree = new NetTopologySuiteKdTreeWrapper();
             Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(netTopologySuiteKdTree)); 
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(netTopologySuiteKdTree));
+        }
+        
+        {
+            Console.WriteLine("=== largecollections.kdtree ===");
+            var largecollectionsKdTree = new LargeCollectionsKdTreeWrapper();
+            Console.WriteLine("+ Building: {0}", benchmark.TestBuilding(largecollectionsKdTree)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(largecollectionsKdTree));
         }
         
         {

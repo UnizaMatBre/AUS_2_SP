@@ -48,6 +48,30 @@ public class NetTopologySuiteKdTreeWrapper : ITestable2DCollection {
     }
 }
 
+public class LargeCollectionsKdTreeWrapper : ITestable2DCollection {
+    private LargeCollections.LargeKDTree<TestPoint, TestPoint.PointAccessor> _tree;
+    
+    public void Build(IEnumerable<TestPoint> points) {
+
+        this._tree = new(
+            new TestPoint.PointAccessor(), points
+        );
+    }
+
+    public bool Insert(TestPoint point)
+    {
+        throw new NotSupportedException();
+    }
+
+    public IEnumerable<TestPoint> EnumerateRange(TestPoint lower, TestPoint upper) {
+
+        return this._tree.RangeQuery(lower, upper);
+    }
+
+    public bool CheckValidity() {
+        throw new NotImplementedException();
+    }
+}
 
 public class OmnoCollectionQuadTreeWrapper : ITestable2DCollection {
     private readonly Omni.Collections.Spatial.QuadTree<TestPoint> _tree;
