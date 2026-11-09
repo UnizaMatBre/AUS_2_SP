@@ -1,4 +1,6 @@
-﻿namespace AppBackend;
+﻿using System.Security.AccessControl;
+
+namespace AppBackend;
 
 using Collections;
 
@@ -65,6 +67,8 @@ public readonly struct GeoCoordinates {
     
 }
 
+public record InformationDiff(String? Name, String? Description, String? Address);
+
 public class LocalInformation {
     public String Name;
     public String? Description;
@@ -72,6 +76,36 @@ public class LocalInformation {
 
     public DateTime CreatedAt = DateTime.Now;
     public DateTime UpdatedAt = DateTime.Now;
+
+
+
+    public LocalInformation Copy()
+    {
+        return new LocalInformation {
+            Name = this.Name,
+            Description = this.Description,
+            Address = this.Address,
+            
+            CreatedAt = this.CreatedAt,
+            UpdatedAt = this.UpdatedAt
+        };
+    }
+    
+    public void UpdateAll(InformationDiff infoDiff) {
+        if (infoDiff.Name is not null) {
+            this.Name = infoDiff.Name;
+        }
+
+        if (infoDiff.Description is not null) {
+            this.Description = infoDiff.Description;
+        }
+
+        if (infoDiff.Address is not null) {
+            this.Address = infoDiff.Address;
+        }
+
+        this.UpdatedAt = DateTime.Now;
+    }
     
     public void UpdateName(String newName) {
         this.Name = newName;
@@ -104,15 +138,7 @@ public struct Location {
         this.Information = null;
         
         if (other.Information is not null) {
-            this.Information = new LocalInformation {
-                Name = other.Information.Name,
-                
-                Description = other.Information.Description,
-                Address = other.Information.Address,
-                
-                CreatedAt = other.Information.CreatedAt,
-                UpdatedAt = other.Information.UpdatedAt
-            };
+            this.Information = other.Information.Copy();
         }
     }
     

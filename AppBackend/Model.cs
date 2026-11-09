@@ -81,9 +81,18 @@ public class Model {
     
     
     // 4.1 - non-coordinate edit
-    public bool DoEditLocationNonCoordinate(/* ADD PROPER PARAMETERS HERE */) {
+    public bool DoEditLocationNonCoordinate(Location targetLocation, InformationDiff infoDiff) {
+        
+        var copyInfo = targetLocation.Information!.Copy();
+        copyInfo.UpdateAll(infoDiff);
+        
+        var newLocation = new Location(
+            targetLocation.Id,
+            targetLocation.Coordinates,
+            copyInfo
+        );
 
-        throw new NotImplementedException();
+        return this._treeWrapper.Update(targetLocation, newLocation);
     }
     
     // 4.2 - coordinate edit
