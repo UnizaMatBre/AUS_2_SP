@@ -10,6 +10,49 @@ public class LocationTreeWrapper {
 
     // --- CONSTRUCTORS ---
 
+    public static LocationTreeWrapper FromTreeChoice(long invalidId, TreeChoices treeChoice) {
+         
+        var northWest = new GeoCoordinates(latitude: +90, longitude: -180);
+        var southEast = new GeoCoordinates(latitude: -90, longitude: +180);
+
+        var globalRect = Location.MakeRect(
+            new(invalidId, northWest), 
+            new Location(invalidId, southEast)
+        );
+
+        switch (treeChoice) {
+            case TreeChoices.KdTree: {
+                var kdTree = new KdTree<Location>(
+                    new Location.LocationDimensionalComparer(),
+                    new Location.LocationEqualityComparer()
+                );
+
+                return new(kdTree);
+            }
+            
+            case TreeChoices.QuadTreeWithList: {
+                var quadTree = new QuadTreeWithList<Location>(globalRect);
+                return new(quadTree);
+            }
+
+            case TreeChoices.QuadTreeWithKd:
+            {
+                var quadTree = new QuadTreeWithKdTree<Location>(
+                    globalRect,
+                    new Location.LocationDimensionalComparer(),
+                    new Location.LocationEqualityComparer()
+                );
+                
+                return new(quadTree);
+            }
+
+            default: {
+
+                throw new ArgumentOutOfRangeException(nameof(treeChoice));
+            }
+        }
+    }
+    
     public LocationTreeWrapper(KdTree<Location> tree) {
         this._treeType = TreeChoices.KdTree;
         this._treeObject = tree;

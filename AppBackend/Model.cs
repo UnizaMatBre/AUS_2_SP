@@ -13,45 +13,7 @@ public class Model {
     
     public Model(TreeChoices treeChoice) {
 
-        
-        var northWest = new GeoCoordinates(latitude: +90, longitude: -180);
-        var southEast = new GeoCoordinates(latitude: -90, longitude: +180);
-
-        var globalRect = Location.MakeRect(
-            new(INVALID_ID, northWest), 
-            new Location(INVALID_ID, southEast)
-        );
-
-        switch (treeChoice) {
-            case TreeChoices.KdTree: {
-                var kdTree = new KdTree<Location>(
-                    new Location.LocationDimensionalComparer(),
-                    new Location.LocationEqualityComparer()
-                );
-
-                this._treeWrapper = new(kdTree);
-                break;
-            }
-            
-            case TreeChoices.QuadTreeWithList: {
-                var quadTree = new QuadTreeWithList<Location>(globalRect);
-                this._treeWrapper = new(quadTree);
-                break;
-            }
-
-            case TreeChoices.QuadTreeWithKd:
-            {
-                var quadTree = new QuadTreeWithKdTree<Location>(
-                    globalRect,
-                    new Location.LocationDimensionalComparer(),
-                    new Location.LocationEqualityComparer()
-                );
-                
-                this._treeWrapper = new(quadTree);
-                break;
-            }
-            
-        }
+        this._treeWrapper = LocationTreeWrapper.FromTreeChoice(INVALID_ID, treeChoice);
     }
     
 
