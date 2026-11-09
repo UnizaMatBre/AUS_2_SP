@@ -8,22 +8,12 @@ public class Model {
     public const long INVALID_ID = -1;
     
     private long _idCounter = 0;
-    
-    private readonly ILocationTree _locationTree;
 
+    private readonly LocationTreeWrapper _treeWrapper;
+    
     public Model(TreeChoices treeChoice) {
 
-        // kd tree
-        if (treeChoice == TreeChoices.KdTree) {
-            var kdTree = new KdTree<Location>(
-                new Location.LocationDimensionalComparer(), new Location.LocationEqualityComparer()
-            );
-            
-            this._locationTree = new KdTreeWrapper(kdTree);
-
-            return;
-        }
-
+        
         var northWest = new GeoCoordinates(latitude: +90, longitude: -180);
         var southEast = new GeoCoordinates(latitude: -90, longitude: +180);
 
@@ -32,19 +22,35 @@ public class Model {
             new Location(INVALID_ID, southEast)
         );
 
-        if (treeChoice == TreeChoices.QuadTreeWithList) {
-            var quadTree = new QuadTreeWithList<Location>(globalRect);
+        switch (treeChoice) {
+            case TreeChoices.KdTree: {
+                var kdTree = new KdTree<Location>(
+                    new Location.LocationDimensionalComparer(),
+                    new Location.LocationEqualityComparer()
+                );
 
-            this._locationTree = new QuadTreeWrapper(quadTree);
-            return;
-        }
+                this._treeWrapper = new(kdTree);
+                break;
+            }
+            
+            case TreeChoices.QuadTreeWithList: {
+                var quadTree = new QuadTreeWithList<Location>(globalRect);
+                this._treeWrapper = new(quadTree);
+                break;
+            }
 
-        
-        if (treeChoice == TreeChoices.QuadTreeWithKd) {
-            var quadTree = new QuadTreeWithList<Location>(globalRect);
-
-            this._locationTree = new QuadTreeWrapper(quadTree);
-            return;
+            case TreeChoices.QuadTreeWithKd:
+            {
+                var quadTree = new QuadTreeWithKdTree<Location>(
+                    globalRect,
+                    new Location.LocationDimensionalComparer(),
+                    new Location.LocationEqualityComparer()
+                );
+                
+                this._treeWrapper = new(quadTree);
+                break;
+            }
+            
         }
     }
     
@@ -57,20 +63,20 @@ public class Model {
     
     public bool DoDumpDataIntoFile() {
 
-        this._locationTree.DumpCsv("locations.csv", CsvHelpers.LocationToCsvLine);
+        this._treeWrapper.DumpCsv("locations.csv", CsvHelpers.LocationToCsvLine);
         return true;
     }
     
     public bool DoLoadDataFromFile() {
         
-        this._locationTree.LoadCsv("locations.csv", CsvHelpers.LocationFromCsvLine);
+        this._treeWrapper.LoadCsv("locations.csv", CsvHelpers.LocationFromCsvLine);
         return true;
     }
 
     // 1
     public IEnumerable<Location> DoGetLocationsInRectangle(Location upperLeft, Location lowerRight) {
         
-        return this._locationTree.EnumerateRange(upperLeft, lowerRight);
+        return this._treeWrapper.EnumerateRange(upperLeft, lowerRight);
     }
 
     // 2
@@ -86,7 +92,7 @@ public class Model {
             Model.INVALID_ID, centerCoord.MoveTo(radius, radius)
         );
         
-        var rectLocations = this._locationTree.EnumerateRange(southWestCorner, northEastCorner);
+        var rectLocations = this._treeWrapper.EnumerateRange(southWestCorner, northEastCorner);
 
         return rectLocations;
     }
@@ -108,7 +114,7 @@ public class Model {
             newInformation
         );
 
-        return this._locationTree.Insert(newLocation);
+        return this._treeWrapper.Insert(newLocation);
     }
     
     
@@ -120,7 +126,7 @@ public class Model {
     
     // 4.2 - coordinate edit
     public bool DoEditLocationCoordinates(Location oldLocation, GeoCoordinates coordinates) {
-        var removeResult = this._locationTree.Remove(oldLocation);
+        var removeResult = this._treeWrapper.Remove(oldLocation);
         if (removeResult == false) {
             return false;
         }
@@ -129,12 +135,12 @@ public class Model {
             Coordinates = coordinates
         };
 
-        return this._locationTree.Insert(newLocation);
+        return this._treeWrapper.Insert(newLocation);
     }
     
     // 5
     public IEnumerable<Location> DoGetLocationsWithStringInName(Location upperLeft, Location lowerRight, String searchedString) {
-        var rectLocations = this._locationTree.EnumerateRange(upperLeft, lowerRight);
+        var rectLocations = this._treeWrapper.EnumerateRange(upperLeft, lowerRight);
 
         return rectLocations
             .Where((oneLocation) => oneLocation.Information!.Name.Contains(searchedString))
@@ -144,7 +150,7 @@ public class Model {
     // 6
     public bool DoRemoveLocation(Location location) {
 
-        return this._locationTree.Remove(location);
+        return this._treeWrapper.Remove(location);
     }
     
     
