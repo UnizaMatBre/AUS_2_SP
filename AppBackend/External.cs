@@ -228,6 +228,25 @@ public struct Location {
             return this._latitude.CompareTo(otherBoundary._latitude);
         }
     }
+
+
+    public static RectangularBoundary<Location, Location> MakeRect(Location northWest, Location southEast) {
+        
+        var north = new LocationNorthSouthBoundary(northWest);
+        var south = new LocationNorthSouthBoundary(southEast);
+
+        var west = new LocationWestEastBoundary(northWest);
+        var east = new LocationWestEastBoundary(northWest);
+
+        return new(
+            minX: west,
+            maxX: east,
+
+            minY: north,
+            maxY: south
+        );
+
+    }
 }
 
 
