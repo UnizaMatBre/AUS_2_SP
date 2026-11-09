@@ -107,6 +107,16 @@ class Program
             Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(hrogenQuadTree));
         }
 
+        {            
+            Console.WriteLine("=== auios.QuadTree ===");
+            var auiosQuadTree = new AuiosQuadTreeWrapper(
+                benchmark.GetNorthWestCorner(),
+                benchmark.GetSouthEastCorner()
+            );
+            Console.WriteLine("+ Inserts: {0}", benchmark.TestInserts(auiosQuadTree)); 
+            Console.WriteLine("+ Intervals: {0}", benchmark.TestIntervals(auiosQuadTree));
+        }
+
         /*
 
        // omnicollection.spatial.quadtree
